@@ -1,64 +1,685 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hogwarts Institute</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Elarion — Kronik Mahkota Retak | RPG Lengkap</title>
 <style>
-:root{--bg:#eee9df;--paper:#f8f5ee;--ink:#191817;--muted:#777066;--line:#cfc6b6;--accent:#7a2630;--gold:#9c772d;--dark:#181716}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif}button,input,textarea,select{font:inherit}button{cursor:pointer}.top{background:var(--dark);color:#ddd;padding:8px 5%;font:11px Arial,sans-serif;display:flex;justify-content:space-between;letter-spacing:.6px}.top button{background:none;border:0;color:#ddd;font-size:11px}.brand{text-align:center;background:var(--paper);padding:25px 15px 12px;border-bottom:1px solid var(--line)}.brand h1{margin:0;font-size:34px;letter-spacing:4px}.brand small{display:block;color:var(--muted);letter-spacing:3px;margin-top:7px;font:10px Arial,sans-serif}nav{display:flex;justify-content:center;flex-wrap:wrap;gap:2px;margin-top:19px}nav button{border:0;background:transparent;padding:9px 12px;font:10px Arial,sans-serif;text-transform:uppercase;letter-spacing:1px}nav button:hover,nav button.active{background:#e8e1d5}.wrap{width:min(1120px,91%);margin:28px auto}.hero{min-height:340px;background:linear-gradient(130deg,#25221e,#51483c);color:white;padding:48px 25px;display:grid;place-items:center;text-align:center}.hero .seal{font-size:54px}.hero h2{font-size:50px;margin:12px 0}.hero p{max-width:670px;line-height:1.7;color:#e8e1d5}.btn{border:1px solid var(--dark);background:var(--dark);color:white;padding:11px 17px}.btn.gold{background:var(--gold);border-color:var(--gold)}.btn.light{background:transparent;color:var(--ink);border-color:var(--line)}.section{margin:35px 0}.section h2{font-size:28px;border-bottom:1px solid var(--line);padding-bottom:10px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.card{background:var(--paper);border:1px solid var(--line);padding:20px}.card h3{margin-top:0}.muted{color:var(--muted);line-height:1.6}.tag{display:inline-block;border:1px solid var(--line);padding:4px 8px;font:10px Arial,sans-serif;text-transform:uppercase;letter-spacing:1px}.profile{display:grid;grid-template-columns:190px 1fr;gap:25px}.portrait{height:190px;background:#ddd6c9;display:grid;place-items:center;font-size:70px;border:1px solid var(--line)}.row{display:flex;justify-content:space-between;border-bottom:1px solid #ded6c8;padding:10px 0}.field{margin:13px 0}.field label{display:block;font-size:13px;margin-bottom:5px}.field input,.field textarea,.field select{width:100%;padding:11px;background:#fffdf8;border:1px solid #bdb4a5}.field textarea{min-height:130px;resize:vertical}.choicegrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.choice{padding:16px;text-align:left;background:#fffdf8;border:1px solid var(--line)}.choice.selected{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}.quiz{padding:17px 0;border-bottom:1px solid var(--line)}.quiz button{margin:6px 5px 0 0;padding:9px 12px;background:#fffdf8;border:1px solid var(--line)}.result{text-align:center;background:#e9e1d2;border:1px solid var(--line);padding:28px}.collection{min-height:155px}.check{font-size:24px;float:right}.toast{position:fixed;right:18px;bottom:18px;background:#222;color:#fff;padding:12px 16px;border-radius:4px;font:13px Arial,sans-serif;box-shadow:0 5px 25px #0005}footer{margin-top:70px;background:var(--dark);color:#999;padding:30px;text-align:center;font:11px Arial,sans-serif}
-@media(max-width:760px){.brand h1{font-size:25px}.hero{min-height:300px}.hero h2{font-size:38px}.grid,.grid2{grid-template-columns:1fr}.profile{grid-template-columns:1fr}.portrait{height:150px}.choicegrid{grid-template-columns:1fr}}
-</style></head>
+:root{--bg:#080b10;--panel:#101620;--panel2:#151d29;--line:#293446;--text:#edf1f6;--muted:#8e9aab;--gold:#c8a45d;--green:#71bd91;--red:#c96f72;--blue:#79a9d5;--purple:#b695d1}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 75% -10%,#202b3d 0,#080b10 42%);color:var(--text);font:14px system-ui,-apple-system,Segoe UI,sans-serif}.app{display:grid;grid-template-columns:245px 1fr;min-height:100vh}.side{position:sticky;top:0;height:100vh;overflow:auto;padding:18px 12px;background:#070a0f;border-right:1px solid var(--line)}.logo{padding:8px 10px 18px}.logo b{font:26px Georgia,serif;letter-spacing:3px}.logo small{display:block;color:var(--muted);margin-top:4px}.nt{margin:18px 10px 6px;font-size:10px;letter-spacing:2px;color:#657084}.nav button{display:block;width:100%;border:0;background:transparent;color:#abb5c4;text-align:left;padding:10px 11px;margin:2px 0;border-radius:7px}.nav button:hover,.nav button.on{background:#171f2b;color:#fff}.save{margin:15px 8px;padding:11px;border:1px solid var(--line);border-radius:8px;color:var(--muted);font-size:11px}.main{min-width:0}.top{height:62px;position:sticky;top:0;z-index:10;background:#0b0f16ee;border-bottom:1px solid var(--line);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:space-between;padding:0 24px}.top b{color:var(--gold)}.topstats{display:flex;gap:16px;color:var(--muted);font-size:12px}.topstats b{color:#fff}.content{max-width:1500px;margin:auto;padding:25px}.page{display:none}.page.on{display:block}.hero,.card{background:linear-gradient(145deg,#141b27,#0e131b);border:1px solid var(--line);border-radius:12px}.hero{padding:31px;margin-bottom:17px}.ey{font-size:10px;letter-spacing:3px;color:var(--gold)}h1{font:43px Georgia,serif;margin:9px 0 12px}h2,h3{margin:0 0 10px}.hero p{max-width:900px;color:#aab4c3;line-height:1.75}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:15px}.card{grid-column:span 4;padding:17px}.wide{grid-column:span 8}.full{grid-column:1/-1}.muted{color:var(--muted)}.gold{color:var(--gold)}.good{color:var(--green)}.danger{color:var(--red)}.purple{color:var(--purple)}.big{font-size:29px;font-weight:700}.small{font-size:11px}.actions{display:flex;gap:7px;flex-wrap:wrap}.btn{border:1px solid #3b4658;background:#192231;color:#e8edf4;padding:9px 12px;border-radius:7px}.btn:hover{border-color:var(--gold);color:var(--gold)}.primary{background:#604d2c;border-color:#9e7c43}.btn:disabled{opacity:.45;cursor:not-allowed}.row{display:flex;justify-content:space-between;gap:12px;padding:10px;border-bottom:1px solid #202837}.row:last-child{border-bottom:0}.list{display:grid;gap:7px}.item{padding:12px;background:#0f161f;border:1px solid var(--line);border-radius:8px}.badge{display:inline-block;border:1px solid #3b4658;border-radius:99px;padding:3px 7px;font-size:10px;color:#bdc6d3}.bar{height:7px;background:#252e3c;border-radius:20px;overflow:hidden}.bar i{display:block;height:100%;background:var(--gold)}.location{min-height:145px;display:flex;flex-direction:column;justify-content:space-between}.location button{align-self:flex-start}.map{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.map button{min-height:110px;background:#101721;color:#e8edf5;border:1px solid var(--line);border-radius:9px;text-align:left;padding:13px}.map button:hover{border-color:var(--gold)}.search{width:100%;padding:11px;background:#0d131b;border:1px solid var(--line);border-radius:7px;color:#fff;margin-bottom:14px}.person{display:flex;gap:13px}.portrait{width:52px;height:52px;flex:none;border:1px solid #3a4659;border-radius:9px;background:#202a3a;display:grid;place-items:center;font-size:21px}.person p{color:var(--muted);line-height:1.55}.modal{display:none;position:fixed;inset:0;background:#000b;z-index:30;place-items:center;padding:18px}.modal.open{display:grid}.box{width:100%;max-width:780px;max-height:90vh;overflow:auto;background:#111722;border:1px solid var(--line);border-radius:12px;padding:20px}.speaker{color:var(--gold);font-weight:700}.dialogue{min-height:110px;line-height:1.8;color:#d9dee7}.choice{display:block;width:100%;text-align:left;margin:7px 0}.toast{display:none;position:fixed;right:18px;bottom:18px;z-index:40;background:#eef2f7;color:#10141b;padding:11px 15px;border-radius:7px;box-shadow:0 10px 40px #0009}.loot{border:1px solid var(--gold);background:#1a1710;border-radius:8px;padding:14px}.rar-common{color:#b8c0cb}.rar-uncommon{color:#79bd91}.rar-rare{color:#78a8d5}.rar-epic{color:#b695d1}.rar-legendary{color:#e0a15e}.rar-mythic{color:#d76f8d}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:9px;border-bottom:1px solid var(--line)}th{color:var(--muted)}.locked{opacity:.5}.tagline{color:#cbd2dd;font-style:italic}.choiceGrid{display:grid;gap:8px}.notice{padding:12px;border-left:3px solid var(--gold);background:#151b24;color:#b9c2cf;line-height:1.65}.ending{text-align:center;padding:35px}.ending h2{font:34px Georgia,serif;color:var(--gold)}@media(max-width:850px){.app{grid-template-columns:1fr}.side{position:fixed;left:-260px;width:245px;z-index:25;transition:.2s}.side.open{left:0}.top{padding:0 13px}.content{padding:15px}.card,.wide{grid-column:1/-1}.map{grid-template-columns:repeat(2,1fr)}h1{font-size:32px}.topstats{gap:8px}}
+</style>
+
+<style>
+/* Ekspansi antarmuka */
+.world-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.world-tabs .btn.active{border-color:var(--gold);color:var(--gold)}
+.encounter{border:1px solid var(--line);border-radius:10px;padding:14px;background:#0c121a}.encounter h3{color:var(--gold)}
+.quest-meta{display:flex;gap:7px;flex-wrap:wrap;margin:7px 0}.difficulty{font-size:10px;letter-spacing:1px}
+.bar.blue i{background:var(--blue)}.bar.green i{background:var(--green)}
+.statgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.statbox{padding:12px;border:1px solid var(--line);border-radius:8px;background:#0d141d}
+.dialogueBox{background:#0c121a;border:1px solid var(--line);padding:16px;border-radius:9px;line-height:1.8}
+.choice.locked{opacity:.4}.choice small{display:block;color:var(--muted)}
+.timeline{border-left:1px solid var(--line);padding-left:15px}.timeline .item{margin-bottom:9px}
+@media(max-width:600px){.map{grid-template-columns:1fr}.statgrid{grid-template-columns:1fr}}
+</style>
+</head>
 <body>
-<div class="top"><span>HOGWARTS INSTITUTE · PERSONAL ARCHIVE</span><span><button onclick="exportData()">Export</button> · <button onclick="importData()">Import</button></span></div>
-<div class="brand"><h1>HOGWARTS INSTITUTE</h1><small>THE HOME OF WITCHCRAFT & WIZARDRY</small><nav id="nav"></nav></div>
-<main id="app" class="wrap"></main>
-<footer>Hogwarts Institute is a personal, fan-made web experience. It is not affiliated with or endorsed by Warner Bros. Entertainment or the official Harry Potter rights holders.</footer>
+<div class="app">
+<aside class="side" id="side">
+<div class="logo"><b>ELARION</b><small>Kronik Mahkota Retak</small></div>
+<nav class="nav">
+<div class="nt">DUNIA</div>
+<button data-page="home">⌂ Ikhtisar</button><button data-page="world">◇ Peta Dunia</button><button data-page="lore">◈ Lore & Faksi</button><button data-page="codex">▤ Codex</button>
+<div class="nt">KARAKTER</div>
+<button data-page="character">♙ Karakter</button><button data-page="inventory">▣ Inventaris</button><button data-page="journal">✦ Jurnal</button><button data-page="achievements">★ Pencapaian</button>
+<div class="nt">PETUALANGAN</div>
+<button data-page="quests">! Misi</button><button data-page="people">◇ Tokoh</button><button data-page="combat">⚔ Pertarungan</button><button data-page="companions">♧ Pendamping</button><button data-page="shops">¤ Toko</button>
+<div class="nt">SISTEM</div>
+<button data-page="settings">⚙ Simpan & Data</button>
+</nav>
+<div class="save">DATABASE LOKAL<br><b id="saveState">SIAP</b><br>Seluruh kemajuan otomatis disimpan pada peramban ini.</div>
+</aside>
+
+<main class="main">
+<header class="top"><div><button class="btn" id="hamb">☰</button> <b id="place">Ashenvale</b></div><div class="topstats"><span>Lv <b id="lv">1</b></span><span>HP <b id="hp">100</b></span><span>Emas <b id="gold">100</b></span></div></header>
+<div class="content">
+
+<section class="page" id="home">
+<div class="hero"><div class="ey">TAHUN 734 · ERA YANG RETAK</div><h1>Mahkota Itu Tidak Memiliki Pewaris.</h1><p>Tiga abad setelah Perang Kejatuhan Bintang, Kerajaan Elarion bertahan melalui perjanjian yang rapuh. Tujuh pecahan Mahkota Retak tersebar di negeri ini. Tidak ada seorang pun yang tahu apakah mahkota itu adalah lambang kerajaan, senjata, atau sesuatu yang jauh lebih tua.</p><div class="actions"><button class="btn primary" onclick="go('world')">Mulai Perjalanan</button><button class="btn" onclick="rest()">Beristirahat</button><button class="btn" onclick="save()">Simpan Sekarang</button></div></div>
+<div class="grid">
+<div class="card"><h3>Petualang</h3><div class="big" id="homeLv">Level 1</div><span class="muted" id="homeName">Kael · Pengembara</span><div class="bar"><i id="xpbar"></i></div><small class="muted" id="xp">0 / 100 XP</small></div>
+<div class="card"><h3>Tujuan Saat Ini</h3><p id="objective" class="muted"></p><span class="badge">ALUR UTAMA</span></div>
+<div class="card"><h3>Keadaan Dunia</h3><div id="worldstate"></div></div>
+<div class="card wide"><h3>Kronik Terbaru</h3><div class="list" id="events"></div></div>
+<div class="card"><h3>Reputasi</h3><div id="reps"></div></div>
+</div>
+</section>
+
+<section class="page" id="world">
+<div class="hero"><div class="ey">ATLAS ELARION</div><h1>Peta Dunia</h1><p>Perjalanan memajukan waktu dan dapat memicu pertemuan acak. Wilayah berbahaya memiliki musuh lebih kuat, tetapi peluang memperoleh harta langka juga meningkat.</p></div>
+<div class="map" id="map"></div>
+</section>
+
+<section class="page" id="lore">
+<div class="hero"><div class="ey">ARSIP KERAJAAN</div><h1>Lore & Faksi</h1><p>Setiap faksi mempunyai tujuan sendiri. Reputasi yang tinggi dapat membuka jalur cerita; reputasi yang rendah dapat menutupnya.</p></div>
+<div class="grid" id="factions"></div>
+</section>
+
+<section class="page" id="codex">
+<div class="hero"><div class="ey">CATATAN LAPANGAN</div><h1>Codex</h1><p>Informasi baru terbuka ketika Anda bertemu tokoh, mengunjungi tempat, mengalahkan makhluk, atau menemukan artefak.</p></div>
+<input class="search" id="search" placeholder="Cari entri codex..."><div class="grid" id="codexGrid"></div>
+</section>
+
+<section class="page" id="character">
+<div class="hero"><div class="ey">IDENTITAS</div><h1>Lembar Karakter</h1><p>Naik level meningkatkan kemampuan. Pilihan cerita memengaruhi sifat, reputasi, dan akhir permainan.</p></div>
+<div class="grid"><div class="card wide"><h3>Atribut</h3><div id="stats"></div></div><div class="card"><h3>Sifat</h3><div class="big" id="align">Netral</div><p class="muted">Tindakan menentukan kecenderungan karakter.</p></div><div class="card full"><h3>Kemampuan</h3><div class="grid" id="skills"></div></div></div>
+</section>
+
+<section class="page" id="inventory">
+<div class="hero"><div class="ey">BARANG BAWAAN</div><h1>Inventaris</h1><p>Barang biasa mudah dibeli. Barang langka membutuhkan eksplorasi, persyaratan cerita, reputasi, atau peluang jatuh yang sangat kecil.</p></div>
+<div class="grid" id="inventoryGrid"></div>
+</section>
+
+<section class="page" id="journal"><div class="hero"><div class="ey">CATATAN PRIBADI</div><h1>Jurnal</h1></div><div class="card full"><div class="list" id="journalList"></div></div></section>
+
+<section class="page" id="achievements"><div class="hero"><div class="ey">WARISAN</div><h1>Pencapaian</h1><p>Tujuan jangka panjang yang tetap tersimpan dalam penyimpanan lokal.</p></div><div class="grid" id="achGrid"></div></section>
+
+<section class="page" id="quests">
+<div class="hero"><div class="ey">CATATAN MISI</div><h1>Misi</h1><p>Alur misi saling terhubung. Menyelesaikan satu misi dapat membuka lokasi, tokoh, pendamping, perlengkapan, dan akhir permainan.</p></div>
+<div class="tabs"><button class="btn" onclick="qFilter='all';renderQuests()">Semua</button><button class="btn" onclick="qFilter='main';renderQuests()">Utama</button><button class="btn" onclick="qFilter='side';renderQuests()">Sampingan</button></div><div class="list" id="questList"></div>
+</section>
+
+<section class="page" id="people">
+<div class="hero"><div class="ey">JARINGAN TOKOH</div><h1>Tokoh</h1><p>Tokoh mengingat tindakan Anda. Percakapan tertentu hanya muncul setelah kondisi dunia terpenuhi.</p></div><div class="grid" id="peopleGrid"></div>
+</section>
+
+<section class="page" id="combat">
+<div class="hero"><div class="ey">PERTEMUAN</div><h1>Pertarungan</h1><p>Pertarungan berlangsung bergiliran. Gunakan serangan, pertahanan, kemampuan, atau barang. Musuh kuat memiliki tabel jarahan dengan peluang berbeda menurut tingkat kelangkaan.</p></div>
+<div class="grid"><div class="card wide"><div id="battle"></div></div><div class="card"><h3>Log Pertarungan</h3><div id="battleLog"></div></div></div>
+</section>
+
+<section class="page" id="companions">
+<div class="hero"><div class="ey">KELOMPOK</div><h1>Pendamping</h1><p>Pendamping mempunyai loyalitas dan kemampuan pasif. Pilihan tertentu dapat membuat mereka bergabung atau meninggalkan kelompok.</p></div><div class="grid" id="partyGrid"></div>
+</section>
+
+<section class="page" id="shops">
+<div class="hero"><div class="ey">PERDAGANGAN</div><h1>Toko</h1><p>Pedagang umum menjual kebutuhan. Pedagang khusus baru menawarkan barang setelah reputasi dan perkembangan cerita memenuhi syarat.</p></div><div class="grid" id="shopGrid"></div>
+</section>
+
+<section class="page" id="settings">
+<div class="hero"><div class="ey">PENYIMPANAN</div><h1>Simpan & Data</h1><p>Permainan menggunakan penyimpanan lokal peramban. Tidak membutuhkan akun, server, atau basis data eksternal.</p></div>
+<div class="grid"><div class="card"><h3>Simpan</h3><p class="muted">Simpan secara manual jika diperlukan.</p><button class="btn primary" onclick="save()">Simpan Kemajuan</button></div><div class="card"><h3>Ekspor Data</h3><p class="muted">Unduh cadangan penyimpanan Anda.</p><button class="btn" onclick="exportSave()">Ekspor JSON</button></div><div class="card"><h3>Impor Data</h3><p class="muted">Pulihkan cadangan JSON yang pernah diekspor.</p><input type="file" id="importFile" accept=".json"><button class="btn" onclick="importSave()">Impor</button></div><div class="card"><h3>Mulai Ulang</h3><p class="danger">Menghapus seluruh kemajuan pada peramban ini.</p><button class="btn" onclick="resetGame()">Hapus Data & Mulai Baru</button></div></div>
+</section>
+
+</div></main></div>
+<div class="modal" id="modal"><div class="box" id="modalBox"></div></div><div class="toast" id="toast"></div>
+
 <script>
-const KEY="hogwarts_institute_personal_v3";
-const initial=()=>({profile:{name:"",bio:"",house:"",wand:null,patronus:"",pet:"Owl",year:"First Year",subject:"Charms",portrait:"🧙"},points:{Gryffindor:0,Slytherin:0,Ravenclaw:0,Hufflepuff:0},collections:{spells:[],creatures:[],characters:[],places:[],objects:[],potions:[]},favorites:[],achievements:[],journal:"",daily:{date:"",done:false},settings:{theme:"light"}});
-let S=load()||initial();
-function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
-function persist(){localStorage.setItem(KEY,JSON.stringify(S))}
-function toast(t){let x=document.createElement("div");x.className="toast";x.textContent=t;document.body.appendChild(x);setTimeout(()=>x.remove(),1700);persist()}
-function go(p){location.hash=p;render()}
-const pages=["home","profile","sorting","wand","patronus","houses","library","collections","quizzes","journal","settings","about"];
-const names={home:"Home",profile:"Profile",sorting:"Sorting",wand:"Wand",patronus:"Patronus",houses:"Houses",library:"Library",collections:"Collections",quizzes:"Quizzes",journal:"Journal",settings:"Settings",about:"About"};
-function render(){let p=location.hash.slice(1)||"home";if(!pages.includes(p))p="home";document.getElementById("nav").innerHTML=pages.map(x=>`<button class="${x===p?"active":""}" onclick="go('${x}')">${names[x]}</button>`).join("");document.getElementById("app").innerHTML=window["page_"+p]();window.scrollTo(0,0)}
-function esc(x){return String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-function card(t,d,b=""){return `<div class="card"><h3>${t}</h3><p class="muted">${d}</p>${b}</div>`}
-function page_home(){return `<section class="hero"><div><div class="seal">✦</div><span class="tag">Personal Wizarding Archive</span><h2>A world of magic awaits.</h2><p>Welcome to your personal Hogwarts Institute. Discover your magical identity, record your collections, explore the Institute library and keep your own wizarding journal.</p><button class="btn gold" onclick="go('${S.profile.name?"profile":"sorting"}')">${S.profile.name?"Open My Profile":"Begin Your Journey"}</button></div></section>
-<section class="section"><h2>Your Magical Identity</h2><div class="grid">${card("Sorting Ceremony","Discover which House best reflects your answers.","<button class='btn' onclick=\"go('sorting')\">Enter</button>")}${card("Wand Ceremony","Find your wood, core, length and flexibility.","<button class='btn' onclick=\"go('wand')\">Discover</button>")}${card("Patronus Experience","A short personality experience to reveal your Patronus.","<button class='btn' onclick=\"go('patronus')\">Discover</button>")}</div></section>
-<section class="section"><h2>Institute Features</h2><div class="grid">${card("Library","Browse original entries for spells, creatures, characters, places, objects and potions.","<button class='btn light' onclick=\"go('library')\">Explore Library</button>")}${card("Collections","Mark discoveries as collected and build your personal magical archive.","<button class='btn light' onclick=\"go('collections')\">View Collections</button>")}${card("Daily Experience","Take the daily quiz and keep your Institute streak going.","<button class='btn light' onclick=\"go('quizzes')\">Open Quizzes</button>")}</div></section>`}
-function page_profile(){let p=S.profile;if(!p.name)return `<div class="result"><h1>Your Profile</h1><p>Create your magical identity through the Sorting Ceremony.</p><button class="btn" onclick="go('sorting')">Begin</button></div>`;return `<section class="card"><div class="profile"><div class="portrait">${p.portrait}</div><div><span class="tag">${houseIcon(p.house)} ${p.house}</span><h1>${esc(p.name)}</h1><p class="muted">${esc(p.bio)||"A student of Hogwarts Institute."}</p><div class="row"><b>Year</b><span>${esc(p.year)}</span></div><div class="row"><b>Favourite subject</b><span>${esc(p.subject)}</span></div><div class="row"><b>Wand</b><span>${p.wand?esc(p.wand.wood)+" · "+esc(p.wand.core):"Not discovered"}</span></div><div class="row"><b>Patronus</b><span>${esc(p.patronus)||"Not discovered"}</span></div><div class="row"><b>Pet</b><span>${esc(p.pet)}</span></div><br><button class="btn" onclick="editProfile()">Edit Profile</button> <button class="btn light" onclick="persist();toast('Saved locally')">Save</button></div></div></section>`}
-function editProfile(){let p=S.profile,n=prompt("Name:",p.name);if(n===null)return;p.name=n.trim()||p.name;p.bio=prompt("Short bio:",p.bio)??p.bio;p.year=prompt("Year:",p.year)??p.year;p.subject=prompt("Favourite subject:",p.subject)??p.subject;p.pet=prompt("Pet:",p.pet)??p.pet;p.portrait=prompt("Portrait emoji (e.g. 🧙):",p.portrait)??p.portrait;persist();render()}
-let sa=[];
-const sq=[["Which quality speaks to you most?","Courage","Ambition","Curiosity","Loyalty"],["In a crisis you...","Act","Strategise","Investigate","Support"],["What do you value?","Bravery","Achievement","Knowledge","Friendship"],["Your ideal evening?","Dueling","Planning","Reading","Talking"],["Your greatest strength?","Nerve","Determination","Wit","Patience"]];
-function page_sorting(){if(S.profile.house)return `<div class="result"><div style="font-size:55px">${houseIcon(S.profile.house)}</div><h1>${S.profile.house}</h1><p>Your House has been recorded in your personal archive.</p><button class="btn" onclick="go('profile')">View Profile</button> <button class="btn light" onclick="redo('house')">Redo Ceremony</button></div>`;return `<section class="card"><h1>The Sorting Ceremony</h1><p class="muted">There is no wrong answer. Choose what feels most like you.</p>${sq.map((q,i)=>`<div class="quiz"><b>${i+1}. ${q[0]}</b><br>${q.slice(1).map((a,j)=>`<button onclick="sortAnswer(${i},${j})">${a}</button>`).join("")}</div>`).join("")}</section>`}
-function sortAnswer(i,j){sa[i]=j;if(sa.length===sq.length&&sa.every(x=>x!==undefined)){let sc=[0,0,0,0];sa.forEach((x,i)=>sc[(x+i)%4]++);let h=["Gryffindor","Slytherin","Ravenclaw","Hufflepuff"][sc.indexOf(Math.max(...sc))];S.profile.house=h;S.points[h]+=25;achievement("Sorted");persist();render()}}
-function redo(type){if(type==="house"){S.profile.house="";sa=[]}if(type==="wand"){S.profile.wand=null;wa=[]}if(type==="pat"){S.profile.patronus="";pa=[]}persist();render()}
-let wa=[];
-function page_wand(){if(S.profile.wand)return `<div class="result"><div style="font-size:55px">🪄</div><h1>Your Wand</h1><p style="font-size:20px">${esc(S.profile.wand.wood)} · ${esc(S.profile.wand.core)}</p><p>${esc(S.profile.wand.length)} · ${esc(S.profile.wand.flex)}</p><button class="btn light" onclick="redo('wand')">Discover Again</button></div>`;return `<section class="card"><h1>The Wand Ceremony</h1><p class="muted">Three choices. One wand.</p>${["Which atmosphere attracts you?","How do you solve a mystery?","Choose a place."].map((q,i)=>`<div class="quiz"><b>${q}</b><br>${["Forest","Storm","Library","Lake"].map((a,j)=>`<button onclick="wandAnswer(${i},${j})">${a}</button>`).join("")}</div>`).join("")}</section>`}
-function wandAnswer(i,j){wa[i]=j;if(wa.length===3&&wa.every(x=>x!==undefined)){let w=["Ash","Yew","Rowan","Hawthorn"],c=["Phoenix feather","Dragon heartstring","Unicorn hair","Moonstone thread"],f=["Supple","Springy","Rigid","Unyielding"];S.profile.wand={wood:w[(wa[0]+wa[1])%4],core:c[(wa[1]+wa[2])%4],length:(10+(wa[0]+wa[2])%6)+"¾ inches",flex:f[(wa[0]+wa[2])%4]};achievement("Wand Chosen");persist();render()}}
-let pa=[];
-function page_patronus(){if(S.profile.patronus)return `<div class="result"><div style="font-size:55px">✦</div><h1>Your Patronus</h1><p style="font-size:30px">${S.profile.patronus}</p><button class="btn light" onclick="redo('pat')">Discover Again</button></div>`;return `<section class="card"><h1>The Patronus Experience</h1>${["What guides you?","Where would you rather be?","What do others trust you with?"].map((q,i)=>`<div class="quiz"><b>${q}</b><br>${["Hope","Curiosity","Loyalty","Freedom"].map((a,j)=>`<button onclick="patAnswer(${i},${j})">${a}</button>`).join("")}</div>`).join("")}</section>`}
-function patAnswer(i,j){pa[i]=j;if(pa.length===3&&pa.every(x=>x!==undefined)){S.profile.patronus=["Stag","Fox","Owl","Wolf","Hare","Otter","Raven","Cat","Doe","Horse","Swan","Badger"][(pa[0]*3+pa[1]*2+pa[2])%12];achievement("Patronus Discovered");persist();render()}}
-function page_houses(){let a=[["Gryffindor","Courage, nerve and chivalry.","🦁"],["Slytherin","Ambition, resourcefulness and determination.","🐍"],["Ravenclaw","Wit, learning and wisdom.","🦅"],["Hufflepuff","Loyalty, patience and fair play.","🦡"]];return `<section class="section"><h1>The Four Houses</h1><div class="grid">${a.map(x=>`<div class="card"><div style="font-size:45px">${x[2]}</div><h2>${x[0]}</h2><p class="muted">${x[1]}</p><div class="row"><span>Personal points</span><b>${S.points[x[0]]}</b></div></div>`).join("")}</div></section>`}
-const lib={spells:[["Lumen","Light","A controlled orb of illumination."],["Aegis","Defence","A short-lived magical barrier."],["Ember","Charms","A focused spark of heat."],["Frost","Charms","A cold projectile that slows movement."]],creatures:[["Mooncalf","Creature","A shy nocturnal creature with wide eyes."],["Thestral","Creature","A mysterious winged being associated with those who understand loss."],["Kneazle","Creature","A clever cat-like magical companion."],["Bowtruckle","Creature","A small guardian of wand-wood trees."]],characters:[["The Archivist","Character","A fictional keeper of the Institute's Restricted Archive."],["Professor Vale","Character","A fictional professor of defensive magic."],["Mira Rowan","Character","A fictional seventh-year student and duelling champion."]],places:[["Great Hall","Place","The ceremonial centre of the Institute."],["Owlery","Place","A tower for magical correspondence."],["Restricted Archive","Place","A supervised collection of unusual texts."],["Greenhouses","Place","Enchanted gardens for magical botany."]],objects:[["Marauder's Compass","Object","An original Institute artifact said to reveal hidden routes."],["Memory Locket","Object","A locket used to preserve a single vivid memory."],["Star Map","Object","A magical chart that changes with the night sky."]],potions:[["Focus Draught","Potion","A study aid that sharpens concentration."],["Restorative Tonic","Potion","A mild restorative mixture used after tiring lessons."],["Dreamless Sleep","Potion","A fictional sleep potion for the Institute archive."]]};
-let cat="spells";
-function page_library(){return `<section class="section"><h1>Institute Library</h1><p class="muted">Original reference entries for your personal archive.</p><div class="choicegrid">${Object.keys(lib).map(k=>`<button class="choice ${cat===k?"selected":""}" onclick="cat='${k}';render()">${k.toUpperCase()}</button>`).join("")}</div><br><div class="grid">${lib[cat].map(x=>{let id=x[0];let yes=S.collections[cat]?.includes(id);return `<div class="card collection"><span class="tag">${x[1]}</span>${yes?'<span class="check">✓</span>':""}<h3>${x[0]}</h3><p class="muted">${x[2]}</p><button class="btn light" onclick="toggleCollection('${cat}','${id.replace(/'/g,"\\'")}')">${yes?"Collected":"Add to Collection"}</button></div>`}).join("")}</div></section>`}
-function toggleCollection(c,id){S.collections[c]=S.collections[c]||[];let i=S.collections[c].indexOf(id);i<0?S.collections[c].push(id):S.collections[c].splice(i,1);if(Object.values(S.collections).flat().length>=5)achievement("Curious Mind");persist();render()}
-function page_collections(){let total=Object.values(S.collections).flat().length;return `<section class="section"><h1>My Collections</h1><div class="result"><b style="font-size:30px">${total}</b><br>discoveries collected</div><br><div class="grid">${Object.entries(lib).map(([k,v])=>`<div class="card"><h3>${k}</h3><p class="muted">${(S.collections[k]||[]).length} / ${v.length} collected</p><div class="row"><span>Progress</span><b>${Math.round((S.collections[k]||[]).length/v.length*100)}%</b></div></div>`).join("")}</div></section>`}
-let qa=[];
-const quiz=[["Which quality is most associated with Ravenclaw?","Courage","Wit","Ambition","Loyalty",1],["Which item belongs in a wandmaker's workshop?","Core","Cauldron only","Broomstick","Quill only",0],["Which place is best suited to magical botany?","Owlery","Greenhouses","Duelling Hall","Great Hall",1],["What is a Patronus best described as?","A magical guardian","A potion","A school subject","A House",0]];
-function page_quizzes(){let today=new Date().toISOString().slice(0,10);let done=S.daily.date===today&&S.daily.done;return `<section class="card"><h1>Daily Quiz</h1><p class="muted">One small magical challenge each day. Today: ${today}</p>${done?`<div class="result"><h2>Completed ✓</h2><p>Come back tomorrow for another challenge.</p></div>`:quiz.map((q,i)=>`<div class="quiz"><b>${i+1}. ${q[0]}</b><br>${q.slice(1,5).map((a,j)=>`<button onclick="quizA(${i},${j})">${a}</button>`).join("")}</div>`).join("")}<div id="qres"></div></section>`}
-function quizA(i,j){qa[i]=j;if(qa.length===quiz.length&&qa.every(x=>x!==undefined)){let score=qa.reduce((n,x,i)=>n+(x===quiz[i][5]?1:0),0);S.daily={date:new Date().toISOString().slice(0,10),done:true};if(score===quiz.length)achievement("Perfect Scholar");else achievement("Quiz Taker");persist();document.getElementById("qres").innerHTML=`<div class="result"><h2>${score}/${quiz.length}</h2><p>Today's quiz is complete.</p></div>`}}
-function page_journal(){return `<section class="card"><h1>My Journal</h1><p class="muted">Private notes stored only in this browser.</p><textarea id="journal">${esc(S.journal)}</textarea><br><br><button class="btn" onclick="S.journal=document.getElementById('journal').value;persist();toast('Journal saved locally')">Save Journal</button></section>`}
-function page_settings(){return `<section class="card"><h1>Settings & Data</h1><p class="muted">This Institute is intentionally local. No account or server is required.</p><div class="row"><b>Storage</b><span>Browser localStorage</span></div><div class="row"><b>Profile data</b><span>Local to this browser</span></div><br><button class="btn" onclick="exportData()">Export My Data</button> <button class="btn light" onclick="importData()">Import Data</button><br><br><button class="btn light" onclick="resetAll()">Reset Everything</button></section>`}
-function page_about(){return `<section class="card"><h1>About Hogwarts Institute</h1><p class="muted">A personal, fan-made wizarding-school interface inspired by the idea of personalised magical profiles, quizzes, House discovery, wand and Patronus experiences, collections and editorial discovery.</p><p class="muted">The content and interface here are original. This site does not copy the official Wizarding World website or its private systems.</p><h3>Privacy</h3><p class="muted">Your profile, collections and journal are stored locally in your browser. GitHub Pages only hosts the files. Nothing is sent to a database by this page.</p></section>`}
-function achievement(x){if(!S.achievements.includes(x)){S.achievements.push(x);toast("Achievement unlocked: "+x)}}
-function houseIcon(h){return {Gryffindor:"🦁",Slytherin:"🐍",Ravenclaw:"🦅",Hufflepuff:"🦡"}[h]||"✦"}
-function exportData(){let b=new Blob([JSON.stringify(S,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="hogwarts-institute-profile.json";a.click();URL.revokeObjectURL(a.href)}
-function importData(){let i=document.createElement("input");i.type="file";i.accept=".json,application/json";i.onchange=()=>{let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.profile||!x.collections)throw 0;S=x;persist();render();toast("Data imported")}catch(e){alert("Invalid Hogwarts Institute data.")}};r.readAsText(i.files[0])};i.click()}
-function resetAll(){if(confirm("Reset all local Hogwarts Institute data?")){localStorage.removeItem(KEY);S=initial();render()}}
-window.addEventListener("hashchange",render);window.addEventListener("beforeunload",()=>persist());render();
-</script></body></html>
+/* ============================================================
+   ELARION — RPG LENGKAP SATU FILE
+   Semua teks permainan menggunakan bahasa Indonesia baku.
+   Penyimpanan: localStorage + ekspor/impor JSON.
+   ============================================================ */
+
+const KEY="ELARION_KRONIK_MAHKOTA_RETAK_FINAL_1";
+const DB={
+version:1,
+player:{name:"Kael",class:"Pengembara",level:1,xp:0,hp:100,maxHp:100,mp:40,maxMp:40,gold:100,
+stats:{Kekuatan:6,Kelincahan:7,Kehendak:5,Wawasan:8,Stamina:6},
+skills:{Pedang:1,Survival:2,Persuasi:1,Arkana:0,Mengunci:1},
+alignment:0,rep:{"Penjaga Kota":0,"Lingkaran Terselubung":0,"Pedagang Bebas":0,"Klan Hutan":0}},
+place:"Ashenvale",day:1,time:0,stability:64,
+inventory:{"Belati Berkarat":1,"Ramuan Herbal":2,"Mantel Pengembara":1},
+equipment:{weapon:"Belati Berkarat",armor:"Mantel Pengembara",relic:null},
+quests:{
+prologue:{type:"utama",title:"Abu Mahkota",desc:"Temui Mara Venn di Distrik Lentera.",reward:80,status:"aktif"},
+road:{type:"utama",title:"Jalan yang Disegel",desc:"Temukan Segel Kerajaan di bawah Distrik Lentera.",reward:150,status:"terkunci"},
+mire:{type:"sampingan",title:"Sesuatu di Rawa",desc:"Selidiki lonceng perunggu di bawah Rawa Lonceng.",reward:110,status:"terkunci"},
+merchant:{type:"sampingan",title:"Tiga Peti Hilang",desc:"Ambil kembali tiga peti Pedagang Bebas di Jalan Kerajaan Lama.",reward:100,status:"terkunci"},
+lyra:{type:"sampingan",title:"Jejak Seorang Saudara",desc:"Bantu Lyra menemukan jejak Bram di Hollowpeak.",reward:180,status:"terkunci"},
+grove:{type:"sampingan",title:"Hutan yang Sunyi",desc:"Dapatkan kepercayaan Klan Hutan melalui tiga tindakan.",reward:220,status:"terkunci"},
+circle:{type:"sampingan",title:"Arsip Terselubung",desc:"Bawa peninggalan Kejatuhan Bintang kepada Lingkaran Terselubung.",reward:240,status:"terkunci"},
+forge:{type:"sampingan",title:"Pandai Besi Terakhir",desc:"Temukan pandai besi kerajaan di bawah Hollowpeak.",reward:260,status:"terkunci"},
+final:{type:"utama",title:"Mahkota Tujuh Sumpah",desc:"Capai ibu kota Veyra dan tentukan masa depan Elarion.",reward:1000,status:"terkunci"}
+},
+flags:{metMara:false,seal:false,mireSolved:false,merchantSolved:false,lyraSolved:false,groveTrust:0,circleSolved:false,smithFound:false,crownFragments:0,finale:false,ending:""},
+completed:[],discovered:["Ashenvale"],journal:["Anda tiba di Ashenvale dengan kompas rusak yang jarumnya menunjuk ke bawah tanah."],
+events:["Lonceng perbatasan berbunyi tiga kali saat senja."],codex:[],
+companions:{Lyra:{recruited:false,loyalty:0},Bram:{recruited:false,loyalty:0},Ilyan:{recruited:false,loyalty:0}},
+ach:[],battle:null,battleLog:[]
+};
+
+const LOC=[
+["Ashenvale","Kota Perbatasan","Tempat awal perjalanan.",1,0],
+["Distrik Lentera","Distrik Kota","Arsip, penginapan, dan tangga tersegel.",2,0],
+["Rawa Lonceng","Rawa","Lonceng perunggu terdengar dari bawah air.",2,1],
+["Jalan Kerajaan Lama","Jalan Kuno","Jalur perdagangan yang ditinggalkan.",3,2],
+["Hollowpeak","Kota Tambang","Gunung kaca tempat relik kuno ditemukan.",4,3],
+["Hutan Sunyi","Suaka Hutan","Wilayah Klan Hutan.",5,4],
+["Pelabuhan Blackwater","Pelabuhan","Pusat perdagangan dan penyelundupan.",4,3],
+["Veyra","Ibu Kota","Pusat kekuasaan kerajaan.",6,6],
+["Kawah Kejatuhan Bintang","Wilayah Terlarang","Tempat Mahkota Retak dilahirkan.",8,8]
+];
+
+const FACTIONS=[
+["Penjaga Kota","Penjaga hukum. Mereka menginginkan ketertiban, tetapi tidak selalu setuju dengan bangsawan.","Penjaga Kota"],
+["Lingkaran Terselubung","Jaringan pengetahuan rahasia yang berusaha mencegah relik Kejatuhan Bintang digunakan kembali.","Lingkaran Terselubung"],
+["Pedagang Bebas","Persekutuan pedagang yang menguasai banyak jalur dagang dan pelabuhan.","Pedagang Bebas"],
+["Klan Hutan","Masyarakat tua yang menyimpan sejarah sebelum berdirinya Elarion.","Klan Hutan"]
+];
+
+const ITEMS={
+"Belati Berkarat":{rarity:"Biasa",type:"senjata",power:4,value:15},
+"Mantel Pengembara":{rarity:"Biasa",type:"zirah",power:2,value:20},
+"Ramuan Herbal":{rarity:"Biasa",type:"konsumsi",heal:35,value:18},
+"Ransum":{rarity:"Biasa",type:"konsumsi",heal:15,value:8},
+"Pedang Penjaga":{rarity:"Tidak Umum",type:"senjata",power:9,value:75},
+"Jimat Rawa":{rarity:"Langka",type:"relik",power:4,value:120},
+"Segel Kerajaan":{rarity:"Langka",type:"misi",value:0},
+"Kaca Kejatuhan Bintang":{rarity:"Langka",type:"material",value:100},
+"Jubah Bulan":{rarity:"Epik",type:"zirah",power:7,value:400},
+"Serpihan Gaung":{rarity:"Epik",type:"material",value:500},
+"Grimoire Terselubung":{rarity:"Epik",type:"relik",power:8,value:600},
+"Pedang Matahari":{rarity:"Legendaris",type:"senjata",power:18,value:1800},
+"Thornheart":{rarity:"Legendaris",type:"senjata",power:20,value:2100},
+"Serpihan Mahkota":{rarity:"Mitos",type:"misi",value:0},
+"Mahkota Tujuh Sumpah":{rarity:"Mitos",type:"relik",power:30,value:0}
+};
+
+const ENEMIES={
+"Bandit Jalanan":{hp:55,atk:7,def:2,xp:55,g:[20,40],loot:[["Pedang Penjaga",.08],["Ramuan Herbal",.30]]},
+"Anjing Rawa":{hp:80,atk:9,def:3,xp:85,g:[30,60],loot:[["Jimat Rawa",.10],["Kaca Kejatuhan Bintang",.035]]},
+"Penjaga Kaca":{hp:125,atk:14,def:6,xp:160,g:[65,115],loot:[["Serpihan Gaung",.08],["Grimoire Terselubung",.025],["Serpihan Mahkota",.006]]},
+"Penjaga Kerajaan":{hp:190,atk:18,def:9,xp:250,g:[100,180],loot:[["Jubah Bulan",.08],["Pedang Matahari",.012],["Serpihan Mahkota",.015]]},
+"Raja Tanpa Nama":{hp:420,atk:24,def:12,xp:700,g:[500,800],loot:[["Serpihan Mahkota",.35]]}
+};
+
+const NPC=[
+["Mara Venn","Arsiparis","Menjaga arsip yang lebih tua daripada kerajaan.","M",["Jalan kerajaan tidak pernah ditinggalkan. Jalan itu disegel.","Tujuh pecahan. Tujuh sumpah. Catatan lama tidak menjelaskan lebih jauh.","Jika Anda memperoleh Segel Kerajaan, jalan akan mengenali Anda."]],
+["Kapten Orlan","Penjaga Kota","Komandan penjaga Ashenvale.","O",["Anda memiliki bakat untuk muncul ketika masalah mulai menjadi urusan administrasi.","Buktikan bahwa para bandit Jalan Kerajaan memang terlibat, dan Penjaga akan membantu Anda.","Hukum berguna. Keadilan tidak selalu identik dengannya."]],
+["Lyra Vale","Penjelajah","Mencari saudara yang menghilang.","L",["Saudaraku, Bram, menghilang di dekat Hollowpeak.","Jika Anda menemukannya, saya akan membayar dengan bantuan, bukan sekadar emas.","Hutan memiliki jalan yang tidak tercatat di peta."]],
+["Bram Coalhand","Penambang","Mengetahui terowongan terdalam Hollowpeak.","B",["Gunung itu mempunyai denyut kedua.","Saya menemukan bengkel di bawah sana. Apinya masih hangat.","Bawa Kaca Kejatuhan Bintang, dan saya akan menunjukkan jalannya."]],
+["Ilyan Sere","Okultis","Peneliti relik Kejatuhan Bintang.","I",["Mahkota itu adalah perangkat sebelum menjadi simbol.","Para raja lama menggunakan sumpah sebagai kunci.","Jangan menganggap relik lama sebagai cerita lama."]],
+["Serah Quill","Pedagang","Mengelola jaringan dagang Blackwater.","S",["Barang langka tidak hanya mahal. Barang langka juga merepotkan.","Pasar khusus dibuka setelah tengah malam.","Saya dapat menemukan hampir apa saja jika reputasi Anda cukup baik."]],
+["Edrik Thorn","Penjaga Hutan","Wakil Klan Hutan.","E",["Kami tidak membenci kota. Kami hanya mengingat apa yang kota ambil.","Tiga tindakan nyata dapat membuat orang luar diterima di Hutan Sunyi.","Jangan menghunus senjata jika tidak siap menggunakannya."]],
+["Pandai Besi Terakhir","Pandai Besi","Pengrajin kerajaan dari masa sebelum perang.","P",["Besi mengingat tangan yang menempanya.","Senjata legendaris tidak dapat dibeli. Senjata itu harus dibuktikan.","Bawa tiga Serpihan Gaung dan satu Serpihan Mahkota."]]
+];
+
+const CODEX=[
+["Tokoh","Mara Venn","Arsiparis","Mengetahui sejarah Jalan Kerajaan yang disegel."],
+["Tokoh","Kapten Orlan","Penjaga","Memimpin Penjaga Kota di Ashenvale."],
+["Tokoh","Lyra Vale","Penjelajah","Mencari Bram, saudaranya yang hilang."],
+["Tokoh","Bram Coalhand","Penambang","Mengetahui terowongan bawah Hollowpeak."],
+["Tokoh","Ilyan Sere","Okultis","Mempelajari relik Kejatuhan Bintang."],
+["Tempat","Ashenvale","Kota","Kota perbatasan tempat cerita dimulai."],
+["Tempat","Distrik Lentera","Kota","Pusat arsip dan perdagangan informasi."],
+["Tempat","Rawa Lonceng","Rawa","Lonceng tua terdengar dari bawah permukaan air."],
+["Tempat","Jalan Kerajaan Lama","Jalan","Jalur kerajaan yang telah ditinggalkan."],
+["Makhluk","Anjing Rawa","Binatang","Pemangsa yang mendeteksi getaran."],
+["Makhluk","Penjaga Kaca","Makhluk Relik","Penjaga buatan era Kejatuhan Bintang."],
+["Artefak","Mahkota Retak","Relik","Tujuh pecahan yang menyimpan tujuh sumpah."]
+];
+const WORLD_EVENTS=[
+ ["Festival Lentera","Ashenvale","Pagi","Warga berkumpul di alun-alun. Pedagang memberi diskon.","Pedagang Bebas",1],
+ ["Pemogokan Tambang","Hollowpeak","Siang","Para penambang menutup jalur utama karena perselisihan upah.","Penjaga Kota",-1],
+ ["Kabut Hitam","Rawa Lonceng","Malam","Kabut pekat membuat jarak pandang pendek. Makhluk rawa lebih aktif.","Klan Hutan",-1],
+ ["Pasar Tengah Malam","Pelabuhan Blackwater","Malam","Pedagang khusus membuka kios tersembunyi.","Pedagang Bebas",2],
+ ["Sidang Kerajaan","Veyra","Siang","Dewan kerajaan memperdebatkan masa depan wilayah perbatasan.","Penjaga Kota",1]
+];
+const TREASURES=[
+ ["Peti Terkubur","Jalan Kerajaan Lama",.32,"Ransum",2],
+ ["Kotak Penjaga","Distrik Lentera",.18,"Jimat Rawa",1],
+ ["Relung Kaca","Hollowpeak",.10,"Serpihan Gaung",1],
+ ["Akar Tua","Hutan Sunyi",.07,"Thornheart",1],
+ ["Peti Kapten","Veyra",.025,"Pedang Matahari",1],
+ ["Ruang Nol","Kawah Kejatuhan Bintang",.012,"Serpihan Mahkota",1]
+];
+const BOSS=[
+ ["Penjaga Gerbang","Penjaga Kerajaan","Muncul di Veyra setelah tiga misi faksi selesai."],
+ ["Warden Kaca","Penjaga Kaca","Muncul di Kawah Kejatuhan Bintang setelah lima pecahan."],
+ ["Raja Tanpa Nama","Raja Tanpa Nama","Bos akhir rahasia; kemenangan menjamin satu pecahan."]
+];
+const RECIPES=[
+ ["Ramuan Agung",["Ramuan Herbal",2,"Kaca Kejatuhan Bintang",1],"Memulihkan 90 HP."],
+ ["Batu Fokus",["Kaca Kejatuhan Bintang",2,"Serpihan Gaung",1],"Meningkatkan mana maksimum +5."],
+ ["Bilah Gaung",["Pedang Penjaga",1,"Serpihan Gaung",2],"Membuka senjata epik."],
+ ["Thornheart",["Kaca Kejatuhan Bintang",2,"Serpihan Gaung",3],"Senjata legendaris hutan."]
+];
+
+
+let S=load();let qFilter="all";
+
+function deep(x){return JSON.parse(JSON.stringify(x))}
+function load(){
+ try{let x=JSON.parse(localStorage.getItem(KEY));if(x&&x.version===1)return migrate(x)}catch(e){}
+ let x=deep(DB);localStorage.setItem(KEY,JSON.stringify(x));return x
+}
+function migrate(x){return x}
+function save(silent=false){
+ localStorage.setItem(KEY,JSON.stringify(S));
+ document.getElementById("saveState").textContent="TERSIMPAN "+new Date().toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
+ if(!silent)toast("Kemajuan tersimpan di peramban.")
+}
+window.addEventListener("beforeunload",()=>localStorage.setItem(KEY,JSON.stringify(S)));
+
+function toast(t){const e=document.getElementById("toast");e.textContent=t;e.style.display="block";clearTimeout(window._toast);window._toast=setTimeout(()=>e.style.display="none",2300)}
+function go(id){
+ document.querySelectorAll(".page").forEach(e=>e.classList.remove("on"));
+ document.getElementById(id).classList.add("on");
+ document.querySelectorAll(".nav button").forEach(e=>e.classList.toggle("on",e.dataset.page===id));
+ renderAll();if(innerWidth<850)document.getElementById("side").classList.remove("open")
+}
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>go(b.dataset.page));
+document.getElementById("hamb").onclick=()=>document.getElementById("side").classList.toggle("open");
+
+function log(t){S.events.unshift(t);S.events=S.events.slice(0,12)}
+function journal(t){S.journal.unshift(t)}
+function discover(t){if(!S.codex.includes(t))S.codex.push(t)}
+function has(n,q=1){return (S.inventory[n]||0)>=q}
+function addItem(n,q=1){S.inventory[n]=(S.inventory[n]||0)+q;discover(n)}
+function removeItem(n,q=1){S.inventory[n]=(S.inventory[n]||0)-q;if(S.inventory[n]<=0)delete S.inventory[n]}
+function rarityClass(r){return "rar-"+r.toLowerCase().replace(" ","-")}
+function rewardXP(n){
+ S.player.xp+=n;
+ let need=100+S.player.level*75;
+ while(S.player.xp>=need){S.player.xp-=need;S.player.level++;S.player.maxHp+=10;S.player.maxMp+=4;S.player.hp=S.player.maxHp;S.player.mp=S.player.maxMp;S.player.stats.Kekuatan++;S.player.stats.Stamina++;S.player.stats.Wawasan++;log("Anda mencapai level "+S.player.level+".");journal("Kenaikan level: "+S.player.level+".");need=100+S.player.level*75}
+}
+function gainGold(n){S.player.gold+=n}
+function rep(f,n){S.player.rep[f]+=n}
+function advance(hours=1){S.time=(S.time+hours)%4;if(S.time===0)S.day++;if(Math.random()<.20)randomEncounter()}
+const times=["Pagi","Siang","Senja","Malam"];
+
+function randomEncounter(){
+ if(S.battle)return;
+ let pool=S.place==="Rawa Lonceng"?["Anjing Rawa","Anjing Rawa","Bandit Jalanan"]:S.place==="Jalan Kerajaan Lama"?["Bandit Jalanan","Bandit Jalanan","Penjaga Kaca"]:S.place==="Kawah Kejatuhan Bintang"?["Penjaga Kaca","Penjaga Kaca","Raja Tanpa Nama"]:["Bandit Jalanan","Anjing Rawa"];
+ let enemy=pool[Math.floor(Math.random()*pool.length)];
+ if(Math.random()<.55){startBattle(enemy,true)}
+}
+
+function travel(name){
+ const L=LOC.find(x=>x[0]===name);if(!L)return;
+ let req=unlocked(name);
+ if(!req.ok){toast(req.reason);return}
+ S.place=name;if(!S.discovered.includes(name))S.discovered.push(name);
+ discover(name);advance(1);log("Anda tiba di "+name+".");
+ if(name==="Distrik Lentera")unlock("road");
+ if(name==="Rawa Lonceng")unlock("mire");
+ if(name==="Jalan Kerajaan Lama"){unlock("merchant");}
+ if(name==="Hollowpeak"){unlock("lyra");unlock("forge");}
+ if(name==="Hutan Sunyi")unlock("grove");
+ if(name==="Pelabuhan Blackwater")unlock("circle");
+ if(name==="Veyra")unlock("final");
+ save();go("home")
+}
+function unlocked(name){
+ if(name==="Distrik Lentera"&&!S.flags.metMara&&S.player.level<1)return{ok:false,reason:"Belum dapat diakses."};
+ if(name==="Rawa Lonceng"&&!S.flags.metMara)return{ok:false,reason:"Temui Mara Venn terlebih dahulu."};
+ if(name==="Jalan Kerajaan Lama"&&!S.flags.seal)return{ok:false,reason:"Segel Kerajaan diperlukan."};
+ if(name==="Hollowpeak"&&S.player.level<3)return{ok:false,reason:"Membutuhkan level 3."};
+ if(name==="Hutan Sunyi"&&S.flags.groveTrust<3)return{ok:false,reason:"Klan Hutan belum mempercayai Anda."};
+ if(name==="Pelabuhan Blackwater"&&S.player.level<3)return{ok:false,reason:"Membutuhkan level 3."};
+ if(name==="Veyra"&&(S.player.level<6||S.flags.crownFragments<3))return{ok:false,reason:"Membutuhkan level 6 dan setidaknya tiga Serpihan Mahkota."};
+ if(name==="Kawah Kejatuhan Bintang"&&(S.player.level<8||S.flags.crownFragments<5))return{ok:false,reason:"Wilayah ini hanya dapat dicapai pada level 8 dengan lima Serpihan Mahkota."};
+ return{ok:true}
+}
+function unlock(id){if(S.quests[id]&&S.quests[id].status==="terkunci")S.quests[id].status="tersedia"}
+
+function renderMap(){
+ document.getElementById("map").innerHTML=LOC.map(l=>{
+  const u=unlocked(l[0]), here=S.place===l[0];
+  return `<button class="${u.ok?"":"locked"}" onclick="${u.ok?`travel('${l[0]}')`:`toast('${u.reason.replaceAll("'","")}')`}"><b>${l[0]}</b><br><small class="muted">${l[1]} — ${l[2]}</small><br><span class="small ${here?"gold":u.ok?"good":"danger"}">${here?"ANDA DI SINI":u.ok?"JELAJAH":"TERKUNCI"}</span></button>`
+ }).join("")
+}
+function renderHome(){
+ const p=S.player,need=100+p.level*75;
+ document.getElementById("place").textContent=S.place;document.getElementById("lv").textContent=p.level;document.getElementById("hp").textContent=p.hp;document.getElementById("gold").textContent=p.gold;
+ document.getElementById("homeLv").textContent="Level "+p.level;document.getElementById("homeName").textContent=p.name+" · "+p.class;
+ document.getElementById("xp").textContent=p.xp+" / "+need+" XP";document.getElementById("xpbar").style.width=(p.xp/need*100)+"%";
+ document.getElementById("worldstate").innerHTML=`<div class="row"><span>Hari</span><b>${S.day}</b></div><div class="row"><span>Waktu</span><b>${times[S.time]}</b></div><div class="row"><span>Stabilitas</span><b>${S.stability}%</b></div><div class="row"><span>Serpihan Mahkota</span><b>${S.flags.crownFragments}/7</b></div>`;
+ let active=Object.values(S.quests).find(q=>q.status==="aktif"&&q.type==="utama");document.getElementById("objective").textContent=active?active.desc:S.flags.finale?"Akhir perjalanan telah tercapai.":"Jelajahi Elarion.";
+ document.getElementById("events").innerHTML=S.events.slice(0,6).map(x=>`<div class="row"><span>${x}</span></div>`).join("");
+ document.getElementById("reps").innerHTML=Object.entries(p.rep).map(([k,v])=>`<div class="row"><span>${k}</span><b>${v>0?"+":""}${v}</b></div>`).join("")
+}
+function renderFactions(){document.getElementById("factions").innerHTML=FACTIONS.map(f=>`<div class="card"><h3>${f[0]}</h3><p class="muted">${f[1]}</p><div class="row"><span>Reputasi</span><b>${S.player.rep[f[2]]}</b></div></div>`).join("")}
+function renderCodex(){
+ let q=(document.getElementById("search")?.value||"").toLowerCase();
+ let known=CODEX.filter(x=>S.codex.includes(x[1])||x[0]==="Tokoh"&&S.codex.includes(x[1])||x[1]==="Mahkota Retak"&&S.flags.crownFragments>0);
+ document.getElementById("codexGrid").innerHTML=known.filter(x=>x.join(" ").toLowerCase().includes(q)).map(x=>`<div class="card"><span class="badge">${x[0]}</span><h3>${x[1]}</h3><b class="gold">${x[2]}</b><p class="muted">${x[3]}</p></div>`).join("")||'<div class="card full muted">Belum ada entri yang cocok.</div>'
+}
+document.getElementById("search").oninput=renderCodex;
+
+function renderCharacter(){
+ const p=S.player;
+ document.getElementById("stats").innerHTML=Object.entries(p.stats).map(([k,v])=>`<div class="row"><span>${k}</span><b>${v}</b></div>`).join("");
+ document.getElementById("skills").innerHTML=Object.entries(p.skills).map(([k,v])=>`<div class="card"><h3>${k}</h3><div class="big">${v}</div><p class="muted">Tingkat kemampuan</p></div>`).join("");
+ document.getElementById("align").textContent=p.alignment>=5?"Penuh Belas Kasih":p.alignment<=-5?"Keras":p.alignment>1?"Cenderung Baik":p.alignment<-1?"Cenderung Keras":"Netral"
+}
+function useItem(n){
+ if(!has(n))return;
+ if(n==="Ramuan Herbal"){S.player.hp=Math.min(S.player.maxHp,S.player.hp+35);removeItem(n);battleLog("Anda menggunakan Ramuan Herbal.");}
+ else if(n==="Ransum"){S.player.hp=Math.min(S.player.maxHp,S.player.hp+15);removeItem(n);battleLog("Anda menggunakan Ransum.")}
+ else{toast("Barang ini tidak dapat digunakan sekarang.");return}
+ save();renderAll()
+}
+function equip(n){
+ if(!has(n))return;let it=ITEMS[n];if(!["senjata","zirah","relik"].includes(it.type))return;
+ if(it.type==="senjata")S.equipment.weapon=n;else if(it.type==="zirah")S.equipment.armor=n;else S.equipment.relic=n;
+ S.player.stats.Kekuatan += it.type==="senjata"?it.power-(ITEMS[S.equipment.weapon]?.power||0):0;
+ save();toast(n+" dilengkapi.");renderAll()
+}
+function renderInventory(){
+ document.getElementById("inventoryGrid").innerHTML=Object.entries(S.inventory).map(([n,q])=>{let i=ITEMS[n]||{rarity:"Biasa",type:"lain",value:0};let equipable=["senjata","zirah","relik"].includes(i.type);
+ return `<div class="card"><div class="item"><span class="${rarityClass(i.rarity)}"><b>${n}</b></span><br><span class="badge">${i.rarity}</span> <span class="badge">${i.type}</span><p class="muted small">Jumlah: ${q} · Nilai: ${i.value||0} emas ${i.power?`· Kekuatan: +${i.power}`:""}</p>${i.heal?`<button class="btn" onclick="useItem('${n}')">Gunakan</button>`:""}${equipable?` <button class="btn" onclick="equip('${n}')">Lengkapi</button>`:""}</div></div>`}).join("")||'<div class="card full muted">Inventaris kosong.</div>'
+}
+function renderJournal(){document.getElementById("journalList").innerHTML=S.journal.map((x,i)=>`<div class="row"><span>${x}</span><span class="muted small">#${S.journal.length-i}</span></div>`).join("")}
+const ACH=[
+["Langkah Pertama","Kunjungi Distrik Lentera.","discovered","Distrik Lentera"],["Pemburu Rawa","Selesaikan misi Rawa Lonceng.","quest","mire"],["Penolong","Selesaikan misi Pedagang.","quest","merchant"],["Kawan Sejati","Rekrut satu pendamping.","companion","x"],["Penjaga Hutan","Dapatkan kepercayaan Klan Hutan.","grove","x"],["Penjelajah","Kunjungi Hollowpeak.","discovered","Hollowpeak"],["Relik Langka","Dapatkan barang Langka.","item","Jimat Rawa"],["Penemu Gaung","Dapatkan Serpihan Gaung.","item","Serpihan Gaung"],["Pemburu Legenda","Dapatkan barang Legendaris.","legend","x"],["Tujuh Pecahan","Kumpulkan tujuh Serpihan Mahkota.","crown","x"],["Akhir Sebuah Era","Selesaikan cerita utama.","ending","x"]
+];
+function achievement(a){if(S.ach.includes(a[0]))return true;if(a[2]==="discovered")return S.discovered.includes(a[3]);if(a[2]==="quest")return S.quests[a[3]]?.status==="selesai";if(a[2]==="companion")return Object.values(S.companions).some(x=>x.recruited);if(a[2]==="grove")return S.flags.groveTrust>=3;if(a[2]==="item")return has(a[3]);if(a[2]==="legend")return has("Pedang Matahari")||has("Thornheart");if(a[2]==="crown")return S.flags.crownFragments>=7;if(a[2]==="ending")return S.flags.finale;return false}
+function renderAchievements(){document.getElementById("achGrid").innerHTML=ACH.map(a=>`<div class="card"><span class="badge">${achievement(a)?"TERBUKA":"TERKUNCI"}</span><h3>${a[0]}</h3><p class="muted">${a[1]}</p></div>`).join("")}
+
+function renderQuests(){
+ let arr=Object.entries(S.quests).filter(([id,q])=>qFilter==="all"||q.type===qFilter);
+ document.getElementById("questList").innerHTML=arr.map(([id,q])=>`<div class="item"><span class="badge">${q.type.toUpperCase()}</span> <span class="badge">${q.status.toUpperCase()}</span><h3>${q.title}</h3><p class="muted">${q.desc}</p><span class="gold">Hadiah dasar: ${q.reward} emas + pengalaman</span>${q.status==="tersedia"?`<br><button class="btn primary" onclick="acceptQuest('${id}')">Terima</button>`:""}${q.status==="aktif"?`<br><button class="btn primary" onclick="resolveQuest('${id}')">Selesaikan</button>`:""}</div>`).join("")
+}
+function acceptQuest(id){let q=S.quests[id];if(!q||q.status!=="tersedia")return;q.status="aktif";journal("Misi diterima: "+q.title);log("Misi baru: "+q.title);save();renderQuests()}
+function complete(id){
+ let q=S.quests[id];if(!q||q.status!=="aktif")return;
+ q.status="selesai";S.completed.push(id);gainGold(q.reward);rewardXP(q.reward);
+ journal("Misi selesai: "+q.title);log("Misi selesai: "+q.title);
+ if(id==="prologue"){S.flags.metMara=true;S.quests.road.status="aktif";S.quests.mire.status="tersedia";S.quests.merchant.status="tersedia";rep("Lingkaran Terselubung",1)}
+ if(id==="road"){S.flags.seal=true;S.quests.merchant.status="aktif";S.quests.lyra.status="tersedia";addItem("Segel Kerajaan");rep("Penjaga Kota",2);S.discovered.push("Jalan Kerajaan Lama")}
+ if(id==="mire"){S.flags.mireSolved=true;S.flags.crownFragments++;addItem("Jimat Rawa");rep("Klan Hutan",1);discover("Anjing Rawa")}
+ if(id==="merchant"){S.flags.merchantSolved=true;rep("Pedagang Bebas",3);addItem("Pedang Penjaga")}
+ if(id==="lyra"){S.flags.lyraSolved=true;S.companions.Lyra.recruited=true;S.companions.Lyra.loyalty=45;addItem("Kaca Kejatuhan Bintang");S.quests.grove.status="tersedia"}
+ if(id==="grove"){S.flags.groveTrust=3;rep("Klan Hutan",5);S.quests.forge.status="tersedia";addItem("Thornheart")}
+ if(id==="circle"){S.flags.circleSolved=true;rep("Lingkaran Terselubung",5);addItem("Grimoire Terselubung");}
+ if(id==="forge"){S.flags.smithFound=true;addItem("Pedang Matahari");S.player.skills.Pedang+=2}
+ if(id==="final"){finale()}
+ unlockAfter();
+ save();renderAll();toast("Misi selesai: "+q.title)
+}
+function resolveQuest(id){
+ if(id==="prologue"){if(!S.flags.metMara)talk("Mara Venn");else complete(id);return}
+ if(id==="road"){if(!has("Segel Kerajaan")){toast("Anda belum memiliki Segel Kerajaan.");return}removeItem("Segel Kerajaan");complete(id);return}
+ if(id==="mire"){if(S.flags.mireSolved){complete(id);return}if(S.place!=="Rawa Lonceng"){toast("Datang ke Rawa Lonceng terlebih dahulu.");return}startBattle("Anjing Rawa",false);return}
+ if(id==="merchant"){if(S.place!=="Jalan Kerajaan Lama"){toast("Datang ke Jalan Kerajaan Lama.");return}startBattle("Bandit Jalanan",false);return}
+ if(id==="lyra"){if(!S.companions.Lyra.recruited){talk("Lyra Vale");return}if(S.place!=="Hollowpeak"){toast("Datang ke Hollowpeak.");return}S.companions.Lyra.loyalty=75;complete(id);return}
+ if(id==="grove"){if(S.flags.groveTrust>=3){complete(id);return}if(S.place!=="Hutan Sunyi"){toast("Datang ke Hutan Sunyi.");return}S.flags.groveTrust++;S.player.alignment++;journal("Anda membantu Klan Hutan. Kepercayaan: "+S.flags.groveTrust+"/3.");if(S.flags.groveTrust>=3)complete(id);save();renderAll();return}
+ if(id==="circle"){if(!has("Kaca Kejatuhan Bintang")){toast("Anda memerlukan Kaca Kejatuhan Bintang.");return}removeItem("Kaca Kejatuhan Bintang");complete(id);return}
+ if(id==="forge"){if(!has("Serpihan Gaung",3)||S.flags.crownFragments<1){toast("Diperlukan 3 Serpihan Gaung dan 1 Serpihan Mahkota.");return}removeItem("Serpihan Gaung",3);complete(id);return}
+ if(id==="final"){if(S.flags.crownFragments<7){toast("Anda membutuhkan tujuh Serpihan Mahkota.");return}complete(id)}
+}
+function unlockAfter(){
+ if(S.flags.crownFragments>=1&&S.quests.grove.status==="terkunci")S.quests.grove.status="tersedia";
+ if(S.flags.crownFragments>=3)S.quests.circle.status=S.quests.circle.status==="terkunci"?"tersedia":S.quests.circle.status;
+ if(S.flags.crownFragments>=5&&S.player.level>=8&&S.quests.final.status==="terkunci")S.quests.final.status="aktif";
+}
+
+function talk(name){
+ let n=NPC.find(x=>x[0]===name);if(!n)return;discover(n[0]);
+ let i=0;
+ function draw(){
+  let lines=n[4];let special="";
+  if(name==="Mara Venn"&&S.flags.metMara)special="<div class='notice'>Mara menurunkan suaranya. \"Segel itu bukan kunci. Segel itu pengakuan.\"</div>";
+  if(name==="Ilyan Sere"&&S.flags.crownFragments>=3)special="<div class='notice'>Ilyan melihat pecahan di tangan Anda dan langsung berhenti tersenyum.</div>";
+  if(name==="Pandai Besi Terakhir"&&!S.flags.smithFound)special="<div class='notice'>Ia memandang Serpihan Gaung. \"Akhirnya ada seseorang yang masih tahu cara membayar dengan kesulitan.\"</div>";
+  document.getElementById("modalBox").innerHTML=`<div class="speaker">${n[0]} · ${n[1]}</div><div class="dialogue">${lines[i]}</div>${special}<div class="choiceGrid">${i<lines.length-1?`<button class="btn primary choice" onclick="_next()">Lanjut</button>`:""}<button class="btn choice" onclick="_finishTalk()">Akhiri percakapan</button><button class="btn choice" onclick="closeModal()">Pergi</button></div>`;
+ }
+ window._next=()=>{i++;draw()};
+ window._finishTalk=()=>{
+  if(name==="Mara Venn"){S.flags.metMara=true;S.quests.prologue.status="aktif";S.quests.road.status="aktif";S.quests.mire.status="tersedia";S.quests.merchant.status="tersedia";rep("Lingkaran Terselubung",1);journal("Mara menjelaskan bahwa Jalan Kerajaan disegel oleh pengakuan, bukan sekadar pintu.")}
+  if(name==="Lyra Vale"){S.quests.lyra.status="aktif";S.companions.Lyra.recruited=true;S.companions.Lyra.loyalty=25;journal("Lyra bergabung untuk mencari Bram.")}
+  if(name==="Bram Coalhand"&&has("Kaca Kejatuhan Bintang")){S.quests.forge.status="aktif";S.flags.smithFound=true}
+  if(name==="Edrik Thorn"&&S.flags.groveTrust>=3){S.quests.grove.status="aktif"}
+  if(name==="Serah Quill"&&S.player.rep["Pedagang Bebas"]>=3){addItem("Ransum",3);journal("Serah memberikan tiga ransum sebagai tanda kepercayaan.")}
+  save();closeModal();renderAll()
+ };
+ document.getElementById("modal").classList.add("open");draw()
+}
+function closeModal(){document.getElementById("modal").classList.remove("open")}
+document.getElementById("modal").onclick=e=>{if(e.target.id==="modal")closeModal()}
+
+function renderPeople(){
+ document.getElementById("peopleGrid").innerHTML=NPC.map((n,i)=>`<div class="card"><div class="person"><div class="portrait">${n[3]}</div><div><h3>${n[0]}</h3><b class="gold small">${n[1]}</b><p>${n[2]}</p><button class="btn primary" onclick="talk('${n[0]}')">Berbicara</button></div></div></div>`).join("")
+}
+function renderParty(){
+ const arr=[["Lyra Vale","Penjelajah","Peluang melarikan diri dari pertemuan berbahaya +10%.","Lyra"],["Bram Coalhand","Penambang","+2 Kekuatan saat bertarung.","Bram"],["Ilyan Sere","Okultis","+2 Wawasan pada peristiwa relik.","Ilyan"]];
+ document.getElementById("partyGrid").innerHTML=arr.map(a=>{let x=S.companions[a[3]];return `<div class="card"><div class="person"><div class="portrait">${a[3][0]}</div><div><h3>${a[0]}</h3><b class="gold">${a[1]}</b><p>${a[2]}</p><div class="row"><span>Loyalitas</span><b>${x.loyalty}</b></div>${x.recruited?'<span class="badge good">AKTIF</span>':'<span class="badge">BELUM BERGABUNG</span>'}</div></div></div>`}).join("")
+}
+
+const GOODS=[
+["Ransum",8,0,"Kebutuhan perjalanan."],["Ramuan Herbal",18,0,"Memulihkan 35 HP."],["Batu Asah",45,0,"Meningkatkan kekuatan serangan satu pertempuran."],
+["Pedang Penjaga",75,3,"Senjata tidak umum. Membutuhkan reputasi Penjaga atau dapat ditemukan di Jalan Kerajaan."],
+["Jubah Bulan",400,8,"Zirah epik. Hanya dijual setelah mencapai level 8."],
+["Grimoire Terselubung",600,5,"Relik epik. Membutuhkan reputasi Lingkaran +5."],
+["Kaca Kejatuhan Bintang",300,4,"Material langka; pasar menjualnya dengan harga tinggi."],
+["Pedang Matahari",1800,8,"Legendaris. Toko hanya menawarkannya setelah menyelesaikan Pandai Besi Terakhir."]
+];
+function buy(n,c){
+ let i=ITEMS[n],need=GOODS.find(x=>x[0]===n);
+ if(n==="Jubah Bulan"&&S.player.level<8){toast("Membutuhkan level 8.");return}
+ if(n==="Grimoire Terselubung"&&S.player.rep["Lingkaran Terselubung"]<5){toast("Reputasi Lingkaran Terselubung minimal +5.");return}
+ if(n==="Pedang Matahari"&&!S.flags.smithFound){toast("Barang ini belum tersedia.");return}
+ if(S.player.gold<c){toast("Emas tidak cukup.");return}
+ S.player.gold-=c;addItem(n);save();renderAll();toast(n+" dibeli.")
+}
+function renderShops(){
+ let arr=GOODS.filter(g=>g[0]!=="Pedang Matahari"||S.flags.smithFound).map(g=>{
+  let price=g[1];if(g[0]==="Grimoire Terselubung")price=600;let blocked=(g[0]==="Jubah Bulan"&&S.player.level<8)||(g[0]==="Grimoire Terselubung"&&S.player.rep["Lingkaran Terselubung"]<5);
+  return `<div class="card"><h3>${g[0]}</h3><p class="muted">${g[3]}</p><div class="row"><b class="gold">${price} emas</b><button class="btn" ${blocked?"disabled":""} onclick="buy('${g[0]}',${price})">${blocked?"Belum tersedia":"Beli"}</button></div></div>`
+ }).join("");
+ document.getElementById("shopGrid").innerHTML=arr
+}
+
+function battleLog(t){S.battleLog.unshift(t);S.battleLog=S.battleLog.slice(0,10)}
+function startBattle(enemyName,random=false){
+ if(S.battle){toast("Pertarungan masih berlangsung.");return}
+ let e=ENEMIES[enemyName];S.battle={name:enemyName,hp:e.hp,maxHp:e.hp,atk:e.atk,def:e.def,xp:e.xp,g:e.g,loot:e.loot,turn:1,random};
+ S.battleLog=[];battleLog("Pertarungan dimulai melawan "+enemyName+".");save();go("combat")
+}
+function playerPower(){
+ let p=S.player,weapon=ITEMS[S.equipment.weapon]?.power||0,armor=ITEMS[S.equipment.armor]?.power||0;
+ if(S.companions.Bram.recruited)weapon+=2;
+ return p.stats.Kekuatan+weapon+Math.floor(p.skills.Pedang*1.5)
+}
+function attack(){
+ if(!S.battle)return;let b=S.battle;
+ let damage=Math.max(2,playerPower()+Math.floor(Math.random()*7)-b.def);b.hp-=damage;battleLog("Anda menyerang dan menghasilkan "+damage+" kerusakan.");
+ if(b.hp<=0){victory();return}
+ enemyTurn()
+}
+function defend(){
+ if(!S.battle)return;S.battle._def=true;battleLog("Anda bertahan. Kerusakan berikutnya berkurang.");enemyTurn()
+}
+function skillAttack(){
+ if(!S.battle)return;let b=S.battle;
+ if(S.player.mp<10){toast("Mana tidak cukup.");return}
+ S.player.mp-=10;let damage=Math.max(5,playerPower()+S.player.stats.Wawasan+Math.floor(Math.random()*10)-b.def);b.hp-=damage;battleLog("Anda menggunakan Serangan Terarah: "+damage+" kerusakan.");
+ if(b.hp<=0){victory();return}enemyTurn()
+}
+function enemyTurn(){
+ let b=S.battle;let damage=Math.max(1,b.atk+Math.floor(Math.random()*6)-Math.floor(S.player.stats.Stamina/3));
+ if(b._def){damage=Math.ceil(damage/2);b._def=false}
+ S.player.hp-=damage;battleLog(b.name+" menyerang: "+damage+" kerusakan.");
+ if(S.player.hp<=0){S.player.hp=1;S.place="Ashenvale";S.player.gold=Math.max(0,S.player.gold-20);S.battle=null;battleLog("Anda kalah dan terbangun kembali di Ashenvale. 20 emas hilang.");log("Anda dikalahkan dalam perjalanan.");save();renderAll();return}
+ b.turn++;save();renderAll()
+}
+function victory(){
+ let b=S.battle,g=b.g[0]+Math.floor(Math.random()*(b.g[1]-b.g[0]+1));gainGold(g);rewardXP(b.xp);
+ let found=[];
+ for(let [item,chance] of b.loot)if(Math.random()<chance){addItem(item);found.push(item)}
+ if(b.name==="Penjaga Kaca"&&Math.random()<.04){addItem("Serpihan Mahkota");S.flags.crownFragments++;found.push("Serpihan Mahkota")}
+ if(b.name==="Penjaga Kerajaan"&&Math.random()<.08){addItem("Serpihan Mahkota");S.flags.crownFragments++;found.push("Serpihan Mahkota")}
+ if(b.name==="Raja Tanpa Nama"){addItem("Serpihan Mahkota");S.flags.crownFragments++;found.push("Serpihan Mahkota")}
+ battleLog("Menang. +"+g+" emas, +"+b.xp+" pengalaman.");
+ if(found.length)battleLog("Jarahan: "+found.join(", "));else battleLog("Tidak ada barang langka yang ditemukan.");
+ if(b.name==="Anjing Rawa"&&S.quests.mire.status==="aktif")S.flags.mireSolved=true;
+ if(b.name==="Bandit Jalanan"&&S.quests.merchant.status==="aktif")S.flags.merchantSolved=true;
+ S.battle=null;log("Anda memenangkan pertempuran melawan "+b.name+".");save();renderAll()
+}
+function renderCombat();renderExtra(){
+ let b=S.battle;
+ if(!b){document.getElementById("battle").innerHTML=`<div class="combat"><h3>Lapangan Pertempuran</h3><p class="muted">Pilih lawan untuk latihan. Musuh yang lebih kuat muncul melalui eksplorasi dan alur cerita.</p><div class="actions">${["Bandit Jalanan","Anjing Rawa","Penjaga Kaca","Penjaga Kerajaan"].map((n,i)=>`<button class="btn ${i===2?"primary":""}" onclick="startBattle('${n}')">${n}</button>`).join("")}</div><p class="small muted">Raja Tanpa Nama hanya dapat ditemui di Kawah Kejatuhan Bintang.</p></div>`}
+ else document.getElementById("battle").innerHTML=`<div class="combat"><span class="badge">GILIRAN ${b.turn}</span><h2>${b.name}</h2><div class="bar"><i style="width:${Math.max(0,b.hp/b.maxHp*100)}%"></i></div><p>HP musuh: ${Math.max(0,b.hp)} / ${b.maxHp}</p><p>HP Anda: ${S.player.hp}/${S.player.maxHp} · Mana: ${S.player.mp}/${S.player.maxMp}</p><div class="actions"><button class="btn primary" onclick="attack()">Serang</button><button class="btn" onclick="skillAttack()">Serangan Terarah · 10 Mana</button><button class="btn" onclick="defend()">Bertahan</button><button class="btn" onclick="useItem('Ramuan Herbal')">Gunakan Ramuan</button></div></div>`;
+ document.getElementById("battleLog").innerHTML=S.battleLog.map(x=>`<div class="row"><span class="small">${x}</span></div>`).join("")||'<span class="muted small">Belum ada pertarungan.</span>'
+}
+
+function rest(){
+ if(S.battle){toast("Tidak dapat beristirahat saat bertarung.");return}
+ S.player.hp=S.player.maxHp;S.player.mp=S.player.maxMp;advance(1);journal("Anda beristirahat di "+S.place+".");log("Anda beristirahat. Waktu sekarang: "+times[S.time]+".");save();renderAll();toast("HP dan mana pulih.")
+}
+
+function finale(){
+ if(S.flags.finale)return;
+ S.flags.finale=true;
+ let alignment=S.player.alignment,repGuard=S.player.rep["Penjaga Kota"],repCircle=S.player.rep["Lingkaran Terselubung"],grove=S.flags.groveTrust;
+ let ending;
+ if(alignment<=-5&&repGuard<0)ending="Penguasa Besi";
+ else if(repCircle>=7&&S.flags.circleSolved)ending="Penjaga Relik";
+ else if(grove>=3&&alignment>=3)ending="Penjaga Tujuh Sumpah";
+ else if(S.player.rep["Pedagang Bebas"]>=8)ending="Kerajaan Dagang";
+ else ending="Raja yang Tidak Dipilih";
+ S.flags.ending=ending;S.quests.final.status="selesai";journal("Akhir permainan: "+ending+".");log("Mahkota Tujuh Sumpah telah diputuskan.");S.stability=Math.min(100,S.stability+10);
+ showEnding(ending)
+}
+function showEnding(ending){
+ document.getElementById("modalBox").innerHTML=`<div class="ending"><div class="ey">EPILOG</div><h2>${ending}</h2><p class="dialogue">Tujuh pecahan telah disatukan. Untuk pertama kalinya setelah tiga abad, Elarion harus hidup dengan keputusan yang tidak dapat ditarik kembali.</p><p class="muted">Akhir ini ditentukan oleh kombinasi pilihan, reputasi, eksplorasi, dan tindakan Anda sepanjang permainan.</p><button class="btn primary" onclick="closeModal();go('home')">Kembali ke Dunia</button></div>`;
+ document.getElementById("modal").classList.add("open")
+}
+
+
+function worldEvent(){
+ let options=WORLD_EVENTS.filter(e=>e[1]===S.place&&e[2]===times[S.time]);
+ if(!options.length){toast("Tidak ada peristiwa khusus saat ini.");return}
+ let e=options[Math.floor(Math.random()*options.length)];
+ rep(e[4],e[5]);journal("Peristiwa dunia: "+e[0]+" — "+e[3]);log(e[0]+" berlangsung di "+S.place+".");
+ if(e[0]==="Festival Lentera")gainGold(25);
+ if(e[0]==="Pasar Tengah Malam")S.player.skills.Persuasi++;
+ save();renderAll();toast(e[0]+" terjadi.")
+}
+function searchArea(){
+ let loc=S.place, candidates=TREASURES.filter(t=>t[1]===loc);
+ if(!candidates.length){toast("Tidak ada titik rahasia yang diketahui di wilayah ini.");return}
+ let t=candidates[Math.floor(Math.random()*candidates.length)];
+ if(Math.random()<t[2]){addItem(t[3],t[4]);journal("Anda menemukan "+t[3]+" di "+t[0]+".");log("Penemuan tersembunyi: "+t[3]+".");rewardXP(35);toast("Harta tersembunyi ditemukan: "+t[3]);}
+ else{rewardXP(8);log("Anda menggeledah wilayah "+loc+" tetapi tidak menemukan harta.");toast("Pencarian belum membuahkan hasil.")}
+ advance(1);save();renderAll()
+}
+function train(stat){
+ if(S.player.gold<30){toast("Latihan membutuhkan 30 emas.");return}
+ S.player.gold-=30;S.player.stats[stat]++;S.player.skills.Survival+=stat==="Stamina"?1:0;
+ journal("Anda berlatih "+stat+" dengan seorang pelatih lokal.");rewardXP(20);save();renderAll();toast(stat+" meningkat.")
+}
+function craft(name){
+ let r=RECIPES.find(x=>x[0]===name);if(!r)return;
+ let req=r[1],ok=true;
+ for(let i=0;i<req.length;i+=2)if(!has(req[i],req[i+1]))ok=false;
+ if(!ok){toast("Bahan tidak mencukupi.");return}
+ for(let i=0;i<req.length;i+=2)removeItem(req[i],req[i+1]);
+ addItem(name);
+ if(name==="Batu Fokus")S.player.maxMp+=5;
+ if(name==="Bilah Gaung"){ITEMS[name]={rarity:"Epik",type:"senjata",power:15,value:900};S.player.skills.Pedang++}
+ if(name==="Thornheart")S.flags.crownFragments=Math.max(S.flags.crownFragments, S.flags.crownFragments);
+ journal("Anda membuat "+name+".");rewardXP(80);save();renderAll();toast(name+" berhasil dibuat.")
+}
+function inn(){
+ let cost=25;
+ if(S.player.gold<cost){toast("Penginapan membutuhkan 25 emas.");return}
+ S.player.gold-=cost;S.player.hp=S.player.maxHp;S.player.mp=S.player.maxMp;S.day++;S.time=0;
+ journal("Anda menginap di penginapan.");log("Satu hari berlalu di penginapan.");save();renderAll();toast("Hari baru dimulai. Kondisi pulih.")
+}
+function randomChoice(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function explore(){
+ if(S.battle){toast("Selesaikan pertarungan terlebih dahulu.");return}
+ advance(1);
+ let roll=Math.random();
+ if(roll<.38){startBattle(randomChoice(S.place==="Kawah Kejatuhan Bintang"?["Penjaga Kaca","Raja Tanpa Nama"]:S.place==="Jalan Kerajaan Lama"?["Bandit Jalanan","Penjaga Kaca"]:["Bandit Jalanan","Anjing Rawa"]),true);return}
+ if(roll<.60){searchArea();return}
+ if(roll<.76){worldEvent();return}
+ rewardXP(15);journal("Eksplorasi di "+S.place+" menghasilkan petunjuk kecil.");log("Anda menjelajahi "+S.place+".");save();renderAll();toast("Eksplorasi selesai.")
+}
+function recruit(name){
+ let c=S.companions[name];if(!c||c.recruited)return;
+ if(name==="Lyra"){if(!S.flags.metMara){toast("Temui Mara terlebih dahulu.");return}S.quests.lyra.status="aktif";c.recruited=true;c.loyalty=25}
+ if(name==="Bram"){if(!S.flags.lyraSolved){toast("Selesaikan urusan Lyra terlebih dahulu.");return}c.recruited=true;c.loyalty=35}
+ if(name==="Ilyan"){if(S.player.rep["Lingkaran Terselubung"]<3){toast("Reputasi Lingkaran minimal +3.");return}c.recruited=true;c.loyalty=40}
+ journal(name+" bergabung dengan kelompok Anda.");save();renderAll()
+}
+function improveLoyalty(name){
+ let c=S.companions[name];if(!c?.recruited||S.player.gold<40){toast("Membutuhkan 40 emas dan pendamping aktif.");return}
+ S.player.gold-=40;c.loyalty=Math.min(100,c.loyalty+10);journal("Loyalitas "+name+" meningkat.");save();renderAll()
+}
+function specialAction(){
+ if(S.place==="Distrik Lentera"){S.player.skills.Mengunci++;rewardXP(20);journal("Anda mempelajari teknik membuka kunci dari seorang penjaga tua.")}
+ else if(S.place==="Hollowpeak"&&has("Kaca Kejatuhan Bintang")){S.player.stats.Wawasan++;journal("Pantulan Kaca Kejatuhan Bintang membuka pola tersembunyi.")}
+ else if(S.place==="Hutan Sunyi"){S.flags.groveTrust=Math.min(3,S.flags.groveTrust+1);rep("Klan Hutan",1);journal("Anda melakukan tugas kecil untuk Klan Hutan.")}
+ else if(S.place==="Pelabuhan Blackwater"){rep("Pedagang Bebas",1);gainGold(30);journal("Anda membantu Serah menyelesaikan transaksi.")}
+ else{toast("Tidak ada interaksi khusus di tempat ini.");return}
+ save();renderAll();toast("Interaksi berhasil.")
+}
+function factionAction(f){
+ let costs={"Penjaga Kota":0,"Lingkaran Terselubung":0,"Pedagang Bebas":0,"Klan Hutan":0};
+ let r=S.player.rep[f];
+ if(f==="Penjaga Kota"&&S.place==="Ashenvale"){rep(f,1);S.stability++;journal("Anda membantu Penjaga Kota menjaga Ashenvale.");}
+ else if(f==="Lingkaran Terselubung"&&has("Kaca Kejatuhan Bintang")){rep(f,2);journal("Anda menyerahkan pengetahuan kepada Lingkaran Terselubung.");}
+ else if(f==="Pedagang Bebas"&&S.player.gold>=50){S.player.gold-=50;rep(f,3);journal("Anda membeli saham kecil dalam jaringan Pedagang Bebas.");}
+ else if(f==="Klan Hutan"&&S.place==="Hutan Sunyi"){S.flags.groveTrust=Math.min(3,S.flags.groveTrust+1);rep(f,2);journal("Anda mengikuti ritual penerimaan Klan Hutan.");}
+ else{toast("Tindakan ini belum tersedia.");return}
+ save();renderAll()
+}
+function renderExplorationPanel(){
+ let old=document.getElementById("explorePanel");if(old)old.remove();
+ let home=document.querySelector("#home .hero");
+ let div=document.createElement("div");div.id="explorePanel";div.className="card";
+ div.innerHTML=`<h3>Aktivitas di ${S.place}</h3><p class="muted">Waktu: ${times[S.time]} · Hari ${S.day}. Pilihan aktivitas dapat membuka pertemuan, harta tersembunyi, atau perubahan reputasi.</p><div class="actions"><button class="btn primary" onclick="explore()">Jelajahi</button><button class="btn" onclick="searchArea()">Cari Harta</button><button class="btn" onclick="worldEvent()">Periksa Peristiwa</button><button class="btn" onclick="specialAction()">Interaksi Lokasi</button><button class="btn" onclick="inn()">Penginapan · 25 emas</button></div>`;
+ home.after(div)
+}
+function renderCrafting(){
+ let inv=document.getElementById("inventory");
+ let old=document.getElementById("craftPanel");if(old)old.remove();
+ let div=document.createElement("div");div.id="craftPanel";div.className="card full";
+ div.innerHTML=`<h3>Kerajinan</h3><p class="muted">Resep langka memerlukan bahan yang hanya ditemukan melalui eksplorasi dan pertarungan sulit.</p><div class="grid">${RECIPES.map(r=>`<div class="card"><h3>${r[0]}</h3><p class="muted">${r[2]}</p><p class="small">Bahan: ${r[1].filter((_,i)=>i%2===0).map((x,i)=>x+" ×"+r[1][i*2+1]).join(", ")}</p><button class="btn primary" onclick="craft('${r[0]}')">Buat</button></div>`).join("")}</div>`;
+ inv.querySelector(".hero").after(div)
+}
+function renderTraining(){
+ let old=document.getElementById("trainPanel");if(old)old.remove();
+ let div=document.createElement("div");div.id="trainPanel";div.className="card full";
+ div.innerHTML=`<h3>Pelatihan</h3><p class="muted">Pelatih menerima 30 emas untuk meningkatkan satu atribut.</p><div class="actions">${Object.keys(S.player.stats).map(x=>`<button class="btn" onclick="train('${x}')">${x} +1</button>`).join("")}</div>`;
+ document.querySelector("#character .grid").appendChild(div)
+}
+function renderExtra(){
+ renderExplorationPanel();renderCrafting();renderTraining();
+}
+function renderAll(){
+ renderHome();renderMap();renderFactions();renderCodex();renderCharacter();renderInventory();renderJournal();renderAchievements();renderQuests();renderPeople();renderParty();renderShops();renderCombat()
+}
+
+function exportSave(){
+ const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"}),a=document.createElement("a");
+ a.href=URL.createObjectURL(blob);a.download="elarion-save.json";a.click();URL.revokeObjectURL(a.href);toast("Cadangan permainan dibuat.")
+}
+function importSave(){
+ const f=document.getElementById("importFile").files[0];if(!f){toast("Pilih berkas JSON terlebih dahulu.");return}
+ const r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.player||!x.quests||!x.inventory)throw 0;S=x;save();renderAll();toast("Data berhasil dipulihkan.")}catch(e){toast("Berkas penyimpanan tidak valid.")}};r.readAsText(f)
+}
+function resetGame(){
+ if(!confirm("Hapus seluruh kemajuan permainan dari peramban ini?"))return;
+ localStorage.removeItem(KEY);location.reload()
+}
+
+/* Mekanisme hadiah langka:
+   Biasa: dibeli/ditemukan dengan mudah.
+   Tidak Umum: misi dan musuh biasa.
+   Langka: area khusus + peluang kecil.
+   Epik: rantai misi + material langka atau peluang sangat kecil.
+   Legendaris: alur khusus, syarat level, dan bahan langka.
+   Mitos: tujuh pecahan; sebagian berasal dari bos dan keputusan akhir.
+*/
+function rareDesignInfo(){return}
+
+window.addEventListener("storage",()=>{S=load();renderAll();toast("Data diperbarui dari penyimpanan lokal.")});
+renderAll();go("home");
+
+</script>
+</body>
+</html>
