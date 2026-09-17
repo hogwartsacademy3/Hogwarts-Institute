@@ -4,92 +4,107 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hogwarts Institute Monopoly</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+    <!-- Fonts: Cinzel for Display, Inter for readability -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <style>
         :root {
-            --bg-dark: #0f1115;
-            --board-bg: #eaddcf;
+            /* Theme Colors */
+            --bg-space: #0b0c10;
+            --wood-dark: #2a1610;
+            --wood-light: #4a2b1f;
             --gold: #d4af37;
-            --burgundy: #740001;
-            --slytherin-green: #1a472a;
-            --ravenclaw-blue: #0e1a40;
-            --hufflepuff-yellow: #ecb939;
-            --parchment: #f1e2c3;
-            --wood: #2c1e16;
-            --text-dark: #2a2a2a;
+            --gold-light: #f3e5ab;
+            --parchment: #f4e8d3;
+            --parchment-dark: #e3d1b8;
+            --text-dark: #1a1a1a;
+            
+            /* House Colors */
+            --gryffindor: #740001;
+            --slytherin: #1a472a;
+            --ravenclaw: #0e1a40;
+            --hufflepuff: #ecb939;
+
+            /* Property Group Colors */
+            --prop-brown: #8B4513;
+            --prop-lightblue: #87CEEB;
+            --prop-pink: #FF69B4;
+            --prop-orange: #FFA500;
+            --prop-red: #FF0000;
+            --prop-yellow: #FFD700;
+            --prop-green: #008000;
+            --prop-darkblue: #00008B;
         }
 
         body {
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at center, #1a1c23 0%, #000000 100%);
-            color: var(--parchment);
-            font-family: 'Playfair Display', serif;
-            overflow: hidden;
+            background-color: var(--bg-space);
+            background-image: radial-gradient(circle at 50% 50%, #1f232b 0%, #0b0c10 100%);
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
             margin: 0;
             height: 100vh;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        h1, h2, h3, h4, .gothic-text {
-            font-family: 'Cinzel', serif;
-            letter-spacing: 1px;
-        }
-
-        .magical-text {
-            font-family: 'IM Fell English SC', serif;
-        }
+        .font-cinzel { font-family: 'Cinzel', serif; }
 
         /* UI Elements */
         .btn-magic {
-            background: linear-gradient(145deg, var(--wood), #150f0b);
+            background: linear-gradient(145deg, var(--wood-light), var(--wood-dark));
             border: 2px solid var(--gold);
-            color: var(--gold);
-            padding: 0.5rem 1.5rem;
+            color: var(--gold-light);
+            padding: 0.75rem 1.5rem;
             font-family: 'Cinzel', serif;
-            text-transform: uppercase;
-            border-radius: 4px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 0 10px rgba(212, 175, 55, 0.2);
-            transition: all 0.2s;
+            font-weight: 600;
+            letter-spacing: 1px;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4), inset 0 0 10px rgba(212, 175, 55, 0.2);
+            transition: all 0.2s ease;
             cursor: pointer;
+            text-transform: uppercase;
             text-shadow: 1px 1px 2px black;
         }
         .btn-magic:hover:not(:disabled) {
-            background: linear-gradient(145deg, #3a281e, var(--wood));
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4), inset 0 0 15px rgba(212, 175, 55, 0.4);
             transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(212, 175, 55, 0.3), inset 0 0 15px rgba(212, 175, 55, 0.4);
+            color: #fff;
         }
         .btn-magic:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             border-color: #555;
             color: #888;
+            background: var(--wood-dark);
+            box-shadow: none;
         }
 
         .panel-parchment {
             background-color: var(--parchment);
-            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+            /* Subtle noise texture via CSS gradient */
+            background-image: linear-gradient(rgba(255,255,255,0.1) 2px, transparent 2px),
+                              linear-gradient(90deg, rgba(255,255,255,0.1) 2px, transparent 2px),
+                              linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+            background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
             color: var(--text-dark);
-            border: 4px solid var(--wood);
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.2);
-            position: relative;
-        }
-        .panel-parchment::before {
-            content: '';
-            position: absolute;
-            top: 4px; left: 4px; right: 4px; bottom: 4px;
-            border: 1px solid rgba(0,0,0,0.2);
-            pointer-events: none;
+            border: 4px solid var(--wood-dark);
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 40px rgba(0,0,0,0.1);
         }
 
         #game-layout {
             display: flex;
             height: 100%;
             width: 100%;
-            padding: 10px;
-            gap: 10px;
+            padding: 20px;
+            gap: 20px;
+            box-sizing: border-box;
         }
 
         #board-wrapper {
@@ -97,26 +112,28 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            perspective: 1200px; /* 3D Effect */
+            position: relative;
         }
 
-        #board {
-            width: 80vh;
-            height: 80vh;
-            max-width: 95vw;
-            max-height: 95vw;
-            background-color: var(--board-bg);
-            border: 15px solid var(--wood);
-            border-radius: 10px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.3);
-            display: grid;
-            grid-template-columns: 1.5fr repeat(9, 1fr) 1.5fr;
-            grid-template-rows: 1.5fr repeat(9, 1fr) 1.5fr;
-            transform: rotateX(20deg) rotateZ(0deg);
-            transform-style: preserve-3d;
-            transition: transform 0.5s ease;
+        #board-container {
             position: relative;
+            aspect-ratio: 1 / 1;
+            max-height: 100%;
+            max-width: 100%;
+            border: 12px solid var(--wood-dark);
+            border-radius: 16px;
+            background-color: var(--parchment-dark);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.4);
+            box-sizing: border-box;
+        }
+
+        /* Grid Papan 11x11 */
+        #board {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: 14% repeat(9, 8%) 14%;
+            grid-template-rows: 14% repeat(9, 8%) 14%;
             box-sizing: border-box;
         }
 
@@ -128,250 +145,356 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            opacity: 0.8;
+            opacity: 0.85;
             pointer-events: none;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            margin: 10px;
+            border: 2px solid rgba(0,0,0,0.05);
         }
+        
         .board-logo {
-            font-size: 3rem;
-            color: var(--wood);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-size: 3vw;
+            color: var(--wood-dark);
             text-align: center;
-            line-height: 1.2;
+            line-height: 1.1;
+            font-weight: 700;
         }
 
-        /* Tiles */
         .tile {
             border: 1px solid rgba(0,0,0,0.2);
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            font-size: 0.65rem;
-            text-align: center;
-            background-color: rgba(255,255,255,0.4);
-            overflow: hidden;
+            background-color: rgba(255,255,255,0.5);
             box-sizing: border-box;
+            text-align: center;
+            overflow: hidden;
         }
+        
         .tile-corner {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             font-weight: bold;
             justify-content: center;
+            padding: 10%;
         }
         
         .tile-color-bar {
             width: 100%;
             height: 25%;
             border-bottom: 1px solid rgba(0,0,0,0.3);
+            box-shadow: inset 0 -2px 4px rgba(0,0,0,0.2);
         }
-        .tile-name {
+        
+        .tile-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 75%;
+            width: 100%;
             padding: 2px;
+            box-sizing: border-box;
+        }
+
+        .tile-name {
             font-weight: 600;
-            line-height: 1;
-            font-family: 'Cinzel', serif;
+            line-height: 1.1;
+            font-size: 0.65vw;
+            margin-top: 2px;
         }
+        
         .tile-price {
-            font-weight: bold;
-            padding-bottom: 2px;
+            font-weight: 700;
+            font-size: 0.7vw;
+            margin-bottom: 2px;
         }
+        
+        /* Indikator Pemilik */
         .tile-owner-indicator {
             position: absolute;
             bottom: 0; left: 0; right: 0;
-            height: 4px;
+            height: 5px;
             background: transparent;
+            z-index: 5;
         }
+        
         .tile-level {
             position: absolute;
-            top: 2px; right: 2px;
+            top: 25%; left: 0; right: 0;
             font-size: 0.6rem;
             display: flex;
-            gap: 1px;
+            justify-content: center;
+            color: var(--gold);
+            text-shadow: 1px 1px 1px #000;
+            z-index: 6;
         }
-        .star { color: var(--wood); }
 
-        /* Rotate tiles based on position */
-        .row-top { grid-row: 1; transform: rotate(180deg); }
+        /* Orientasi Tile */
+        .row-top { grid-row: 1; flex-direction: column-reverse; }
+        .row-top .tile-color-bar { border-bottom: none; border-top: 1px solid rgba(0,0,0,0.3); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+        .row-top .tile-name { transform: rotate(180deg); margin-top:0; margin-bottom: 2px;}
+        .row-top .tile-price { transform: rotate(180deg); margin-bottom:0; margin-top: 2px;}
+        .row-top .tile-owner-indicator { bottom: auto; top: 0; }
+        .row-top .tile-level { top: auto; bottom: 25%; }
+
         .row-bottom { grid-row: 11; }
-        .col-left { grid-column: 1; transform: rotate(90deg); }
-        .col-right { grid-column: 11; transform: rotate(-90deg); }
+        
+        .col-left { grid-column: 1; flex-direction: row-reverse; }
+        .col-left .tile-color-bar { width: 25%; height: 100%; border-bottom: none; border-left: 1px solid rgba(0,0,0,0.3); box-shadow: inset 2px 0 4px rgba(0,0,0,0.2);}
+        .col-left .tile-content { width: 75%; height: 100%; flex-direction: row-reverse; align-items: center; padding: 0 4px;}
+        .col-left .tile-name { transform: rotate(90deg); font-size: 0.6vw;}
+        .col-left .tile-price { transform: rotate(90deg); font-size: 0.6vw;}
+        .col-left .tile-owner-indicator { bottom: 0; left: auto; right: 0; height: 100%; width: 5px; }
+        .col-left .tile-level { top: auto; left: 25%; right: auto; height: 100%; flex-direction: column; align-items: center;}
+
+        .col-right { grid-column: 11; flex-direction: row; }
+        .col-right .tile-color-bar { width: 25%; height: 100%; border-bottom: none; border-right: 1px solid rgba(0,0,0,0.3); box-shadow: inset -2px 0 4px rgba(0,0,0,0.2);}
+        .col-right .tile-content { width: 75%; height: 100%; flex-direction: row; align-items: center; padding: 0 4px;}
+        .col-right .tile-name { transform: rotate(-90deg); font-size: 0.6vw;}
+        .col-right .tile-price { transform: rotate(-90deg); font-size: 0.6vw;}
+        .col-right .tile-owner-indicator { bottom: 0; left: 0; right: auto; height: 100%; width: 5px; }
+        .col-right .tile-level { top: auto; left: auto; right: 25%; height: 100%; flex-direction: column; align-items: center;}
+
+        /* Corner specific adjustments */
+        .tile-corner.row-bottom.col-right { transform: none; }
+        .tile-corner.row-bottom.col-left { transform: none; }
+        .tile-corner.row-top.col-left { transform: none; }
+        .tile-corner.row-top.col-right { transform: none; }
+
+        #pieces-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; /* Let clicks pass to board */
+            z-index: 10;
+        }
 
         .piece {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             position: absolute;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 16px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            z-index: 10;
-            transform-style: preserve-3d;
-            background: radial-gradient(circle at 30% 30%, #fff, #888);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.6), inset 0 -2px 4px rgba(0,0,0,0.3);
+            /* Transisi untuk pergerakan mulus */
+            transition: transform 0.4s ease-in-out;
             border: 2px solid #fff;
+            transform-origin: center center;
         }
-        /* Piece variations */
-        .piece[data-piece="Topi"] { background: #333; color: white; content: "🎩"; }
+        
+        .piece[data-piece="Topi"] { background: #4a4a4a; }
         .piece[data-piece="Tongkat"] { background: #8b4513; }
-        .piece[data-piece="Snitch"] { background: var(--gold); }
+        .piece[data-piece="Snitch"] { background: #ffd700; }
         .piece[data-piece="Burung"] { background: #f0f8ff; }
-        .piece[data-piece="Cauldron"] { background: #111; border-color: #555; }
+        .piece[data-piece="Cauldron"] { background: #2c2c2c; }
         .piece[data-piece="Potion"] { background: #32cd32; }
 
-        /* Dice Container */
-        #dice-container {
+        .dice-area {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
-            perspective: 500px;
-        }
-        .dice {
-            width: 40px; height: 40px;
-            background: var(--parchment);
-            border: 2px solid var(--wood);
-            border-radius: 8px;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 24px; font-weight: bold; color: var(--wood);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.2), 0 5px 10px rgba(0,0,0,0.5);
-            transform-style: preserve-3d;
-        }
-        .rolling {
-            animation: roll 0.5s infinite linear;
-        }
-        @keyframes roll {
-            0% { transform: rotateX(0) rotateY(0) rotateZ(0); }
-            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+            justify-content: center;
+            gap: 20px;
+            margin: 15px 0;
+            perspective: 800px;
         }
 
-        /* Sidebar Panels */
+        .dice-3d {
+            width: 50px;
+            height: 50px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .dice-face {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: var(--parchment);
+            border: 2px solid var(--wood-dark);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--wood-dark);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+            backface-visibility: hidden;
+        }
+
+        .dice-face.front  { transform: rotateY(0deg) translateZ(25px); }
+        .dice-face.back   { transform: rotateY(180deg) translateZ(25px); }
+        .dice-face.right  { transform: rotateY(90deg) translateZ(25px); }
+        .dice-face.left   { transform: rotateY(-90deg) translateZ(25px); }
+        .dice-face.top    { transform: rotateX(90deg) translateZ(25px); }
+        .dice-face.bottom { transform: rotateX(-90deg) translateZ(25px); }
+
+        /* Kelas untuk rotasi akhir (menunjukkan angka) */
+        .show-1 { transform: rotateY(0deg); }
+        .show-2 { transform: rotateY(-90deg); }
+        .show-3 { transform: rotateY(-180deg); }
+        .show-4 { transform: rotateY(90deg); }
+        .show-5 { transform: rotateX(-90deg); }
+        .show-6 { transform: rotateX(90deg); }
+
+        /* Animasi mengacak saat dilempar */
+        @keyframes rollDiceAnim {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            100% { transform: rotateX(720deg) rotateY(1080deg) rotateZ(360deg); }
+        }
+        .is-rolling {
+            animation: rollDiceAnim 0.8s linear infinite;
+        }
+
         #side-panel {
-            width: 320px;
+            width: 350px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
             z-index: 20;
         }
         
         .hud-box {
-            padding: 10px;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
         }
         
         .player-card {
-            border: 1px solid rgba(0,0,0,0.1);
-            padding: 8px;
-            border-radius: 4px;
-            margin-bottom: 5px;
+            border: 1px solid rgba(0,0,0,0.15);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(255,255,255,0.2);
-            border-left: 5px solid transparent;
+            background: rgba(255,255,255,0.4);
+            border-left: 6px solid transparent;
+            transition: all 0.3s;
         }
         .player-card.active {
-            background: rgba(212, 175, 55, 0.3);
+            background: rgba(212, 175, 55, 0.2);
             border-color: var(--gold);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+            transform: scale(1.02);
         }
         
-        /* House Colors */
-        .house-Gryffindor { border-left-color: var(--burgundy); }
-        .house-Slytherin { border-left-color: var(--slytherin-green); }
-        .house-Ravenclaw { border-left-color: var(--ravenclaw-blue); }
-        .house-Hufflepuff { border-left-color: var(--hufflepuff-yellow); }
+        .house-Gryffindor { border-left-color: var(--gryffindor); }
+        .house-Slytherin { border-left-color: var(--slytherin); }
+        .house-Ravenclaw { border-left-color: var(--ravenclaw); }
+        .house-Hufflepuff { border-left-color: var(--hufflepuff); }
 
         #log-container {
             flex-grow: 1;
             overflow-y: auto;
-            font-size: 0.8rem;
-            border-top: 1px solid rgba(0,0,0,0.1);
-            padding-top: 5px;
-            margin-top: 5px;
-            max-height: 200px;
-            font-family: sans-serif;
+            font-size: 0.85rem;
+            border-top: 2px solid rgba(0,0,0,0.1);
+            padding-top: 10px;
+            margin-top: 10px;
+            height: 150px;
         }
-        .log-entry { margin-bottom: 4px; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 2px;}
+        .log-entry { 
+            margin-bottom: 6px; 
+            padding-bottom: 6px;
+            border-bottom: 1px dashed rgba(0,0,0,0.15); 
+        }
 
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(11, 12, 16, 0.85);
+            backdrop-filter: blur(8px);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 100;
-            backdrop-filter: blur(5px);
+            opacity: 1;
+            transition: opacity 0.3s ease;
         }
+        .modal-overlay.hidden { 
+            opacity: 0;
+            pointer-events: none;
+        }
+        
         .modal-content {
             width: 90%;
-            max-width: 400px;
-            padding: 20px;
+            max-width: 450px;
+            padding: 30px;
             text-align: center;
+            transform: scale(1);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .hidden { display: none !important; }
+        .modal-overlay.hidden .modal-content {
+            transform: scale(0.9);
+        }
 
         input, select {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             margin: 8px 0;
-            background: rgba(255,255,255,0.8);
-            border: 2px solid var(--wood);
-            border-radius: 4px;
-            font-family: 'Playfair Display', serif;
+            background: rgba(255,255,255,0.9);
+            border: 2px solid var(--wood-light);
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
         }
+        input:focus, select:focus { border-color: var(--gold); }
 
-        /* Card Animation (Events/Chest) */
+        /* Animasi Kartu */
         .event-card {
-            width: 250px;
-            height: 350px;
+            width: 280px;
+            height: 400px;
             margin: 0 auto;
             background: var(--parchment);
-            border: 8px solid var(--wood);
-            border-radius: 10px;
-            padding: 20px;
+            border: 10px solid var(--wood-dark);
+            border-radius: 12px;
+            padding: 25px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-            transform: scale(0.8) rotateY(90deg);
-            opacity: 0;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            transform: rotateY(90deg);
             transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .event-card.show {
-            transform: scale(1) rotateY(0deg);
-            opacity: 1;
+            transform: rotateY(0deg);
         }
         
         .toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--wood); color: var(--parchment);
-            padding: 10px 20px; border-radius: 5px; z-index: 1000;
-            font-family: 'Cinzel', serif; border: 1px solid var(--gold);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            transition: opacity 0.3s;
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
+            background: var(--wood-dark); color: var(--parchment);
+            padding: 12px 24px; border-radius: 8px; z-index: 1000;
+            font-family: 'Inter', sans-serif; font-weight: 600;
+            border: 1px solid var(--gold);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            opacity: 0; transition: all 0.3s;
         }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            #game-layout { flex-direction: column; }
-            #board-wrapper { height: 60vh; perspective: 800px;}
-            #board { width: 95vw; height: 95vw; border-width: 8px;}
-            .tile-name { font-size: 0.5rem; }
-            #side-panel { width: 100%; flex-direction: row; flex-wrap: wrap; height: 40vh; overflow-y: auto;}
-            .hud-box { width: 100%; margin-bottom: 5px; padding: 5px;}
-            #log-container { max-height: 100px; }
-            .board-logo { font-size: 1.5rem; }
+        @media (max-width: 900px) {
+            #game-layout { flex-direction: column; padding: 10px; overflow-y: auto;}
+            #board-wrapper { flex: none; height: auto; width: 100%; padding-bottom: 100%; /* trick for aspect ratio */ }
+            #board-container { position: absolute; top:0; bottom:0; left:0; right:0; border-width: 6px;}
+            .tile-name, .tile-price { font-size: 1.5vw; }
+            .board-logo { font-size: 5vw; }
+            #side-panel { width: 100%; flex: none; }
+            #log-container { height: 100px; }
+            .piece { width: 20px; height: 20px; font-size: 12px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Screen: Auth / Setup -->
+    <!-- SCREEN: Auth / Setup -->
     <div id="screen-auth" class="modal-overlay">
         <div class="panel-parchment modal-content">
-            <h1 class="text-3xl font-bold mb-2">Hogwarts Institute</h1>
-            <h2 class="text-xl mb-6">Monopoly Edition</h2>
+            <h1 class="text-3xl font-cinzel font-bold mb-1 text-yellow-600 drop-shadow-md">Hogwarts Institute</h1>
+            <h2 class="text-xl font-cinzel mb-6 text-gray-700">Monopoly Edition</h2>
             
             <div id="auth-forms">
                 <input type="text" id="player-name" placeholder="Nama Penyihir" maxlength="15" required>
@@ -382,165 +505,189 @@
                     <option value="Hufflepuff">Hufflepuff</option>
                 </select>
                 <select id="player-piece">
-                    <option value="Topi">Topi Seleksi</option>
-                    <option value="Tongkat">Tongkat Sihir</option>
-                    <option value="Snitch">Golden Snitch</option>
-                    <option value="Burung">Burung Hantu</option>
-                    <option value="Cauldron">Kuali (Cauldron)</option>
-                    <option value="Potion">Botol Ramuan</option>
+                    <option value="Topi">🎩 Topi Seleksi</option>
+                    <option value="Tongkat">🪄 Tongkat Sihir</option>
+                    <option value="Snitch">🦅 Golden Snitch</option>
+                    <option value="Burung">🦉 Burung Hantu</option>
+                    <option value="Cauldron">⚗️ Kuali (Cauldron)</option>
+                    <option value="Potion">🧪 Botol Ramuan</option>
                 </select>
                 
-                <div class="flex gap-2 mt-4">
+                <div class="flex gap-3 mt-6">
                     <button id="btn-create-room" class="btn-magic flex-1">Buat Ruangan</button>
-                    <button id="btn-show-join" class="btn-magic flex-1">Gabung</button>
+                    <button id="btn-show-join" class="btn-magic flex-1 bg-transparent border-gray-500 text-gray-700">Gabung</button>
                 </div>
                 
-                <div id="join-form" class="hidden mt-4 pt-4 border-t border-gray-400">
-                    <input type="text" id="room-code-input" placeholder="Kode Ruangan (6 Karakter)" maxlength="6">
-                    <button id="btn-join-room" class="btn-magic w-full mt-2">Masuk Ruangan</button>
+                <div id="join-form" class="hidden mt-6 pt-4 border-t border-gray-300">
+                    <input type="text" id="room-code-input" placeholder="Kode Ruangan (6 Karakter)" maxlength="6" class="text-center font-bold tracking-widest uppercase">
+                    <button id="btn-join-room" class="btn-magic w-full mt-3">Masuk Ruangan</button>
                 </div>
             </div>
-            <div id="auth-loading" class="hidden mt-4 text-center">
-                <p class="animate-pulse">Menghubungkan ke Kementerian Sihir...</p>
+            <div id="auth-loading" class="hidden mt-6 text-center">
+                <p class="animate-pulse font-cinzel text-lg">Menghubungkan ke Kementerian Sihir...</p>
             </div>
         </div>
     </div>
 
-    <!-- Screen: Lobby -->
+    <!-- SCREEN: Lobby -->
     <div id="screen-lobby" class="modal-overlay hidden">
         <div class="panel-parchment modal-content">
-            <h2 class="text-2xl mb-2">Ruang Tunggu</h2>
-            <div class="text-xl font-bold mb-4 bg-gray-800 text-white p-2 rounded">Kode: <span id="lobby-code" class="text-yellow-400">------</span></div>
+            <h2 class="text-2xl font-cinzel mb-2">Ruang Tunggu</h2>
+            <div class="text-xl font-bold mb-6 bg-gray-900 text-white p-3 rounded-lg border-2 border-yellow-500 shadow-inner">
+                Kode: <span id="lobby-code" class="text-yellow-400 tracking-widest">------</span>
+            </div>
             
-            <div class="text-left mb-4">
-                <h3 class="font-bold border-b border-gray-400 mb-2">Penyihir Bergabung (<span id="player-count">0</span>/6):</h3>
-                <ul id="lobby-players-list" class="space-y-2 max-h-48 overflow-y-auto">
+            <div class="text-left mb-6">
+                <h3 class="font-bold border-b-2 border-gray-300 pb-2 mb-3">Penyihir Bergabung (<span id="player-count">0</span>/6):</h3>
+                <ul id="lobby-players-list" class="space-y-2 max-h-48 overflow-y-auto pr-2">
                     <!-- Populated by JS -->
                 </ul>
             </div>
             
-            <p id="lobby-status" class="text-sm italic mb-4">Menunggu host memulai permainan...</p>
+            <p id="lobby-status" class="text-sm italic mb-6 text-gray-600">Menunggu host memulai permainan...</p>
             
-            <div class="flex gap-2">
-                <button id="btn-leave-room" class="btn-magic flex-1" style="font-size: 0.8rem">Keluar</button>
-                <button id="btn-start-game" class="btn-magic flex-1 hidden">Mulai Permainan</button>
+            <div class="flex gap-3">
+                <button id="btn-leave-room" class="btn-magic flex-1 text-sm bg-red-900 text-red-200 border-red-900">Keluar</button>
+                <button id="btn-start-game" class="btn-magic flex-1 hidden">Mulai Game</button>
             </div>
         </div>
     </div>
 
-    <!-- Screen: Game -->
-    <div id="screen-game" class="hidden">
+    <!-- SCREEN: Game Main Layout -->
+    <div id="screen-game" class="hidden h-full">
         <div id="game-layout">
-            <!-- Board Area -->
+            
+            <!-- Area Papan -->
             <div id="board-wrapper">
-                <div id="board">
-                    <!-- Center content -->
-                    <div class="board-center">
-                        <div class="board-logo gothic-text">Hogwarts<br>Institute</div>
-                        <div class="magical-text mt-2">Monopoly Edition</div>
+                <div id="board-container">
+                    <div id="board">
+                        <div class="board-center">
+                            <div class="board-logo font-cinzel">Hogwarts<br>Institute</div>
+                            <div class="font-cinzel text-sm mt-1 border-t border-black pt-1">Monopoly Edition</div>
+                        </div>
+                        <!-- Tiles will be generated here -->
                     </div>
-                    <!-- 40 Tiles generated by JS -->
+                    <!-- Layer khusus untuk pergerakan bidak -->
+                    <div id="pieces-layer"></div>
                 </div>
-                <!-- Pieces Container (Overlay over board) -->
-                <div id="pieces-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></div>
             </div>
             
-            <!-- Side Panel (HUD) -->
+            <!-- Area HUD (Samping) -->
             <div id="side-panel">
-                <!-- Info Box -->
+                <!-- Info Giliran & Dadu -->
                 <div class="panel-parchment hud-box text-center">
-                    <h3 class="gothic-text font-bold text-lg mb-1" id="turn-indicator">Giliran: Menunggu...</h3>
-                    <div id="dice-container" class="justify-center mb-2">
-                        <div class="dice" id="dice1">1</div>
-                        <div class="dice" id="dice2">1</div>
+                    <h3 class="font-cinzel font-bold text-xl mb-2 pb-2 border-b border-gray-300" id="turn-indicator">Giliran: -</h3>
+                    
+                    <!-- 3D Dice Area -->
+                    <div class="dice-area" id="dice-container">
+                        <!-- Dice 1 -->
+                        <div class="dice-3d" id="dice1">
+                            <div class="dice-face front">1</div><div class="dice-face back">6</div>
+                            <div class="dice-face right">3</div><div class="dice-face left">4</div>
+                            <div class="dice-face top">2</div><div class="dice-face bottom">5</div>
+                        </div>
+                        <!-- Dice 2 -->
+                        <div class="dice-3d" id="dice2">
+                            <div class="dice-face front">1</div><div class="dice-face back">6</div>
+                            <div class="dice-face right">3</div><div class="dice-face left">4</div>
+                            <div class="dice-face top">2</div><div class="dice-face bottom">5</div>
+                        </div>
                     </div>
                     
-                    <!-- Action Buttons -->
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <button id="btn-roll" class="btn-magic" disabled>Lempar Dadu</button>
-                        <button id="btn-end-turn" class="btn-magic" disabled>Akhiri Giliran</button>
-                        <button id="btn-manage" class="btn-magic col-span-2">Kelola Properti</button>
+                    <div class="grid grid-cols-2 gap-3 mt-4">
+                        <button id="btn-roll" class="btn-magic py-2" disabled>Lempar Dadu</button>
+                        <button id="btn-end-turn" class="btn-magic py-2" disabled>Akhiri Giliran</button>
+                        <button id="btn-manage" class="btn-magic col-span-2 py-2 bg-transparent border-gray-600 text-gray-800 hover:text-white">Kelola Properti</button>
                     </div>
                 </div>
                 
-                <!-- Players List -->
-                <div class="panel-parchment hud-box flex-grow flex flex-col">
-                    <h3 class="font-bold mb-2 border-b border-gray-400 pb-1">Para Penyihir</h3>
-                    <div id="game-players-list" class="flex-grow overflow-y-auto">
+                <!-- Daftar Pemain & Log -->
+                <div class="panel-parchment hud-box flex-grow flex flex-col overflow-hidden">
+                    <h3 class="font-bold mb-3 border-b-2 border-gray-300 pb-2">Para Penyihir</h3>
+                    <div id="game-players-list" class="overflow-y-auto pr-2 mb-2 flex-grow">
                         <!-- Populated by JS -->
                     </div>
                     
-                    <!-- Game Log -->
-                    <div class="mt-2 border-t border-gray-400 pt-2">
-                        <h4 class="font-bold text-sm mb-1">Riwayat:</h4>
-                        <div id="log-container">
-                            <div class="log-entry">Permainan dimulai.</div>
+                    <div class="mt-auto border-t-2 border-gray-300 pt-2 flex flex-col h-1/3">
+                        <h4 class="font-bold text-sm mb-1">Riwayat Peristiwa:</h4>
+                        <div id="log-container" class="pr-2">
+                            <div class="log-entry text-gray-500 italic">Menunggu permainan dimulai...</div>
                         </div>
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
 
-    <!-- Modal: Tile Action (Buy/Pay) -->
+    <!-- MODAL: Aksi Properti (Beli/Bayar) -->
     <div id="modal-action" class="modal-overlay hidden">
         <div class="panel-parchment modal-content">
-            <h2 id="action-title" class="text-2xl mb-2 gothic-text">Menara Astronomi</h2>
-            <p id="action-desc" class="mb-4 text-sm">Anda berhenti di properti ini.</p>
+            <h2 id="action-title" class="text-3xl font-cinzel mb-2 font-bold text-yellow-700">Nama Properti</h2>
+            <p id="action-desc" class="mb-4 text-sm text-gray-600">Anda berhenti di sini.</p>
             
-            <div id="action-details" class="bg-white bg-opacity-20 p-2 rounded mb-4 text-left text-sm">
-                <p>Harga: <span id="action-price" class="font-bold">₲200</span></p>
-                <p>Sewa Dasar: <span id="action-rent">₲20</span></p>
+            <div id="action-details" class="bg-black bg-opacity-5 p-4 rounded-lg mb-6 text-left border border-gray-300">
+                <div class="flex justify-between mb-2 pb-2 border-b border-gray-300">
+                    <span>Harga Beli:</span>
+                    <span id="action-price" class="font-bold text-lg">₲0</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Sewa Dasar:</span>
+                    <span id="action-rent" class="font-semibold text-red-700">₲0</span>
+                </div>
             </div>
             
-            <div class="flex gap-2">
+            <div class="flex gap-3">
                 <button id="btn-action-primary" class="btn-magic flex-1">Beli</button>
-                <button id="btn-action-secondary" class="btn-magic flex-1">Lewati</button>
+                <button id="btn-action-secondary" class="btn-magic flex-1 bg-transparent border-gray-500 text-gray-700">Lewati</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal: Event Card -->
+    <!-- MODAL: Kartu Peristiwa -->
     <div id="modal-card" class="modal-overlay hidden">
-        <div class="event-card panel-parchment text-center" id="card-element">
-            <h2 id="card-type" class="text-xl mb-4 font-bold border-b border-gray-400 pb-2">Peristiwa Magis</h2>
-            <h3 id="card-title" class="text-lg mb-4 gothic-text">Ramuan Felix Felicis</h3>
-            <p id="card-desc" class="mb-6 flex-grow italic">Anda menemukan keberuntungan cair. Terima ₲100.</p>
+        <div class="event-card panel-parchment text-center relative" id="card-element">
+            <div class="absolute top-2 left-2 right-2 bottom-2 border border-gray-300 pointer-events-none rounded-lg"></div>
+            <h2 id="card-type" class="text-xl font-cinzel mb-4 font-bold border-b border-gray-400 pb-2">Kartu</h2>
+            <h3 id="card-title" class="text-2xl font-cinzel mb-4 text-yellow-700">Judul</h3>
+            <p id="card-desc" class="mb-8 flex-grow text-lg italic px-4 flex items-center justify-center text-gray-700">Deskripsi efek kartu.</p>
             <button id="btn-card-ok" class="btn-magic w-full">Lanjut</button>
         </div>
     </div>
 
-    <!-- Modal: Property Management (Upgrade/Mortgage) -->
+    <!-- MODAL: Kelola Properti -->
     <div id="modal-manage" class="modal-overlay hidden">
-         <div class="panel-parchment modal-content" style="max-width: 500px; max-height: 80vh; display: flex; flex-direction: column;">
-            <h2 class="text-2xl mb-2 gothic-text">Aset Anda</h2>
-            <div id="manage-list" class="flex-grow overflow-y-auto text-left mb-4 bg-white bg-opacity-10 p-2 rounded space-y-2">
+         <div class="panel-parchment modal-content flex flex-col" style="max-height: 85vh;">
+            <h2 class="text-2xl font-cinzel mb-4 font-bold border-b border-gray-300 pb-2">Aset Kekayaan Anda</h2>
+            <div id="manage-list" class="flex-grow overflow-y-auto text-left mb-6 space-y-3 pr-2">
                 <!-- Properties listed here -->
             </div>
-            <button id="btn-close-manage" class="btn-magic w-full">Tutup</button>
+            <button id="btn-close-manage" class="btn-magic w-full mt-auto">Tutup</button>
          </div>
     </div>
 
-    <!-- Modal: Winner -->
+    <!-- MODAL: Pemenang -->
     <div id="modal-winner" class="modal-overlay hidden">
         <div class="panel-parchment modal-content">
-            <h1 class="text-4xl mb-2 gothic-text text-yellow-500">PEMENANG</h1>
-            <h2 id="winner-name" class="text-2xl mb-4">Harry Potter</h2>
-            <p class="mb-2">Telah menguasai Hogwarts Institute!</p>
-            <p id="winner-stats" class="text-sm italic mb-6">Total Kekayaan: ₲5000</p>
-            <button onclick="location.reload()" class="btn-magic w-full">Kembali ke Lobi Utama</button>
+            <h1 class="text-5xl font-cinzel mb-4 font-bold text-yellow-600 drop-shadow-lg">PEMENANG</h1>
+            <h2 id="winner-name" class="text-3xl font-bold mb-2">Nama Pemenang</h2>
+            <p class="mb-4 text-gray-700">Telah menguasai seluruh aset Hogwarts Institute!</p>
+            <p id="winner-stats" class="text-lg font-semibold mb-8 text-green-700">Total Kekayaan: ₲5000</p>
+            <button onclick="location.reload()" class="btn-magic w-full py-3">Kembali ke Lobi Utama</button>
         </div>
     </div>
+
+    <div id="toast-container"></div>
 
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/+esm';
 
-        // --- SUPABASE CONFIGURATION ---
+        // Konfigurasi Supabase
         const SUPABASE_URL = "https://nikpedxjwvrkndivkzql.supabase.co";
         const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_vn-7vdOTA9i64sA7miFISQ_CiwJ4Kz3";
         const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-        // --- GLOBAL STATE ---
+        // State Global
         let me = { id: null, userId: null, roomId: null, isHost: false };
         let gameState = {
             status: 'waiting',
@@ -548,38 +695,40 @@
             properties: [],
             game: null
         };
+        // State visual lokal untuk bidak (agar terpisah dari update instan DB saat animasi)
+        let visualPiecesState = {}; 
         let realtimeChannel = null;
+        let isAnimatingMove = false; // Flag mencegah tumpang tindih
 
-        // --- GAME DATA: TILES (Hogwarts Theme) ---
-        // 0-9 Bottom, 10-19 Left, 20-29 Top, 30-39 Right
+        // Data Papan (Diurutkan sesuai id 0-39)
         const TILE_TYPES = { GO: 'go', PROP: 'property', CHEST: 'chest', TAX: 'tax', RR: 'railroad', CHANCE: 'chance', JAIL: 'jail', UTIL: 'utility', FREE: 'free', GOTO: 'goto_jail' };
         
         const BOARD_DATA = [
-            { id: 0, name: "MULAI", type: TILE_TYPES.GO, desc: "Lewati terima ₲200" },
+            { id: 0, name: "MULAI", type: TILE_TYPES.GO, desc: "Terima ₲200" },
             { id: 1, name: "Pondok Hagrid", type: TILE_TYPES.PROP, group: "brown", price: 60, rent: [2, 10, 30, 90, 160, 250], housePrice: 50 },
             { id: 2, name: "Peti Institut", type: TILE_TYPES.CHEST },
-            { id: 3, name: "Tepi Danau Hitam", type: TILE_TYPES.PROP, group: "brown", price: 60, rent: [4, 20, 60, 180, 320, 450], housePrice: 50 },
+            { id: 3, name: "Tepi Danau", type: TILE_TYPES.PROP, group: "brown", price: 60, rent: [4, 20, 60, 180, 320, 450], housePrice: 50 },
             { id: 4, name: "Pajak Ramuan", type: TILE_TYPES.TAX, amount: 200 },
-            { id: 5, name: "Hogwarts Express", type: TILE_TYPES.RR, price: 200, rent: [25, 50, 100, 200] },
+            { id: 5, name: "Kereta Express", type: TILE_TYPES.RR, price: 200, rent: [25, 50, 100, 200] },
             { id: 6, name: "Asrama Hufflepuff", type: TILE_TYPES.PROP, group: "lightblue", price: 100, rent: [6, 30, 90, 270, 400, 550], housePrice: 50 },
             { id: 7, name: "Peristiwa Magis", type: TILE_TYPES.CHANCE },
             { id: 8, name: "Dapur Hogwarts", type: TILE_TYPES.PROP, group: "lightblue", price: 100, rent: [6, 30, 90, 270, 400, 550], housePrice: 50 },
             { id: 9, name: "Kelas Herbologi", type: TILE_TYPES.PROP, group: "lightblue", price: 120, rent: [8, 40, 100, 300, 450, 600], housePrice: 50 },
-            { id: 10, name: "Detensi", type: TILE_TYPES.JAIL, desc: "Hanya Berkunjung" },
+            { id: 10, name: "Detensi", type: TILE_TYPES.JAIL, desc: "Kunjungan" },
             { id: 11, name: "Asrama Ravenclaw", type: TILE_TYPES.PROP, group: "pink", price: 140, rent: [10, 50, 150, 450, 625, 750], housePrice: 100 },
-            { id: 12, name: "Menara Burung Hantu", type: TILE_TYPES.UTIL, price: 150 },
+            { id: 12, name: "Menara Burung", type: TILE_TYPES.UTIL, price: 150 },
             { id: 13, name: "Kelas Mantra", type: TILE_TYPES.PROP, group: "pink", price: 140, rent: [10, 50, 150, 450, 625, 750], housePrice: 100 },
-            { id: 14, name: "Kelas Transfigurasi", type: TILE_TYPES.PROP, group: "pink", price: 160, rent: [12, 60, 180, 500, 700, 900], housePrice: 100 },
+            { id: 14, name: "Kelas Transfigur", type: TILE_TYPES.PROP, group: "pink", price: 160, rent: [12, 60, 180, 500, 700, 900], housePrice: 100 },
             { id: 15, name: "Kereta Thestral", type: TILE_TYPES.RR, price: 200, rent: [25, 50, 100, 200] },
             { id: 16, name: "Asrama Slytherin", type: TILE_TYPES.PROP, group: "orange", price: 180, rent: [14, 70, 200, 550, 750, 950], housePrice: 100 },
             { id: 17, name: "Peti Institut", type: TILE_TYPES.CHEST },
             { id: 18, name: "Kelas Ramuan", type: TILE_TYPES.PROP, group: "orange", price: 180, rent: [14, 70, 200, 550, 750, 950], housePrice: 100 },
             { id: 19, name: "Kelas Pertahanan", type: TILE_TYPES.PROP, group: "orange", price: 200, rent: [16, 80, 220, 600, 800, 1000], housePrice: 100 },
-            { id: 20, name: "Halaman Besar", type: TILE_TYPES.FREE, desc: "Parkir Bebas" },
+            { id: 20, name: "Parkir Bebas", type: TILE_TYPES.FREE },
             { id: 21, name: "Asrama Gryffindor", type: TILE_TYPES.PROP, group: "red", price: 220, rent: [18, 90, 250, 700, 875, 1050], housePrice: 150 },
             { id: 22, name: "Peristiwa Magis", type: TILE_TYPES.CHANCE },
             { id: 23, name: "Perpustakaan", type: TILE_TYPES.PROP, group: "red", price: 220, rent: [18, 90, 250, 700, 875, 1050], housePrice: 150 },
-            { id: 24, name: "Sayap Rumah Sakit", type: TILE_TYPES.PROP, group: "red", price: 240, rent: [20, 100, 300, 750, 925, 1100], housePrice: 150 },
+            { id: 24, name: "Sayap Medis", type: TILE_TYPES.PROP, group: "red", price: 240, rent: [20, 100, 300, 750, 925, 1100], housePrice: 150 },
             { id: 25, name: "Perahu Ajaib", type: TILE_TYPES.RR, price: 200, rent: [25, 50, 100, 200] },
             { id: 26, name: "Hutan Terlarang", type: TILE_TYPES.PROP, group: "yellow", price: 260, rent: [22, 110, 330, 800, 975, 1150], housePrice: 150 },
             { id: 27, name: "Menara Astronomi", type: TILE_TYPES.PROP, group: "yellow", price: 260, rent: [22, 110, 330, 800, 975, 1150], housePrice: 150 },
@@ -594,42 +743,40 @@
             { id: 36, name: "Peristiwa Magis", type: TILE_TYPES.CHANCE },
             { id: 37, name: "Gubuk Menjerit", type: TILE_TYPES.PROP, group: "darkblue", price: 350, rent: [35, 175, 500, 1100, 1300, 1500], housePrice: 200 },
             { id: 38, name: "Pajak Pendidikan", type: TILE_TYPES.TAX, amount: 100 },
-            { id: 39, name: "Kementerian Sihir", type: TILE_TYPES.PROP, group: "darkblue", price: 400, rent: [50, 200, 600, 1400, 1700, 2000], housePrice: 200 }
+            { id: 39, name: "Kementerian", type: TILE_TYPES.PROP, group: "darkblue", price: 400, rent: [50, 200, 600, 1400, 1700, 2000], housePrice: 200 }
         ];
 
-        // Map group colors to CSS hex
-        const GROUP_COLORS = {
-            'brown': '#8B4513', 'lightblue': '#87CEEB', 'pink': '#FF69B4', 'orange': '#FFA500',
-            'red': '#FF0000', 'yellow': '#FFD700', 'green': '#008000', 'darkblue': '#00008B'
-        };
-
-        // --- UTILS ---
+        // Utils
         const $ = id => document.getElementById(id);
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+        
         const showToast = (msg) => {
             const t = document.createElement('div');
             t.className = 'toast'; t.innerText = msg;
-            document.body.appendChild(t);
-            setTimeout(() => { t.style.opacity = '0'; setTimeout(()=>t.remove(), 300); }, 3000);
+            $('toast-container').appendChild(t);
+            // Trigger reflow
+            void t.offsetWidth;
+            t.classList.add('show');
+            setTimeout(() => { 
+                t.classList.remove('show'); 
+                setTimeout(()=>t.remove(), 300); 
+            }, 3000);
         };
         const generateCode = () => Math.random().toString(36).substring(2, 8).toUpperCase();
-        const sleep = ms => new Promise(r => setTimeout(r, ms));
 
         async function initAuth() {
             try {
-                // Gunakan anonymous login untuk mendapatkan session UID valid untuk RLS
                 const { data, error } = await supabase.auth.signInAnonymously();
                 if (error) throw error;
                 me.userId = data.user.id;
                 
-                // Cek resume game
+                // Cek resume session lokal
                 const savedRoom = localStorage.getItem('hw_monopoly_room');
                 const savedPlayerId = localStorage.getItem('hw_monopoly_player_id');
                 if (savedRoom && savedPlayerId) {
                     const { data: pData } = await supabase.from('players').select('*').eq('id', savedPlayerId).single();
                     if (pData && !pData.is_bankrupt) {
-                        me.id = pData.id;
-                        me.roomId = pData.room_id;
-                        me.isHost = pData.is_host;
+                        me.id = pData.id; me.roomId = pData.room_id; me.isHost = pData.is_host;
                         joinRoomRealtime(me.roomId);
                         return;
                     } else {
@@ -639,10 +786,12 @@
                 }
             } catch (err) {
                 console.error("Auth error:", err);
-                showToast("Gagal terhubung ke Kementerian.");
+                showToast("Terjadi gangguan sihir. Mode Luring diaktifkan untuk visual.");
+                // Fallback UI test mode if DB fails entirely (optional)
             }
         }
 
+        // Event Listeners Auth
         $('btn-show-join').addEventListener('click', () => {
             $('join-form').classList.remove('hidden');
             $('btn-show-join').classList.add('hidden');
@@ -650,7 +799,7 @@
         });
 
         $('btn-create-room').addEventListener('click', async () => {
-            if(!validateInput()) return;
+            if(!$('player-name').value) return showToast("Masukkan nama.");
             setLoading(true);
             try {
                 const code = generateCode();
@@ -658,31 +807,23 @@
                 if(errRoom) throw errRoom;
 
                 const { data: player, error: errPlayer } = await supabase.from('players').insert([{
-                    room_id: room.id,
-                    user_id: me.userId,
-                    player_name: $('player-name').value,
-                    house: $('player-house').value,
-                    piece: $('player-piece').value,
-                    is_host: true
+                    room_id: room.id, user_id: me.userId, player_name: $('player-name').value,
+                    house: $('player-house').value, piece: $('player-piece').value, is_host: true
                 }]).select().single();
                 if(errPlayer) throw errPlayer;
 
-                // Update room host
                 await supabase.from('rooms').update({ host_player_id: player.id }).eq('id', room.id);
 
                 me.id = player.id; me.roomId = room.id; me.isHost = true;
-                saveSession();
-                joinRoomRealtime(room.id, code);
-            } catch (e) {
-                console.error(e); showToast("Gagal membuat ruangan.");
-            }
+                saveSession(); joinRoomRealtime(room.id, code);
+            } catch (e) { showToast("Gagal membuat ruangan."); }
             setLoading(false);
         });
 
         $('btn-join-room').addEventListener('click', async () => {
-            if(!validateInput()) return;
+            if(!$('player-name').value) return showToast("Masukkan nama.");
             const code = $('room-code-input').value.toUpperCase();
-            if(code.length !== 6) return showToast("Kode ruangan tidak valid.");
+            if(code.length !== 6) return showToast("Kode 6 karakter.");
             
             setLoading(true);
             try {
@@ -690,32 +831,21 @@
                 if(errRoom || !room) throw new Error("Ruangan tidak ditemukan");
                 if(room.status !== 'waiting') throw new Error("Permainan sudah dimulai");
 
-                // Cek kapasitas
                 const { count } = await supabase.from('players').select('*', { count: 'exact' }).eq('room_id', room.id);
                 if(count >= room.max_players) throw new Error("Ruangan penuh");
 
                 const { data: player, error: errPlayer } = await supabase.from('players').insert([{
-                    room_id: room.id,
-                    user_id: me.userId,
-                    player_name: $('player-name').value,
-                    house: $('player-house').value,
-                    piece: $('player-piece').value
+                    room_id: room.id, user_id: me.userId, player_name: $('player-name').value,
+                    house: $('player-house').value, piece: $('player-piece').value
                 }]).select().single();
                 if(errPlayer) throw errPlayer;
 
                 me.id = player.id; me.roomId = room.id; me.isHost = false;
-                saveSession();
-                joinRoomRealtime(room.id, code);
-            } catch (e) {
-                console.error(e); showToast(e.message || "Gagal bergabung.");
-            }
+                saveSession(); joinRoomRealtime(room.id, code);
+            } catch (e) { showToast(e.message); }
             setLoading(false);
         });
 
-        function validateInput() {
-            if(!$('player-name').value) { showToast("Masukkan nama."); return false; }
-            return true;
-        }
         function setLoading(state) {
             $('auth-loading').classList.toggle('hidden', !state);
             $('auth-forms').classList.toggle('hidden', state);
@@ -729,21 +859,17 @@
             $('screen-auth').classList.add('hidden');
             $('screen-lobby').classList.remove('hidden');
             $('lobby-code').innerText = codeDisplay;
-            
             if(me.isHost) $('btn-start-game').classList.remove('hidden');
 
-            // Fetch initial state
             fetchGameState();
 
-            // Subscribe to changes
             realtimeChannel = supabase.channel(`room:${roomId}`)
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'players', filter: `room_id=eq.${roomId}` }, handlePlayerChange)
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'games', filter: `room_id=eq.${roomId}` }, handleGameChange)
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'properties', filter: `room_id=eq.${roomId}` }, handlePropertyChange)
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'game_events', filter: `room_id=eq.${roomId}` }, handleEventChange)
                 .subscribe((status) => {
-                    if(status === 'SUBSCRIBED') console.log("Realtime connected!");
-                    if(status === 'CLOSED' || status === 'CHANNEL_ERROR') showToast("Koneksi terputus. Refresh untuk Reconnect.");
+                    if(status === 'CLOSED' || status === 'CHANNEL_ERROR') showToast("Koneksi terputus. Refresh halaman.");
                 });
         }
 
@@ -760,36 +886,55 @@
             gameState.game = game;
             gameState.properties = props || [];
 
+            // Inisialisasi state visual lokal
+            gameState.players.forEach(p => { visualPiecesState[p.id] = { position: p.position }; });
+
             updateLobbyUI();
             
             if(gameState.status === 'playing') {
                 startGameUI();
-                renderAllPieces();
+                initBoard();
                 updateHUD();
+                // Tunggu DOM selesai render board sebelum menaruh bidak
+                setTimeout(renderAllPiecesInstantly, 500); 
             }
         }
 
+        // Handle DB Updates
         function handlePlayerChange(payload) {
-            if (payload.eventType === 'INSERT') gameState.players.push(payload.new);
+            if (payload.eventType === 'INSERT') {
+                gameState.players.push(payload.new);
+                visualPiecesState[payload.new.id] = { position: payload.new.position };
+            }
             else if (payload.eventType === 'UPDATE') {
                 const idx = gameState.players.findIndex(p => p.id === payload.new.id);
-                if (idx > -1) gameState.players[idx] = payload.new;
+                if (idx > -1) {
+                    const oldPlayer = gameState.players[idx];
+                    gameState.players[idx] = payload.new;
+                    
+                    // Deteksi jika posisi berubah dan bukan sedang animasi (animasi lokal dihandle terpisah)
+                    if (gameState.status === 'playing' && oldPlayer.position !== payload.new.position && !isAnimatingMove) {
+                        triggerRemoteMovementAnimation(payload.new);
+                    }
+                }
             }
             updateLobbyUI();
-            if(gameState.status === 'playing') {
-                updateHUD();
-                renderAllPieces();
-                checkWinCondition();
-            }
+            if(gameState.status === 'playing') { updateHUD(); checkWinCondition(); }
         }
 
         function handleGameChange(payload) {
             gameState.game = payload.new;
             if(gameState.status === 'waiting' && payload.eventType === 'INSERT') {
                 gameState.status = 'playing';
-                startGameUI();
+                startGameUI(); initBoard(); setTimeout(renderAllPiecesInstantly, 500);
             }
-            if(gameState.status === 'playing') updateHUD();
+            if(gameState.status === 'playing') {
+                updateHUD();
+                // Sinkronisasi animasi dadu remote
+                if(payload.new.phase === 'moving' && payload.new.current_player_id !== me.id) {
+                    showDiceResult(payload.new.dice_1, payload.new.dice_2);
+                }
+            }
         }
 
         function handlePropertyChange(payload) {
@@ -800,66 +945,50 @@
         }
 
         function handleEventChange(payload) {
+            addLogEntry(payload.new.message);
+        }
+
+        function addLogEntry(msg) {
             const logContainer = $('log-container');
             const div = document.createElement('div');
-            div.className = 'log-entry';
-            div.innerText = payload.new.message;
+            div.className = 'log-entry'; div.innerText = msg;
             logContainer.appendChild(div);
             logContainer.scrollTop = logContainer.scrollHeight;
         }
 
         function updateLobbyUI() {
-            const list = $('lobby-players-list');
-            list.innerHTML = '';
+            const list = $('lobby-players-list'); list.innerHTML = '';
             $('player-count').innerText = gameState.players.length;
-            
             gameState.players.forEach(p => {
                 const li = document.createElement('li');
-                li.className = `p-2 rounded bg-white bg-opacity-10 flex justify-between items-center border-l-4 house-${p.house}`;
-                li.innerHTML = `<span><b>${p.player_name}</b> <span class="text-xs">(${p.piece})</span></span> ${p.is_host ? '<span class="text-yellow-500 text-xs">HOST</span>' : ''}`;
+                li.className = `p-2 rounded bg-white bg-opacity-80 border border-gray-300 flex justify-between items-center border-l-8 house-${p.house}`;
+                li.innerHTML = `<span><b class="text-gray-800">${p.player_name}</b> <span class="text-xs text-gray-500">(${p.piece})</span></span> ${p.is_host ? '<span class="text-yellow-600 text-xs font-bold border border-yellow-600 px-1 rounded">HOST</span>' : ''}`;
                 list.appendChild(li);
             });
-            
-            if(me.isHost) {
-                $('btn-start-game').disabled = gameState.players.length < 2;
-            }
+            if(me.isHost) $('btn-start-game').disabled = gameState.players.length < 2;
         }
 
         $('btn-start-game').addEventListener('click', async () => {
-            if(gameState.players.length < 2) return showToast("Minimal 2 pemain.");
+            if(gameState.players.length < 2) return;
             setLoading(true);
             try {
-                // 1. Update room status
                 await supabase.from('rooms').update({ status: 'playing', started_at: new Date() }).eq('id', me.roomId);
-                
-                // 2. Create games state
-                const firstPlayer = gameState.players[0].id;
-                await supabase.from('games').insert([{
-                    room_id: me.roomId,
-                    current_player_id: firstPlayer,
-                    phase: 'roll'
-                }]);
-
-                // 3. Log event
-                await logEvent('START', 'Permainan dimulai! Giliran ' + gameState.players[0].player_name);
-                
-            } catch (e) {
-                console.error(e); showToast("Gagal memulai.");
-            }
+                await supabase.from('games').insert([{ room_id: me.roomId, current_player_id: gameState.players[0].id, phase: 'roll' }]);
+                await supabase.from('game_events').insert([{room_id: me.roomId, player_id: me.id, event_type: 'START', message: 'Permainan dimulai!'}]);
+            } catch (e) { showToast("Gagal memulai."); }
             setLoading(false);
         });
 
         function startGameUI() {
             $('screen-lobby').classList.add('hidden');
             $('screen-game').classList.remove('hidden');
-            generateBoard();
-            renderAllPieces();
-            updateHUD();
+            // Menangani resize window untuk mengatur ulang posisi bidak
+            window.addEventListener('resize', renderAllPiecesInstantly);
         }
 
-        function generateBoard() {
+        function initBoard() {
             const board = $('board');
-            // Remove existing tiles (keep center)
+            // Hapus tile lama (kecuali center)
             Array.from(board.children).forEach(c => { if(!c.classList.contains('board-center')) c.remove(); });
             
             BOARD_DATA.forEach(tile => {
@@ -867,7 +996,7 @@
                 el.className = 'tile';
                 el.id = `tile-${tile.id}`;
                 
-                // Positioning in 11x11 Grid
+                // Set Posisi Grid
                 if(tile.id === 0) { el.classList.add('row-bottom', 'col-right', 'tile-corner'); }
                 else if(tile.id < 10) { el.classList.add('row-bottom'); el.style.gridColumn = 11 - tile.id; }
                 else if(tile.id === 10) { el.classList.add('row-bottom', 'col-left', 'tile-corner'); }
@@ -877,25 +1006,27 @@
                 else if(tile.id === 30) { el.classList.add('row-top', 'col-right', 'tile-corner'); }
                 else { el.classList.add('col-right'); el.style.gridRow = tile.id - 29; }
 
-                // Content
+                // HTML Isi Tile
                 let html = '';
-                if(tile.group) {
-                    html += `<div class="tile-color-bar" style="background-color: ${GROUP_COLORS[tile.group]}"></div>`;
-                }
-                html += `<div class="tile-name">${tile.name}</div>`;
-                if(tile.price) {
-                    html += `<div class="tile-price">₲${tile.price}</div>`;
-                }
-                if(tile.desc) {
-                    html += `<div class="text-[0.5rem] p-1">${tile.desc}</div>`;
-                }
+                if(tile.group) html += `<div class="tile-color-bar" style="background-color: var(--prop-${tile.group})"></div>`;
                 
-                // Owner indicator area
+                html += `<div class="tile-content">`;
+                html += `<div class="tile-name">${tile.name}</div>`;
+                
+                // Ikon khusus untuk corner/utilitas
+                if(tile.type === TILE_TYPES.CHEST) html += `<div class="text-[1.2vw] mb-1">🧰</div>`;
+                else if(tile.type === TILE_TYPES.CHANCE) html += `<div class="text-[1.2vw] mb-1">✨</div>`;
+                else if(tile.type === TILE_TYPES.RR) html += `<div class="text-[1.2vw] mb-1">🚂</div>`;
+                else if(tile.type === TILE_TYPES.UTIL) html += `<div class="text-[1.2vw] mb-1">⚡</div>`;
+                
+                if(tile.price) html += `<div class="tile-price">₲${tile.price}</div>`;
+                else if(tile.desc) html += `<div class="text-[0.6vw] text-gray-600">${tile.desc}</div>`;
+                html += `</div>`;
+                
                 html += `<div class="tile-owner-indicator" id="owner-bar-${tile.id}"></div>`;
                 html += `<div class="tile-level" id="level-${tile.id}"></div>`;
 
-                el.innerHTML = html;
-                board.appendChild(el);
+                el.innerHTML = html; board.appendChild(el);
             });
             renderBoardOwnership();
         }
@@ -906,70 +1037,134 @@
                 const owner = gameState.players.find(p => p.id === prop.owner_player_id);
                 if(owner) {
                     const bar = $(`owner-bar-${prop.tile_id}`);
-                    if(bar) {
-                        const houseColors = { 'Gryffindor': 'var(--burgundy)', 'Slytherin': 'var(--slytherin-green)', 'Ravenclaw': 'var(--ravenclaw-blue)', 'Hufflepuff': 'var(--hufflepuff-yellow)' };
-                        bar.style.backgroundColor = houseColors[owner.house];
-                    }
-                }
-                // Stars for level
-                const levelDiv = $(`level-${prop.tile_id}`);
-                if(levelDiv && prop.level > 0) {
-                    levelDiv.innerHTML = '★'.repeat(prop.level);
+                    if(bar) bar.style.backgroundColor = `var(--${owner.house.toLowerCase()})`;
+                    const levelDiv = $(`level-${prop.tile_id}`);
+                    if(levelDiv && prop.level > 0) levelDiv.innerHTML = '★'.repeat(prop.level);
                 }
             });
         }
 
-        function renderAllPieces() {
+        function getTileCoordinates(tileId, playerIndex, totalPlayersOnTile) {
+            const tile = $(`tile-${tileId}`);
+            if(!tile) return {x:0, y:0};
+            
+            const boardRect = $('board-container').getBoundingClientRect();
+            const tileRect = tile.getBoundingClientRect();
+            
+            // Posisi absolut relatif terhadap kontainer papan
+            let x = tileRect.left - boardRect.left;
+            let y = tileRect.top - boardRect.top;
+            
+            // Hitung center tile
+            let centerX = x + (tileRect.width / 2);
+            let centerY = y + (tileRect.height / 2);
+
+            // Offset agar bidak tidak menumpuk sempurna jika berada di kotak yang sama
+            const pieceSize = window.innerWidth < 900 ? 20 : 28;
+            const offsetDist = pieceSize * 0.4;
+            
+            if (totalPlayersOnTile > 1) {
+                // Posisi melingkar (spiral sederhana)
+                const angle = (playerIndex / totalPlayersOnTile) * Math.PI * 2;
+                centerX += Math.cos(angle) * offsetDist;
+                centerY += Math.sin(angle) * offsetDist;
+            }
+            
+            return {
+                x: centerX - (pieceSize / 2),
+                y: centerY - (pieceSize / 2)
+            };
+        }
+
+        function renderAllPiecesInstantly() {
+            if(isAnimatingMove) return; // Jangan render ulang instan saat sedang animasi jalan
+            
             const layer = $('pieces-layer');
             layer.innerHTML = '';
             
-            // Group players by position to offset them
+            // Kelompokkan pemain berdasarkan posisi visual
             const posMap = {};
             gameState.players.forEach(p => {
                 if(p.is_bankrupt) return;
-                if(!posMap[p.position]) posMap[p.position] = [];
-                posMap[p.position].push(p);
+                const pos = visualPiecesState[p.id]?.position || p.position;
+                if(!posMap[pos]) posMap[pos] = [];
+                posMap[pos].push(p);
             });
-
-            const boardRect = $('board').getBoundingClientRect();
 
             for (let pos in posMap) {
                 const playersHere = posMap[pos];
-                const tileEl = $(`tile-${pos}`);
-                if(!tileEl) continue;
-                
-                // Calculate center relative to board
-                const tRect = tileEl.getBoundingClientRect();
-                // Because of CSS transform scale/perspective, absolute positioning based on rects might be tricky.
-                // Better approach for CSS Grid 3D: Append pieces directly to tiles, OR calculate offsets carefully.
-                // I will append pieces INSIDE the tiles for easier positioning relative to the transformed board.
-            }
-            
-            // Better approach: Append to tile elements directly
-            document.querySelectorAll('.piece').forEach(p => p.remove()); // Clear old
-            
-            gameState.players.forEach(p => {
-                if(p.is_bankrupt) return;
-                const tile = $(`tile-${p.position}`);
-                if(tile) {
+                playersHere.forEach((p, idx) => {
                     const piece = document.createElement('div');
                     piece.className = 'piece';
                     piece.dataset.piece = p.piece;
                     piece.id = `piece-${p.id}`;
+                    piece.style.borderColor = `var(--${p.house.toLowerCase()})`;
                     
-                    // Offset based on index on tile to prevent hiding
-                    const existing = tile.querySelectorAll('.piece').length;
-                    const offset = existing * 5;
-                    piece.style.bottom = `${5 + offset}px`;
-                    piece.style.right = `${5 + offset}px`;
+                    // Simbol dari select option text
+                    const symbols = {"Topi":"🎩","Tongkat":"🪄","Snitch":"🦅","Burung":"🦉","Cauldron":"⚗️","Potion":"🧪"};
+                    piece.innerHTML = symbols[p.piece] || "♟";
+
+                    const coords = getTileCoordinates(pos, idx, playersHere.length);
+                    piece.style.transform = `translate(${coords.x}px, ${coords.y}px)`;
                     
-                    // House border
-                    const houseColors = { 'Gryffindor': 'var(--burgundy)', 'Slytherin': 'var(--slytherin-green)', 'Ravenclaw': 'var(--ravenclaw-blue)', 'Hufflepuff': 'var(--hufflepuff-yellow)' };
-                    piece.style.borderColor = houseColors[p.house];
+                    layer.appendChild(piece);
+                });
+            }
+        }
+
+        async function animateMovement(playerId, startPos, endPos) {
+            isAnimatingMove = true;
+            const piece = $(`piece-${playerId}`);
+            if(!piece) { isAnimatingMove = false; return; }
+            
+            let current = startPos;
+            
+            // Hitung total langkah, pertimbangkan putaran melewati kotak GO (0)
+            let steps = endPos - startPos;
+            if (steps < 0) steps += 40; 
+            // Jika masuk penjara (GOTO JAIL), langkahnya khusus (langsung lompat atau animasi cepat)
+            if (startPos === 30 && endPos === 10) steps = -20; // Special case
+
+            if (steps === -20) {
+                 // Animasi diseret mundur ke detensi
+                visualPiecesState[playerId].position = 10;
+                const coords = getTileCoordinates(10, 0, 1);
+                piece.style.transform = `translate(${coords.x}px, ${coords.y}px) rotate(-720deg)`;
+                await sleep(600);
+            } else {
+                // Jalan satu per satu
+                for(let i = 0; i < steps; i++) {
+                    current = (current + 1) % 40;
+                    visualPiecesState[playerId].position = current;
                     
-                    tile.appendChild(piece);
+                    // Supaya tidak menumpuk saat animasi, gunakan idx 0 untuk menghitung koordinat
+                    const coords = getTileCoordinates(current, 0, 1);
+                    
+                    // Beri sedikit efek lompat (bounce) via CSS translate
+                    piece.style.transition = 'transform 0.25s linear';
+                    piece.style.transform = `translate(${coords.x}px, ${coords.y}px) scale(1.1)`;
+                    
+                    // Bunyikan langkah (opsional, tapi tidak disarankan tanpa interaksi user)
+                    await sleep(250); 
+                    
+                    // Kembalikan ukuran normal di pertengahan jalan
+                    piece.style.transform = `translate(${coords.x}px, ${coords.y}px) scale(1)`;
+                    await sleep(50);
                 }
-            });
+            }
+            
+            // Animasi selesai, paskan posisi (jika ada pemain lain di kotak tersebut)
+            piece.style.transition = 'transform 0.4s ease-in-out';
+            renderAllPiecesInstantly(); // Render semua ulang untuk menata tumpukan
+            isAnimatingMove = false;
+        }
+
+        async function triggerRemoteMovementAnimation(playerData) {
+            const oldPos = visualPiecesState[playerData.id].position;
+            const newPos = playerData.position;
+            if(oldPos !== newPos) {
+                await animateMovement(playerData.id, oldPos, newPos);
+            }
         }
 
         function updateHUD() {
@@ -978,113 +1173,130 @@
             const isMyTurn = currentPlayer && currentPlayer.id === me.id;
             
             $('turn-indicator').innerText = `Giliran: ${currentPlayer ? currentPlayer.player_name : '...'}`;
-            $('turn-indicator').style.color = isMyTurn ? 'var(--gold)' : 'var(--parchment)';
+            $('turn-indicator').style.color = isMyTurn ? 'var(--gold)' : 'var(--text-dark)';
             
-            $('dice1').innerText = gameState.game.dice_1 || '-';
-            $('dice2').innerText = gameState.game.dice_2 || '-';
+            // Update Dadu Statis (jika baru masuk/refresh)
+            if(!$('dice1').classList.contains('is-rolling')) {
+                setDiceFace('dice1', gameState.game.dice_1 || 1);
+                setDiceFace('dice2', gameState.game.dice_2 || 1);
+            }
 
-            // Buttons state
             $('btn-roll').disabled = !(isMyTurn && gameState.game.phase === 'roll');
             $('btn-end-turn').disabled = !(isMyTurn && gameState.game.phase === 'end');
 
-            // Player List
-            const list = $('game-players-list');
-            list.innerHTML = '';
+            const list = $('game-players-list'); list.innerHTML = '';
+            const symbols = {"Topi":"🎩","Tongkat":"🪄","Snitch":"🦅","Burung":"🦉","Cauldron":"⚗️","Potion":"🧪"};
+            
             gameState.players.forEach(p => {
+                const isActive = p.id === gameState.game.current_player_id;
                 const div = document.createElement('div');
-                div.className = `player-card house-${p.house} ${p.id === gameState.game.current_player_id ? 'active' : ''} ${p.is_bankrupt ? 'opacity-50 grayscale' : ''}`;
+                div.className = `player-card house-${p.house} ${isActive ? 'active' : ''} ${p.is_bankrupt ? 'opacity-40 grayscale' : ''}`;
                 div.innerHTML = `
-                    <div>
-                        <div class="font-bold">${p.player_name}</div>
-                        <div class="text-xs">${p.piece}</div>
+                    <div class="flex items-center gap-2">
+                        <div class="text-xl">${symbols[p.piece]}</div>
+                        <div>
+                            <div class="font-bold text-gray-800">${p.player_name}</div>
+                            <div class="text-[0.65rem] text-gray-500 uppercase font-bold">${p.house}</div>
+                        </div>
                     </div>
                     <div class="text-right">
-                        <div class="font-bold text-yellow-400">₲${p.balance}</div>
-                        ${p.is_bankrupt ? '<span class="text-red-500 text-xs">BANGKRUT</span>' : ''}
+                        <div class="font-bold text-yellow-600 text-lg">₲${p.balance}</div>
+                        ${p.is_bankrupt ? '<span class="text-red-500 text-xs font-bold">BANGKRUT</span>' : ''}
+                        ${p.detention_turns > 0 ? `<span class="text-gray-500 text-xs border border-gray-400 rounded px-1">Detensi: ${p.detention_turns}</span>` : ''}
                     </div>
                 `;
                 list.appendChild(div);
             });
         }
 
+        function setDiceFace(diceId, number) {
+            const dice = $(diceId);
+            dice.className = 'dice-3d'; // Reset classes
+            if(number >= 1 && number <= 6) dice.classList.add(`show-${number}`);
+        }
+
+        function showDiceResult(d1, d2) {
+            setDiceFace('dice1', d1); setDiceFace('dice2', d2);
+        }
+
         $('btn-roll').addEventListener('click', async () => {
             $('btn-roll').disabled = true;
             
-            // Client side random for simplicity, in production server should roll
+            // Randomizer Lokal
             const d1 = Math.floor(Math.random() * 6) + 1;
             const d2 = Math.floor(Math.random() * 6) + 1;
             const isDouble = d1 === d2;
             const total = d1 + d2;
             
-            // Animasi dadu lokal
-            $('dice1').classList.add('rolling');
-            $('dice2').classList.add('rolling');
-            
-            const myPlayer = gameState.players.find(p => p.id === me.id);
-            let newPos = (myPlayer.position + total) % 40;
-            let passedGo = (myPlayer.position + total) >= 40;
+            // Mulai Animasi Dadu
+            $('dice1').classList.remove('show-1','show-2','show-3','show-4','show-5','show-6');
+            $('dice2').classList.remove('show-1','show-2','show-3','show-4','show-5','show-6');
+            $('dice1').classList.add('is-rolling');
+            $('dice2').classList.add('is-rolling');
 
-            // Jail logic
+            const myPlayer = gameState.players.find(p => p.id === me.id);
+            const oldPos = myPlayer.position;
+            let newPos = (oldPos + total) % 40;
+            let passedGo = (oldPos + total) >= 40;
             let newConsecutive = isDouble ? gameState.game.consecutive_doubles + 1 : 0;
             let phase = 'action';
             
+            // Logika Detensi (Penjara)
             if (myPlayer.detention_turns > 0) {
-                // Di penjara
                 if (isDouble) {
-                    await logEvent('JAIL', `${myPlayer.player_name} mendapat double dan bebas dari detensi!`);
+                    addLogEvent('JAIL', `${myPlayer.player_name} mendapat Double! Bebas dari detensi.`);
                     await supabase.from('players').update({ detention_turns: 0 }).eq('id', me.id);
-                    newConsecutive = 0; // Reset
+                    newConsecutive = 0;
                 } else {
                     let nextJail = myPlayer.detention_turns - 1;
                     if (nextJail === 0) {
-                        // Terpaksa bayar 50
-                        await logEvent('JAIL', `${myPlayer.player_name} membayar ₲50 untuk keluar detensi.`);
+                        addLogEvent('JAIL', `${myPlayer.player_name} membayar ₲50 untuk keluar detensi.`);
                         await supabase.rpc('adjust_balance', { p_player_id: me.id, p_amount: -50 });
                     } else {
-                        await logEvent('JAIL', `${myPlayer.player_name} gagal mendapat double. Sisa detensi: ${nextJail}`);
+                        addLogEvent('JAIL', `${myPlayer.player_name} gagal mendapat double. Sisa detensi: ${nextJail}`);
                         await supabase.from('players').update({ detention_turns: nextJail }).eq('id', me.id);
-                        phase = 'end'; // Skip action
-                        newPos = myPlayer.position; // Don't move
-                        passedGo = false;
+                        phase = 'end'; newPos = oldPos; passedGo = false; // Skip gerak
                     }
                 }
             } else if (newConsecutive === 3) {
-                await logEvent('JAIL', `${myPlayer.player_name} ngebut (3x double) dan ditilang ke Detensi!`);
-                newPos = 10;
-                passedGo = false;
-                phase = 'end';
-                newConsecutive = 0;
+                addLogEvent('JAIL', `Kecepatan sihir berlebih! ${myPlayer.player_name} masuk Detensi!`);
+                newPos = 10; passedGo = false; phase = 'end'; newConsecutive = 0;
                 await supabase.from('players').update({ detention_turns: 3, position: 10 }).eq('id', me.id);
             }
 
-            // Update state temporarily in UI for animation
-            setTimeout(async () => {
-                $('dice1').classList.remove('rolling'); $('dice1').innerText = d1;
-                $('dice2').classList.remove('rolling'); $('dice2').innerText = d2;
+            // Tunggu animasi dadu (0.8s)
+            await sleep(800);
+            $('dice1').classList.remove('is-rolling');
+            $('dice2').classList.remove('is-rolling');
+            showDiceResult(d1, d2);
+            
+            addLogEvent('DICE', `${myPlayer.player_name} melempar 🎲 ${total}.`);
+
+            // Update Game State DB ke 'moving'
+            await supabase.from('games').update({
+                dice_1: d1, dice_2: d2, dice_total: total,
+                consecutive_doubles: newConsecutive,
+                phase: 'moving' 
+            }).eq('id', gameState.game.id);
+
+            // Jika boleh bergerak
+            if (phase !== 'end') {
+                // Update DB Posisi
+                await supabase.from('players').update({ position: newPos }).eq('id', me.id);
                 
-                await logEvent('DICE', `${myPlayer.player_name} melempar ${d1} + ${d2} = ${total}`);
+                // Jalankan animasi lokal
+                await animateMovement(me.id, oldPos, newPos);
                 
-                if(passedGo && phase !== 'end') {
+                if(passedGo) {
                     await supabase.rpc('adjust_balance', { p_player_id: me.id, p_amount: 200 });
-                    await logEvent('GO', `${myPlayer.player_name} melewati MULAI. Terima ₲200.`);
+                    addLogEvent('GO', `${myPlayer.player_name} melewati MULAI. Terima ₲200.`);
                 }
                 
-                // Update DB Game state (This triggers realtime update to all)
-                await supabase.from('games').update({
-                    dice_1: d1, dice_2: d2, dice_total: total,
-                    consecutive_doubles: newConsecutive,
-                    phase: 'moving' // custom phase for animation barrier
-                }).eq('id', gameState.game.id);
-
-                // Update Player pos
-                if (phase !== 'end') {
-                    await supabase.from('players').update({ position: newPos }).eq('id', me.id);
-                }
-
-                // Wait for DB sync, then evaluate
-                setTimeout(() => evaluateTile(newPos, isDouble), 500);
-
-            }, 500);
+                // Evaluasi Tile tujuan
+                evaluateTile(newPos, isDouble);
+            } else {
+                setPhase('end');
+            }
         });
 
         async function evaluateTile(posId, isDouble) {
@@ -1092,34 +1304,32 @@
             const myPlayer = gameState.players.find(p => p.id === me.id);
             
             if (tile.type === TILE_TYPES.GOTO) {
-                await logEvent('JAIL', `${myPlayer.player_name} dikirim ke Detensi!`);
+                addLogEvent('JAIL', `Terpergok Filch! ${myPlayer.player_name} dikirim ke Detensi!`);
+                await animateMovement(me.id, 30, 10); // Animasi seret
                 await supabase.from('players').update({ position: 10, detention_turns: 3 }).eq('id', me.id);
-                setPhase('end');
-                return;
+                setPhase('end'); return;
             }
             
             if (tile.type === TILE_TYPES.TAX) {
-                await logEvent('TAX', `${myPlayer.player_name} membayar pajak ₲${tile.amount}.`);
-                const success = await supabase.rpc('adjust_balance', { p_player_id: me.id, p_amount: -tile.amount });
+                addLogEvent('TAX', `${myPlayer.player_name} membayar pajak ₲${tile.amount}.`);
+                const {data: success} = await supabase.rpc('adjust_balance', { p_player_id: me.id, p_amount: -tile.amount });
                 if(!success) handleBankruptcy();
-                setPhase(isDouble ? 'roll' : 'end');
-                return;
+                setPhase(isDouble ? 'roll' : 'end'); return;
             }
             
             if (tile.type === TILE_TYPES.CHANCE || tile.type === TILE_TYPES.CHEST) {
-                drawCard(tile.type, isDouble);
-                return; // phase handling inside drawCard
+                drawCard(tile.type, isDouble); return;
             }
             
-            if (tile.type === TILE_TYPES.PROP || tile.type === TILE_TYPES.RR || tile.type === TILE_TYPES.UTIL) {
+            if ([TILE_TYPES.PROP, TILE_TYPES.RR, TILE_TYPES.UTIL].includes(tile.type)) {
                 const propState = gameState.properties.find(p => p.tile_id === posId);
                 
                 if (!propState || !propState.owner_player_id) {
-                    // Unowned - Show Buy Modal
+                    // Modal Beli
                     $('action-title').innerText = tile.name;
-                    $('action-desc').innerText = "Properti ini belum memiliki pemilik.";
+                    $('action-desc').innerText = "Aset ini belum dikuasai siapapun.";
                     $('action-price').innerText = `₲${tile.price}`;
-                    $('action-rent').innerText = tile.type === TILE_TYPES.PROP ? `₲${tile.rent[0]}` : "Bervariasi";
+                    $('action-rent').innerText = tile.type === TILE_TYPES.PROP ? `₲${tile.rent[0]}` : (tile.type === TILE_TYPES.RR ? "₲25" : "Bervariasi");
                     
                     $('btn-action-primary').onclick = () => buyProperty(tile, isDouble);
                     $('btn-action-secondary').onclick = () => {
@@ -1130,49 +1340,37 @@
                     $('btn-action-primary').disabled = myPlayer.balance < tile.price;
                     $('modal-action').classList.remove('hidden');
                 } else if (propState.owner_player_id !== me.id) {
-                    // Owned by someone else - Pay Rent
-                    if(!propState.mortgaged) {
-                        const owner = gameState.players.find(p => p.id === propState.owner_player_id);
-                        if(!owner.is_bankrupt && owner.detention_turns === 0) {
-                            let rentAmount = calculateRent(tile, propState);
-                            await logEvent('RENT', `${myPlayer.player_name} membayar sewa ₲${rentAmount} kepada ${owner.player_name}.`);
-                            
-                            // Secure transfer using RPC
-                            const { data: success, error } = await supabase.rpc('pay_rent', {
-                                p_payer_id: me.id,
-                                p_payee_id: owner.id,
-                                p_amount: rentAmount
-                            });
-                            
-                            if (error || !success) {
-                                handleBankruptcy();
-                            }
-                        }
+                    // Bayar Sewa
+                    const owner = gameState.players.find(p => p.id === propState.owner_player_id);
+                    if(!owner.is_bankrupt && owner.detention_turns === 0) {
+                        let rentAmount = calculateRent(tile, propState);
+                        addLogEvent('RENT', `${myPlayer.player_name} membayar ₲${rentAmount} kepada ${owner.player_name}.`);
+                        
+                        const { data: success } = await supabase.rpc('pay_rent', {
+                            p_payer_id: me.id, p_payee_id: owner.id, p_amount: rentAmount
+                        });
+                        if (!success) handleBankruptcy();
                     }
                     setPhase(isDouble ? 'roll' : 'end');
                 } else {
-                    // Owned by me
+                    // Milik Sendiri
                     setPhase(isDouble ? 'roll' : 'end');
                 }
                 return;
             }
             
-            // GO, Jail (Visit), Free Parking
-            setPhase(isDouble ? 'roll' : 'end');
+            setPhase(isDouble ? 'roll' : 'end'); // Default: Bebas
         }
 
         function calculateRent(tile, propState) {
-            if(tile.type === TILE_TYPES.PROP) {
-                // Simplified: no color set multiplier check for scope, just use base or level
-                return tile.rent[propState.level];
-            } else if (tile.type === TILE_TYPES.RR) {
-                // Count how many RR owner has
+            if(tile.type === TILE_TYPES.PROP) return tile.rent[propState.level];
+            if (tile.type === TILE_TYPES.RR) {
                 const ownerRRs = gameState.properties.filter(p => p.owner_player_id === propState.owner_player_id && [5,15,25,35].includes(p.tile_id)).length;
                 return tile.rent[ownerRRs - 1] || 25;
-            } else if (tile.type === TILE_TYPES.UTIL) {
+            }
+            if (tile.type === TILE_TYPES.UTIL) {
                 const ownerUtils = gameState.properties.filter(p => p.owner_player_id === propState.owner_player_id && [12,28].includes(p.tile_id)).length;
-                const multiplier = ownerUtils === 2 ? 10 : 4;
-                return gameState.game.dice_total * multiplier;
+                return gameState.game.dice_total * (ownerUtils === 2 ? 10 : 4);
             }
             return 0;
         }
@@ -1180,21 +1378,12 @@
         async function buyProperty(tile, isDouble) {
             $('btn-action-primary').disabled = true;
             try {
-                const { data: success, error } = await supabase.rpc('buy_property', {
-                    p_room_id: me.roomId,
-                    p_player_id: me.id,
-                    p_tile_id: tile.id,
-                    p_price: tile.price
+                const { data: success } = await supabase.rpc('buy_property', {
+                    p_room_id: me.roomId, p_player_id: me.id, p_tile_id: tile.id, p_price: tile.price
                 });
-                
-                if (success) {
-                    await logEvent('BUY', `${gameState.players.find(p=>p.id===me.id).player_name} membeli ${tile.name} seharga ₲${tile.price}.`);
-                } else {
-                    showToast("Gagal membeli (Mungkin saldo tidak cukup atau sudah dibeli).");
-                }
-            } catch (e) {
-                console.error(e);
-            }
+                if (success) addLogEvent('BUY', `✅ Membeli ${tile.name} (₲${tile.price}).`);
+                else showToast("Transaksi gagal.");
+            } catch (e) { console.error(e); }
             $('modal-action').classList.add('hidden');
             setPhase(isDouble ? 'roll' : 'end');
         }
@@ -1203,32 +1392,32 @@
             const isChance = type === TILE_TYPES.CHANCE;
             $('card-type').innerText = isChance ? "Peristiwa Magis" : "Peti Institut";
             
-            // Random basic effects for demonstration
             const effects = [
                 { title: "Juara Ramuan", desc: "Anda memenangkan kontes ramuan. Terima ₲50.", amt: 50 },
-                { title: "Sapu Rusak", desc: "Sapu terbang anda rusak. Bayar ₲50.", amt: -50 },
-                { title: "Bantuan Profesor", desc: "Penilaian asrama. Terima ₲100.", amt: 100 },
-                { title: "Denda Perpustakaan", desc: "Buku terlambat dikembalikan. Bayar ₲20.", amt: -20 }
+                { title: "Sapu Rusak", desc: "Sapu terbang anda patah. Bayar ₲50.", amt: -50 },
+                { title: "Bantuan Profesor", desc: "Asrama anda mendapat poin. Terima ₲100.", amt: 100 },
+                { title: "Denda Perpustakaan", desc: "Buku sihir terlambat dikembalikan. Bayar ₲20.", amt: -20 },
+                { title: "Felix Felicis", desc: "Keberuntungan cair! Terima sumbangan ₲150.", amt: 150 }
             ];
             
             const card = effects[Math.floor(Math.random() * effects.length)];
             
             $('card-title').innerText = card.title;
-            $('card-desc').innerText = card.desc;
+            $('card-desc').innerText = `"${card.desc}"`;
             
             $('btn-card-ok').onclick = async () => {
-                $('modal-card').classList.add('hidden');
                 $('card-element').classList.remove('show');
+                setTimeout(() => $('modal-card').classList.add('hidden'), 300); // Tunggu flip animasi
                 
-                await logEvent('CARD', `${gameState.players.find(p=>p.id===me.id).player_name} menarik kartu: ${card.title}.`);
-                const success = await supabase.rpc('adjust_balance', { p_player_id: me.id, p_amount: card.amt });
+                addLogEvent('CARD', `Membuka Kartu: ${card.title}.`);
+                const {data: success} = await supabase.rpc('adjust_balance', { p_player_id: me.id, p_amount: card.amt });
                 if(!success) handleBankruptcy();
                 
                 setPhase(isDouble ? 'roll' : 'end');
             };
             
             $('modal-card').classList.remove('hidden');
-            setTimeout(() => $('card-element').classList.add('show'), 50);
+            setTimeout(() => $('card-element').classList.add('show'), 50); // Memicu transisi flip
         }
 
         async function setPhase(newPhase) {
@@ -1237,8 +1426,6 @@
 
         $('btn-end-turn').addEventListener('click', async () => {
             $('btn-end-turn').disabled = true;
-            
-            // Find next active player
             let currentIndex = gameState.players.findIndex(p => p.id === me.id);
             let nextPlayer = null;
             let loopCount = 0;
@@ -1246,46 +1433,32 @@
             while(loopCount < gameState.players.length) {
                 currentIndex = (currentIndex + 1) % gameState.players.length;
                 let candidate = gameState.players[currentIndex];
-                if (!candidate.is_bankrupt) {
-                    nextPlayer = candidate;
-                    break;
-                }
+                if (!candidate.is_bankrupt) { nextPlayer = candidate; break; }
                 loopCount++;
             }
             
             if (nextPlayer) {
                 await supabase.from('games').update({ 
-                    current_player_id: nextPlayer.id,
-                    phase: 'roll',
-                    turn_number: gameState.game.turn_number + 1,
-                    dice_1: 0, dice_2: 0
+                    current_player_id: nextPlayer.id, phase: 'roll',
+                    turn_number: gameState.game.turn_number + 1, dice_1: 0, dice_2: 0
                 }).eq('id', gameState.game.id);
             }
         });
 
-        async function logEvent(type, msg) {
-            await supabase.from('game_events').insert([{
-                room_id: me.roomId,
-                player_id: me.id,
-                event_type: type,
-                message: msg
-            }]);
+        async function addLogEvent(type, msg) {
+            // Helper function agar lebih ringkas
+            await supabase.from('game_events').insert([{ room_id: me.roomId, player_id: me.id, event_type: type, message: msg }]);
         }
 
         function handleBankruptcy() {
             showToast("ANDA BANGKRUT!");
-            // Property wipe logic should ideally be an RPC, but for brevity we update DB from client
             gameState.properties.filter(p => p.owner_player_id === me.id).forEach(async (prop) => {
-                await supabase.from('properties').update({ owner_player_id: null, level: 0, mortgaged: false }).eq('id', prop.id);
+                await supabase.from('properties').update({ owner_player_id: null, level: 0 }).eq('id', prop.id);
             });
-            logEvent('BANKRUPT', `${gameState.players.find(p=>p.id===me.id).player_name} telah BANGKRUT!`);
-            // Status is set via RPC mostly, but ensure:
+            addLogEvent('BANKRUPT', `💀 ${gameState.players.find(p=>p.id===me.id).player_name} BANGKRUT!`);
             supabase.from('players').update({ is_bankrupt: true, balance: 0 }).eq('id', me.id);
             
-            // End turn automatically if it was my turn
-            if(gameState.game.current_player_id === me.id) {
-                $('btn-end-turn').click();
-            }
+            if(gameState.game.current_player_id === me.id) $('btn-end-turn').click();
         }
 
         function checkWinCondition() {
@@ -1293,41 +1466,39 @@
             if (activePlayers.length === 1 && gameState.status === 'playing') {
                 const winner = activePlayers[0];
                 $('winner-name').innerText = winner.player_name;
-                $('winner-stats').innerText = `Sisa Saldo: ₲${winner.balance}`;
+                $('winner-stats').innerText = `Sisa Kekayaan: ₲${winner.balance}`;
                 $('modal-winner').classList.remove('hidden');
                 
-                if (me.isHost) {
-                    supabase.from('rooms').update({ status: 'finished' }).eq('id', me.roomId);
-                }
+                if (me.isHost) supabase.from('rooms').update({ status: 'finished' }).eq('id', me.roomId);
             }
         }
 
         $('btn-manage').addEventListener('click', () => {
-            const list = $('manage-list');
-            list.innerHTML = '';
-            
+            const list = $('manage-list'); list.innerHTML = '';
             const myProps = gameState.properties.filter(p => p.owner_player_id === me.id);
+            
             if (myProps.length === 0) {
-                list.innerHTML = '<p class="text-sm italic">Anda belum memiliki properti apapun.</p>';
+                list.innerHTML = '<p class="text-sm italic text-gray-500 text-center mt-4">Anda belum memiliki aset apapun.</p>';
             } else {
                 myProps.forEach(prop => {
                     const tile = BOARD_DATA[prop.tile_id];
                     const div = document.createElement('div');
-                    div.className = 'border border-gray-500 p-2 rounded bg-black bg-opacity-30 flex justify-between items-center';
+                    div.className = 'border-l-4 p-3 rounded bg-white bg-opacity-70 flex justify-between items-center shadow-sm';
+                    div.style.borderLeftColor = `var(--prop-${tile.group || 'brown'})`;
                     
                     let upgradeBtn = '';
                     if (tile.type === TILE_TYPES.PROP && prop.level < 5) {
-                        upgradeBtn = `<button onclick="upgradeProp('${prop.id}', ${tile.housePrice})" class="text-xs bg-green-700 text-white px-2 py-1 rounded">Tingkatkan (₲${tile.housePrice})</button>`;
+                        upgradeBtn = `<button onclick="upgradeProp('${prop.id}', ${tile.housePrice})" class="text-xs font-bold bg-green-700 text-white px-3 py-1.5 rounded hover:bg-green-600 transition">Tingkatkan (₲${tile.housePrice})</button>`;
+                    } else if (prop.level === 5) {
+                        upgradeBtn = `<span class="text-xs text-yellow-600 font-bold">Maksimal (Hotel)</span>`;
                     }
                     
                     div.innerHTML = `
                         <div>
-                            <div class="font-bold">${tile.name}</div>
-                            <div class="text-xs">Level: ${prop.level} | Status: ${prop.mortgaged ? 'Digadaikan' : 'Aktif'}</div>
+                            <div class="font-bold text-gray-800">${tile.name}</div>
+                            <div class="text-xs text-gray-600 font-semibold mt-1">Level: ${'★'.repeat(prop.level) || '-'}</div>
                         </div>
-                        <div class="flex gap-1">
-                            ${upgradeBtn}
-                        </div>
+                        <div>${upgradeBtn}</div>
                     `;
                     list.appendChild(div);
                 });
@@ -1335,27 +1506,22 @@
             $('modal-manage').classList.remove('hidden');
         });
 
-        $('btn-close-manage').addEventListener('click', () => {
-            $('modal-manage').classList.add('hidden');
-        });
+        $('btn-close-manage').addEventListener('click', () => $('modal-manage').classList.add('hidden'));
 
-        // Expose to window for inline onclick handler
         window.upgradeProp = async (propId, cost) => {
             const myPlayer = gameState.players.find(p => p.id === me.id);
             if (myPlayer.balance < cost) return showToast("Saldo tidak cukup.");
             
             const prop = gameState.properties.find(p => p.id === propId);
-            
-            // Simple optimistic/direct update since it's owner modifying own property
-            const successBalance = await supabase.rpc('adjust_balance', { p_player_id: me.id, p_amount: -cost });
-            if (successBalance) {
+            const {data: success} = await supabase.rpc('adjust_balance', { p_player_id: me.id, p_amount: -cost });
+            if (success) {
                 await supabase.from('properties').update({ level: prop.level + 1 }).eq('id', propId);
-                await logEvent('UPGRADE', `${myPlayer.player_name} meningkatkan ${BOARD_DATA[prop.tile_id].name}.`);
-                $('btn-manage').click(); // Refresh modal
+                addLogEvent('UPGRADE', `Meningkatkan level properti ${BOARD_DATA[prop.tile_id].name}.`);
+                $('btn-manage').click(); // Refresh list
             }
         };
 
-        // START APP
+        // Mulai Aplikasi
         initAuth();
 
     </script>
