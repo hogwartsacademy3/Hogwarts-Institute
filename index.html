@@ -1,8 +1,10 @@
-<!DOCTYPE html>
+n<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Memastikan warna tetap stabil dan tidak ter-invert otomatis oleh mode gelap browser -->
+    <meta name="color-scheme" content="light dark">
     <title>Hogwarts Institute Monopoly</title>
     <!-- Fonts: Cinzel for Display, Inter for readability -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,6 +22,7 @@
             --gold-light: #f3e5ab;
             --parchment: #f4e8d3;
             --parchment-dark: #e3d1b8;
+            --tile-bg: #fdf6e3;
             --text-dark: #1a1a1a;
             
             /* House Colors */
@@ -60,7 +63,7 @@
             color: var(--gold-light);
             padding: 0.75rem 1.5rem;
             font-family: 'Cinzel', serif;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: 1px;
             border-radius: 6px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.4), inset 0 0 10px rgba(212, 175, 55, 0.2);
@@ -85,17 +88,13 @@
 
         .panel-parchment {
             background-color: var(--parchment);
-            /* Subtle noise texture via CSS gradient */
-            background-image: linear-gradient(rgba(255,255,255,0.1) 2px, transparent 2px),
-                              linear-gradient(90deg, rgba(255,255,255,0.1) 2px, transparent 2px),
-                              linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-            background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
-            background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+            background-image: linear-gradient(rgba(0,0,0,0.03) 2px, transparent 2px),
+                              linear-gradient(90deg, rgba(0,0,0,0.03) 2px, transparent 2px);
+            background-size: 100px 100px;
             color: var(--text-dark);
             border: 4px solid var(--wood-dark);
             border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 40px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 40px rgba(0,0,0,0.05);
         }
 
         #game-layout {
@@ -122,7 +121,7 @@
             max-width: 100%;
             border: 12px solid var(--wood-dark);
             border-radius: 16px;
-            background-color: var(--parchment-dark);
+            background-color: var(--parchment-dark); /* Solid background to prevent bleed */
             box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.4);
             box-sizing: border-box;
         }
@@ -137,7 +136,6 @@
             box-sizing: border-box;
         }
 
-        /* Center of board */
         .board-center {
             grid-column: 2 / 11;
             grid-row: 2 / 11;
@@ -145,123 +143,131 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            opacity: 0.85;
+            opacity: 0.9;
             pointer-events: none;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.3);
             border-radius: 8px;
             margin: 10px;
-            border: 2px solid rgba(0,0,0,0.05);
+            border: 2px solid rgba(0,0,0,0.1);
         }
         
         .board-logo {
-            font-size: 3vw;
+            font-size: clamp(24px, 4vw, 64px);
             color: var(--wood-dark);
             text-align: center;
             line-height: 1.1;
             font-weight: 700;
         }
 
+        /* --- TILE SYSTEM --- */
         .tile {
-            border: 1px solid rgba(0,0,0,0.2);
+            background-color: var(--tile-bg); /* Solid high contrast color */
+            border: 1px solid rgba(0,0,0,0.3);
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: rgba(255,255,255,0.5);
             box-sizing: border-box;
             text-align: center;
             overflow: hidden;
-        }
-        
-        .tile-corner {
-            font-size: 0.9rem;
-            font-weight: bold;
-            justify-content: center;
-            padding: 10%;
+            /* Container Queries untuk teks yang sangat rapi & seragam */
+            container-type: size;
         }
         
         .tile-color-bar {
-            width: 100%;
-            height: 25%;
-            border-bottom: 1px solid rgba(0,0,0,0.3);
-            box-shadow: inset 0 -2px 4px rgba(0,0,0,0.2);
+            position: absolute;
+            z-index: 1;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
         }
         
         .tile-content {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            height: 75%;
+            justify-content: space-evenly;
+            align-items: center;
+            height: 100%;
             width: 100%;
             padding: 2px;
             box-sizing: border-box;
+            z-index: 2;
+        }
+
+        .tile-emoji {
+            font-size: clamp(12px, 20cqmin, 28px);
+            line-height: 1;
+            margin: 2px 0;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.2));
         }
 
         .tile-name {
-            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
             line-height: 1.1;
-            font-size: 0.65vw;
-            margin-top: 2px;
+            color: #000; /* Hitam pekat agar jelas */
+            font-size: clamp(7px, 14cqmin, 14px);
+            padding: 0 1px;
         }
         
         .tile-price {
+            font-family: 'Inter', sans-serif;
             font-weight: 700;
-            font-size: 0.7vw;
+            color: #333;
+            font-size: clamp(6px, 12cqmin, 12px);
+            margin-top: auto;
             margin-bottom: 2px;
         }
         
-        /* Indikator Pemilik */
+        /* Indikator Pemilik (Bentuk Bingkai Dalam) */
         .tile-owner-indicator {
             position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 5px;
-            background: transparent;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border: 4px solid transparent; /* Diatur via JS */
+            pointer-events: none;
             z-index: 5;
+            transition: border-color 0.3s ease;
         }
         
         .tile-level {
             position: absolute;
-            top: 25%; left: 0; right: 0;
-            font-size: 0.6rem;
+            font-size: clamp(8px, 15cqmin, 14px);
             display: flex;
             justify-content: center;
             color: var(--gold);
-            text-shadow: 1px 1px 1px #000;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             z-index: 6;
         }
 
-        /* Orientasi Tile */
-        .row-top { grid-row: 1; flex-direction: column-reverse; }
-        .row-top .tile-color-bar { border-bottom: none; border-top: 1px solid rgba(0,0,0,0.3); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
-        .row-top .tile-name { transform: rotate(180deg); margin-top:0; margin-bottom: 2px;}
-        .row-top .tile-price { transform: rotate(180deg); margin-bottom:0; margin-top: 2px;}
-        .row-top .tile-owner-indicator { bottom: auto; top: 0; }
-        .row-top .tile-level { top: auto; bottom: 25%; }
-
-        .row-bottom { grid-row: 11; }
+        /* --- TATA LETAK KHUSUS ORIENTASI TILE (Teks Selalu Tegak) --- */
         
-        .col-left { grid-column: 1; flex-direction: row-reverse; }
-        .col-left .tile-color-bar { width: 25%; height: 100%; border-bottom: none; border-left: 1px solid rgba(0,0,0,0.3); box-shadow: inset 2px 0 4px rgba(0,0,0,0.2);}
-        .col-left .tile-content { width: 75%; height: 100%; flex-direction: row-reverse; align-items: center; padding: 0 4px;}
-        .col-left .tile-name { transform: rotate(90deg); font-size: 0.6vw;}
-        .col-left .tile-price { transform: rotate(90deg); font-size: 0.6vw;}
-        .col-left .tile-owner-indicator { bottom: 0; left: auto; right: 0; height: 100%; width: 5px; }
-        .col-left .tile-level { top: auto; left: 25%; right: auto; height: 100%; flex-direction: column; align-items: center;}
+        /* Baris Bawah (Normal) */
+        .row-bottom { grid-row: 11; }
+        .row-bottom .tile-color-bar { top: 0; left: 0; right: 0; height: 26%; border-bottom: 1px solid rgba(0,0,0,0.4); }
+        .row-bottom .tile-content { padding-top: 26%; }
+        .row-bottom .tile-level { top: 27%; left: 0; right: 0; }
 
-        .col-right { grid-column: 11; flex-direction: row; }
-        .col-right .tile-color-bar { width: 25%; height: 100%; border-bottom: none; border-right: 1px solid rgba(0,0,0,0.3); box-shadow: inset -2px 0 4px rgba(0,0,0,0.2);}
-        .col-right .tile-content { width: 75%; height: 100%; flex-direction: row; align-items: center; padding: 0 4px;}
-        .col-right .tile-name { transform: rotate(-90deg); font-size: 0.6vw;}
-        .col-right .tile-price { transform: rotate(-90deg); font-size: 0.6vw;}
-        .col-right .tile-owner-indicator { bottom: 0; left: 0; right: auto; height: 100%; width: 5px; }
-        .col-right .tile-level { top: auto; left: auto; right: 25%; height: 100%; flex-direction: column; align-items: center;}
+        /* Baris Atas */
+        .row-top { grid-row: 1; }
+        .row-top .tile-color-bar { bottom: 0; left: 0; right: 0; height: 26%; border-top: 1px solid rgba(0,0,0,0.4); }
+        .row-top .tile-content { padding-bottom: 26%; }
+        .row-top .tile-level { bottom: 27%; left: 0; right: 0; }
 
-        /* Corner specific adjustments */
-        .tile-corner.row-bottom.col-right { transform: none; }
-        .tile-corner.row-bottom.col-left { transform: none; }
-        .tile-corner.row-top.col-left { transform: none; }
-        .tile-corner.row-top.col-right { transform: none; }
+        /* Kolom Kiri */
+        .col-left { grid-column: 1; }
+        .col-left .tile-color-bar { top: 0; right: 0; bottom: 0; width: 26%; border-left: 1px solid rgba(0,0,0,0.4); }
+        .col-left .tile-content { padding-right: 26%; }
+        .col-left .tile-level { top: 50%; right: 28%; transform: translateY(-50%); flex-direction: column; }
 
+        /* Kolom Kanan */
+        .col-right { grid-column: 11; }
+        .col-right .tile-color-bar { top: 0; left: 0; bottom: 0; width: 26%; border-right: 1px solid rgba(0,0,0,0.4); }
+        .col-right .tile-content { padding-left: 26%; }
+        .col-right .tile-level { top: 50%; left: 28%; transform: translateY(-50%); flex-direction: column; }
+
+        /* Sudut Papan */
+        .tile-corner .tile-content { padding: 5%; justify-content: center; }
+        .tile-corner .tile-emoji { font-size: clamp(20px, 40cqmin, 45px); }
+
+        /* --- PIECES & DICE --- */
         #pieces-layer {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -279,10 +285,10 @@
             align-items: center;
             font-size: 16px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.6), inset 0 -2px 4px rgba(0,0,0,0.3);
-            /* Transisi untuk pergerakan mulus */
             transition: transform 0.4s ease-in-out;
             border: 2px solid #fff;
             transform-origin: center center;
+            z-index: 20;
         }
         
         .piece[data-piece="Topi"] { background: #4a4a4a; }
@@ -332,7 +338,6 @@
         .dice-face.top    { transform: rotateX(90deg) translateZ(25px); }
         .dice-face.bottom { transform: rotateX(-90deg) translateZ(25px); }
 
-        /* Kelas untuk rotasi akhir (menunjukkan angka) */
         .show-1 { transform: rotateY(0deg); }
         .show-2 { transform: rotateY(-90deg); }
         .show-3 { transform: rotateY(-180deg); }
@@ -340,15 +345,13 @@
         .show-5 { transform: rotateX(-90deg); }
         .show-6 { transform: rotateX(90deg); }
 
-        /* Animasi mengacak saat dilempar */
         @keyframes rollDiceAnim {
             0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
             100% { transform: rotateX(720deg) rotateY(1080deg) rotateZ(360deg); }
         }
-        .is-rolling {
-            animation: rollDiceAnim 0.8s linear infinite;
-        }
+        .is-rolling { animation: rollDiceAnim 0.8s linear infinite; }
 
+        /* --- SIDE PANELS --- */
         #side-panel {
             width: 350px;
             display: flex;
@@ -371,7 +374,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.7);
             border-left: 6px solid transparent;
             transition: all 0.3s;
         }
@@ -402,6 +405,7 @@
             border-bottom: 1px dashed rgba(0,0,0,0.15); 
         }
 
+        /* --- MODALS --- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -427,15 +431,14 @@
             transform: scale(1);
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .modal-overlay.hidden .modal-content {
-            transform: scale(0.9);
-        }
+        .modal-overlay.hidden .modal-content { transform: scale(0.9); }
 
         input, select {
             width: 100%;
             padding: 10px;
             margin: 8px 0;
-            background: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.95);
+            color: #111;
             border: 2px solid var(--wood-light);
             border-radius: 6px;
             font-family: 'Inter', sans-serif;
@@ -445,7 +448,6 @@
         }
         input:focus, select:focus { border-color: var(--gold); }
 
-        /* Animasi Kartu */
         .event-card {
             width: 280px;
             height: 400px;
@@ -461,9 +463,7 @@
             transform: rotateY(90deg);
             transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .event-card.show {
-            transform: rotateY(0deg);
-        }
+        .event-card.show { transform: rotateY(0deg); }
         
         .toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
@@ -478,10 +478,8 @@
 
         @media (max-width: 900px) {
             #game-layout { flex-direction: column; padding: 10px; overflow-y: auto;}
-            #board-wrapper { flex: none; height: auto; width: 100%; padding-bottom: 100%; /* trick for aspect ratio */ }
+            #board-wrapper { flex: none; height: auto; width: 100%; padding-bottom: 100%; }
             #board-container { position: absolute; top:0; bottom:0; left:0; right:0; border-width: 6px;}
-            .tile-name, .tile-price { font-size: 1.5vw; }
-            .board-logo { font-size: 5vw; }
             #side-panel { width: 100%; flex: none; }
             #log-container { height: 100px; }
             .piece { width: 20px; height: 20px; font-size: 12px; }
@@ -493,8 +491,8 @@
     <!-- SCREEN: Auth / Setup -->
     <div id="screen-auth" class="modal-overlay">
         <div class="panel-parchment modal-content">
-            <h1 class="text-3xl font-cinzel font-bold mb-1 text-yellow-600 drop-shadow-md">Hogwarts Institute</h1>
-            <h2 class="text-xl font-cinzel mb-6 text-gray-700">Monopoly Edition</h2>
+            <h1 class="text-3xl font-cinzel font-bold mb-1 text-yellow-700 drop-shadow-md">Hogwarts Institute</h1>
+            <h2 class="text-xl font-cinzel mb-6 text-gray-800">Monopoly Edition</h2>
             
             <div id="auth-forms">
                 <input type="text" id="player-name" placeholder="Nama Penyihir" maxlength="15" required>
@@ -515,16 +513,16 @@
                 
                 <div class="flex gap-3 mt-6">
                     <button id="btn-create-room" class="btn-magic flex-1">Buat Ruangan</button>
-                    <button id="btn-show-join" class="btn-magic flex-1 bg-transparent border-gray-500 text-gray-700">Gabung</button>
+                    <button id="btn-show-join" class="btn-magic flex-1 bg-transparent border-gray-600 text-gray-800">Gabung</button>
                 </div>
                 
-                <div id="join-form" class="hidden mt-6 pt-4 border-t border-gray-300">
+                <div id="join-form" class="hidden mt-6 pt-4 border-t border-gray-400">
                     <input type="text" id="room-code-input" placeholder="Kode Ruangan (6 Karakter)" maxlength="6" class="text-center font-bold tracking-widest uppercase">
                     <button id="btn-join-room" class="btn-magic w-full mt-3">Masuk Ruangan</button>
                 </div>
             </div>
             <div id="auth-loading" class="hidden mt-6 text-center">
-                <p class="animate-pulse font-cinzel text-lg">Menghubungkan ke Kementerian Sihir...</p>
+                <p class="animate-pulse font-cinzel text-lg font-bold">Menghubungkan ke Kementerian...</p>
             </div>
         </div>
     </div>
@@ -532,19 +530,19 @@
     <!-- SCREEN: Lobby -->
     <div id="screen-lobby" class="modal-overlay hidden">
         <div class="panel-parchment modal-content">
-            <h2 class="text-2xl font-cinzel mb-2">Ruang Tunggu</h2>
+            <h2 class="text-2xl font-cinzel mb-2 font-bold">Ruang Tunggu</h2>
             <div class="text-xl font-bold mb-6 bg-gray-900 text-white p-3 rounded-lg border-2 border-yellow-500 shadow-inner">
                 Kode: <span id="lobby-code" class="text-yellow-400 tracking-widest">------</span>
             </div>
             
             <div class="text-left mb-6">
-                <h3 class="font-bold border-b-2 border-gray-300 pb-2 mb-3">Penyihir Bergabung (<span id="player-count">0</span>/6):</h3>
+                <h3 class="font-bold border-b-2 border-gray-400 pb-2 mb-3">Penyihir Bergabung (<span id="player-count">0</span>/6):</h3>
                 <ul id="lobby-players-list" class="space-y-2 max-h-48 overflow-y-auto pr-2">
                     <!-- Populated by JS -->
                 </ul>
             </div>
             
-            <p id="lobby-status" class="text-sm italic mb-6 text-gray-600">Menunggu host memulai permainan...</p>
+            <p id="lobby-status" class="text-sm italic mb-6 text-gray-800 font-medium">Menunggu host memulai permainan...</p>
             
             <div class="flex gap-3">
                 <button id="btn-leave-room" class="btn-magic flex-1 text-sm bg-red-900 text-red-200 border-red-900">Keluar</button>
@@ -563,7 +561,7 @@
                     <div id="board">
                         <div class="board-center">
                             <div class="board-logo font-cinzel">Hogwarts<br>Institute</div>
-                            <div class="font-cinzel text-sm mt-1 border-t border-black pt-1">Monopoly Edition</div>
+                            <div class="font-cinzel text-sm sm:text-lg mt-1 border-t border-black pt-1 font-bold">Monopoly Edition</div>
                         </div>
                         <!-- Tiles will be generated here -->
                     </div>
@@ -576,7 +574,7 @@
             <div id="side-panel">
                 <!-- Info Giliran & Dadu -->
                 <div class="panel-parchment hud-box text-center">
-                    <h3 class="font-cinzel font-bold text-xl mb-2 pb-2 border-b border-gray-300" id="turn-indicator">Giliran: -</h3>
+                    <h3 class="font-cinzel font-bold text-xl mb-2 pb-2 border-b border-gray-400" id="turn-indicator">Giliran: -</h3>
                     
                     <!-- 3D Dice Area -->
                     <div class="dice-area" id="dice-container">
@@ -597,21 +595,21 @@
                     <div class="grid grid-cols-2 gap-3 mt-4">
                         <button id="btn-roll" class="btn-magic py-2" disabled>Lempar Dadu</button>
                         <button id="btn-end-turn" class="btn-magic py-2" disabled>Akhiri Giliran</button>
-                        <button id="btn-manage" class="btn-magic col-span-2 py-2 bg-transparent border-gray-600 text-gray-800 hover:text-white">Kelola Properti</button>
+                        <button id="btn-manage" class="btn-magic col-span-2 py-2 bg-transparent border-gray-600 text-gray-900 hover:text-white">Kelola Properti</button>
                     </div>
                 </div>
                 
                 <!-- Daftar Pemain & Log -->
                 <div class="panel-parchment hud-box flex-grow flex flex-col overflow-hidden">
-                    <h3 class="font-bold mb-3 border-b-2 border-gray-300 pb-2">Para Penyihir</h3>
+                    <h3 class="font-bold mb-3 border-b-2 border-gray-400 pb-2">Para Penyihir</h3>
                     <div id="game-players-list" class="overflow-y-auto pr-2 mb-2 flex-grow">
                         <!-- Populated by JS -->
                     </div>
                     
-                    <div class="mt-auto border-t-2 border-gray-300 pt-2 flex flex-col h-1/3">
+                    <div class="mt-auto border-t-2 border-gray-400 pt-2 flex flex-col h-1/3">
                         <h4 class="font-bold text-sm mb-1">Riwayat Peristiwa:</h4>
                         <div id="log-container" class="pr-2">
-                            <div class="log-entry text-gray-500 italic">Menunggu permainan dimulai...</div>
+                            <div class="log-entry text-gray-600 italic">Menunggu permainan dimulai...</div>
                         </div>
                     </div>
                 </div>
@@ -624,22 +622,22 @@
     <div id="modal-action" class="modal-overlay hidden">
         <div class="panel-parchment modal-content">
             <h2 id="action-title" class="text-3xl font-cinzel mb-2 font-bold text-yellow-700">Nama Properti</h2>
-            <p id="action-desc" class="mb-4 text-sm text-gray-600">Anda berhenti di sini.</p>
+            <p id="action-desc" class="mb-4 text-sm text-gray-700 font-medium">Anda berhenti di sini.</p>
             
-            <div id="action-details" class="bg-black bg-opacity-5 p-4 rounded-lg mb-6 text-left border border-gray-300">
-                <div class="flex justify-between mb-2 pb-2 border-b border-gray-300">
-                    <span>Harga Beli:</span>
-                    <span id="action-price" class="font-bold text-lg">₲0</span>
+            <div id="action-details" class="bg-black bg-opacity-5 p-4 rounded-lg mb-6 text-left border border-gray-400">
+                <div class="flex justify-between mb-2 pb-2 border-b border-gray-400">
+                    <span class="font-semibold text-gray-800">Harga Beli:</span>
+                    <span id="action-price" class="font-bold text-lg text-gray-900">₲0</span>
                 </div>
                 <div class="flex justify-between">
-                    <span>Sewa Dasar:</span>
-                    <span id="action-rent" class="font-semibold text-red-700">₲0</span>
+                    <span class="font-semibold text-gray-800">Sewa Dasar:</span>
+                    <span id="action-rent" class="font-bold text-red-700">₲0</span>
                 </div>
             </div>
             
             <div class="flex gap-3">
                 <button id="btn-action-primary" class="btn-magic flex-1">Beli</button>
-                <button id="btn-action-secondary" class="btn-magic flex-1 bg-transparent border-gray-500 text-gray-700">Lewati</button>
+                <button id="btn-action-secondary" class="btn-magic flex-1 bg-transparent border-gray-600 text-gray-900">Lewati</button>
             </div>
         </div>
     </div>
@@ -647,10 +645,10 @@
     <!-- MODAL: Kartu Peristiwa -->
     <div id="modal-card" class="modal-overlay hidden">
         <div class="event-card panel-parchment text-center relative" id="card-element">
-            <div class="absolute top-2 left-2 right-2 bottom-2 border border-gray-300 pointer-events-none rounded-lg"></div>
-            <h2 id="card-type" class="text-xl font-cinzel mb-4 font-bold border-b border-gray-400 pb-2">Kartu</h2>
-            <h3 id="card-title" class="text-2xl font-cinzel mb-4 text-yellow-700">Judul</h3>
-            <p id="card-desc" class="mb-8 flex-grow text-lg italic px-4 flex items-center justify-center text-gray-700">Deskripsi efek kartu.</p>
+            <div class="absolute top-2 left-2 right-2 bottom-2 border border-gray-400 pointer-events-none rounded-lg"></div>
+            <h2 id="card-type" class="text-xl font-cinzel mb-4 font-bold border-b border-gray-500 pb-2">Kartu</h2>
+            <h3 id="card-title" class="text-2xl font-cinzel mb-4 text-yellow-800 font-bold">Judul</h3>
+            <p id="card-desc" class="mb-8 flex-grow text-lg italic px-4 flex items-center justify-center text-gray-900 font-medium">Deskripsi efek kartu.</p>
             <button id="btn-card-ok" class="btn-magic w-full">Lanjut</button>
         </div>
     </div>
@@ -658,7 +656,7 @@
     <!-- MODAL: Kelola Properti -->
     <div id="modal-manage" class="modal-overlay hidden">
          <div class="panel-parchment modal-content flex flex-col" style="max-height: 85vh;">
-            <h2 class="text-2xl font-cinzel mb-4 font-bold border-b border-gray-300 pb-2">Aset Kekayaan Anda</h2>
+            <h2 class="text-2xl font-cinzel mb-4 font-bold border-b border-gray-400 pb-2">Aset Kekayaan Anda</h2>
             <div id="manage-list" class="flex-grow overflow-y-auto text-left mb-6 space-y-3 pr-2">
                 <!-- Properties listed here -->
             </div>
@@ -669,10 +667,10 @@
     <!-- MODAL: Pemenang -->
     <div id="modal-winner" class="modal-overlay hidden">
         <div class="panel-parchment modal-content">
-            <h1 class="text-5xl font-cinzel mb-4 font-bold text-yellow-600 drop-shadow-lg">PEMENANG</h1>
-            <h2 id="winner-name" class="text-3xl font-bold mb-2">Nama Pemenang</h2>
-            <p class="mb-4 text-gray-700">Telah menguasai seluruh aset Hogwarts Institute!</p>
-            <p id="winner-stats" class="text-lg font-semibold mb-8 text-green-700">Total Kekayaan: ₲5000</p>
+            <h1 class="text-5xl font-cinzel mb-4 font-bold text-yellow-700 drop-shadow-lg">PEMENANG</h1>
+            <h2 id="winner-name" class="text-3xl font-bold mb-2 text-gray-900">Nama Pemenang</h2>
+            <p class="mb-4 text-gray-800 font-medium">Telah menguasai seluruh aset Hogwarts Institute!</p>
+            <p id="winner-stats" class="text-xl font-bold mb-8 text-green-800">Total Kekayaan: ₲5000</p>
             <button onclick="location.reload()" class="btn-magic w-full py-3">Kembali ke Lobi Utama</button>
         </div>
     </div>
@@ -682,71 +680,62 @@
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/+esm';
 
-        // Konfigurasi Supabase
         const SUPABASE_URL = "https://nikpedxjwvrkndivkzql.supabase.co";
         const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_vn-7vdOTA9i64sA7miFISQ_CiwJ4Kz3";
         const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-        // State Global
         let me = { id: null, userId: null, roomId: null, isHost: false };
-        let gameState = {
-            status: 'waiting',
-            players: [],
-            properties: [],
-            game: null
-        };
-        // State visual lokal untuk bidak (agar terpisah dari update instan DB saat animasi)
+        let gameState = { status: 'waiting', players: [], properties: [], game: null };
         let visualPiecesState = {}; 
         let realtimeChannel = null;
-        let isAnimatingMove = false; // Flag mencegah tumpang tindih
+        let isAnimatingMove = false;
 
-        // Data Papan (Diurutkan sesuai id 0-39)
         const TILE_TYPES = { GO: 'go', PROP: 'property', CHEST: 'chest', TAX: 'tax', RR: 'railroad', CHANCE: 'chance', JAIL: 'jail', UTIL: 'utility', FREE: 'free', GOTO: 'goto_jail' };
         
+        // Data dengan tambahan Emoji spesifik & singkatan nama agar muat
         const BOARD_DATA = [
-            { id: 0, name: "MULAI", type: TILE_TYPES.GO, desc: "Terima ₲200" },
-            { id: 1, name: "Pondok Hagrid", type: TILE_TYPES.PROP, group: "brown", price: 60, rent: [2, 10, 30, 90, 160, 250], housePrice: 50 },
-            { id: 2, name: "Peti Institut", type: TILE_TYPES.CHEST },
-            { id: 3, name: "Tepi Danau", type: TILE_TYPES.PROP, group: "brown", price: 60, rent: [4, 20, 60, 180, 320, 450], housePrice: 50 },
-            { id: 4, name: "Pajak Ramuan", type: TILE_TYPES.TAX, amount: 200 },
-            { id: 5, name: "Kereta Express", type: TILE_TYPES.RR, price: 200, rent: [25, 50, 100, 200] },
-            { id: 6, name: "Asrama Hufflepuff", type: TILE_TYPES.PROP, group: "lightblue", price: 100, rent: [6, 30, 90, 270, 400, 550], housePrice: 50 },
-            { id: 7, name: "Peristiwa Magis", type: TILE_TYPES.CHANCE },
-            { id: 8, name: "Dapur Hogwarts", type: TILE_TYPES.PROP, group: "lightblue", price: 100, rent: [6, 30, 90, 270, 400, 550], housePrice: 50 },
-            { id: 9, name: "Kelas Herbologi", type: TILE_TYPES.PROP, group: "lightblue", price: 120, rent: [8, 40, 100, 300, 450, 600], housePrice: 50 },
-            { id: 10, name: "Detensi", type: TILE_TYPES.JAIL, desc: "Kunjungan" },
-            { id: 11, name: "Asrama Ravenclaw", type: TILE_TYPES.PROP, group: "pink", price: 140, rent: [10, 50, 150, 450, 625, 750], housePrice: 100 },
-            { id: 12, name: "Menara Burung", type: TILE_TYPES.UTIL, price: 150 },
-            { id: 13, name: "Kelas Mantra", type: TILE_TYPES.PROP, group: "pink", price: 140, rent: [10, 50, 150, 450, 625, 750], housePrice: 100 },
-            { id: 14, name: "Kelas Transfigur", type: TILE_TYPES.PROP, group: "pink", price: 160, rent: [12, 60, 180, 500, 700, 900], housePrice: 100 },
-            { id: 15, name: "Kereta Thestral", type: TILE_TYPES.RR, price: 200, rent: [25, 50, 100, 200] },
-            { id: 16, name: "Asrama Slytherin", type: TILE_TYPES.PROP, group: "orange", price: 180, rent: [14, 70, 200, 550, 750, 950], housePrice: 100 },
-            { id: 17, name: "Peti Institut", type: TILE_TYPES.CHEST },
-            { id: 18, name: "Kelas Ramuan", type: TILE_TYPES.PROP, group: "orange", price: 180, rent: [14, 70, 200, 550, 750, 950], housePrice: 100 },
-            { id: 19, name: "Kelas Pertahanan", type: TILE_TYPES.PROP, group: "orange", price: 200, rent: [16, 80, 220, 600, 800, 1000], housePrice: 100 },
-            { id: 20, name: "Parkir Bebas", type: TILE_TYPES.FREE },
-            { id: 21, name: "Asrama Gryffindor", type: TILE_TYPES.PROP, group: "red", price: 220, rent: [18, 90, 250, 700, 875, 1050], housePrice: 150 },
-            { id: 22, name: "Peristiwa Magis", type: TILE_TYPES.CHANCE },
-            { id: 23, name: "Perpustakaan", type: TILE_TYPES.PROP, group: "red", price: 220, rent: [18, 90, 250, 700, 875, 1050], housePrice: 150 },
-            { id: 24, name: "Sayap Medis", type: TILE_TYPES.PROP, group: "red", price: 240, rent: [20, 100, 300, 750, 925, 1100], housePrice: 150 },
-            { id: 25, name: "Perahu Ajaib", type: TILE_TYPES.RR, price: 200, rent: [25, 50, 100, 200] },
-            { id: 26, name: "Hutan Terlarang", type: TILE_TYPES.PROP, group: "yellow", price: 260, rent: [22, 110, 330, 800, 975, 1150], housePrice: 150 },
-            { id: 27, name: "Menara Astronomi", type: TILE_TYPES.PROP, group: "yellow", price: 260, rent: [22, 110, 330, 800, 975, 1150], housePrice: 150 },
-            { id: 28, name: "Lapangan Quidditch", type: TILE_TYPES.UTIL, price: 150 },
-            { id: 29, name: "Ruang Kebutuhan", type: TILE_TYPES.PROP, group: "yellow", price: 280, rent: [24, 120, 360, 850, 1025, 1200], housePrice: 150 },
-            { id: 30, name: "Masuk Detensi", type: TILE_TYPES.GOTO },
-            { id: 31, name: "Kamar Rahasia", type: TILE_TYPES.PROP, group: "green", price: 300, rent: [26, 130, 390, 900, 1100, 1275], housePrice: 200 },
-            { id: 32, name: "Aula Besar", type: TILE_TYPES.PROP, group: "green", price: 300, rent: [26, 130, 390, 900, 1100, 1275], housePrice: 200 },
-            { id: 33, name: "Peti Institut", type: TILE_TYPES.CHEST },
-            { id: 34, name: "Kantor Kepsek", type: TILE_TYPES.PROP, group: "green", price: 320, rent: [28, 150, 450, 1000, 1200, 1400], housePrice: 200 },
-            { id: 35, name: "Jaringan Floo", type: TILE_TYPES.RR, price: 200, rent: [25, 50, 100, 200] },
-            { id: 36, name: "Peristiwa Magis", type: TILE_TYPES.CHANCE },
-            { id: 37, name: "Gubuk Menjerit", type: TILE_TYPES.PROP, group: "darkblue", price: 350, rent: [35, 175, 500, 1100, 1300, 1500], housePrice: 200 },
-            { id: 38, name: "Pajak Pendidikan", type: TILE_TYPES.TAX, amount: 100 },
-            { id: 39, name: "Kementerian", type: TILE_TYPES.PROP, group: "darkblue", price: 400, rent: [50, 200, 600, 1400, 1700, 2000], housePrice: 200 }
+            { id: 0, name: "MULAI", emoji: "🏁", type: TILE_TYPES.GO, desc: "Terima ₲200" },
+            { id: 1, name: "Pondok Hagrid", emoji: "🛖", type: TILE_TYPES.PROP, group: "brown", price: 60, rent: [2, 10, 30, 90, 160, 250], housePrice: 50 },
+            { id: 2, name: "Peti Institut", emoji: "🧰", type: TILE_TYPES.CHEST },
+            { id: 3, name: "Tepi Danau", emoji: "🌊", type: TILE_TYPES.PROP, group: "brown", price: 60, rent: [4, 20, 60, 180, 320, 450], housePrice: 50 },
+            { id: 4, name: "Pajak Ramuan", emoji: "💸", type: TILE_TYPES.TAX, amount: 200 },
+            { id: 5, name: "Kereta Express", emoji: "🚂", type: TILE_TYPES.RR, price: 200, rent: [25, 50, 100, 200] },
+            { id: 6, name: "Asr. Hufflepuff", emoji: "🦡", type: TILE_TYPES.PROP, group: "lightblue", price: 100, rent: [6, 30, 90, 270, 400, 550], housePrice: 50 },
+            { id: 7, name: "Peristiwa Magis", emoji: "✨", type: TILE_TYPES.CHANCE },
+            { id: 8, name: "Dapur Hogwarts", emoji: "🍲", type: TILE_TYPES.PROP, group: "lightblue", price: 100, rent: [6, 30, 90, 270, 400, 550], housePrice: 50 },
+            { id: 9, name: "Kls Herbologi", emoji: "🌿", type: TILE_TYPES.PROP, group: "lightblue", price: 120, rent: [8, 40, 100, 300, 450, 600], housePrice: 50 },
+            { id: 10, name: "Detensi", emoji: "🚨", type: TILE_TYPES.JAIL, desc: "Kunjungan" },
+            { id: 11, name: "Asr. Ravenclaw", emoji: "🦅", type: TILE_TYPES.PROP, group: "pink", price: 140, rent: [10, 50, 150, 450, 625, 750], housePrice: 100 },
+            { id: 12, name: "Menara Burung", emoji: "🦉", type: TILE_TYPES.UTIL, price: 150 },
+            { id: 13, name: "Kelas Mantra", emoji: "🪄", type: TILE_TYPES.PROP, group: "pink", price: 140, rent: [10, 50, 150, 450, 625, 750], housePrice: 100 },
+            { id: 14, name: "Kls Transfigur", emoji: "🐀", type: TILE_TYPES.PROP, group: "pink", price: 160, rent: [12, 60, 180, 500, 700, 900], housePrice: 100 },
+            { id: 15, name: "Krt Thestral", emoji: "🚂", type: TILE_TYPES.RR, price: 200, rent: [25, 50, 100, 200] },
+            { id: 16, name: "Asr. Slytherin", emoji: "🐍", type: TILE_TYPES.PROP, group: "orange", price: 180, rent: [14, 70, 200, 550, 750, 950], housePrice: 100 },
+            { id: 17, name: "Peti Institut", emoji: "🧰", type: TILE_TYPES.CHEST },
+            { id: 18, name: "Kelas Ramuan", emoji: "🧪", type: TILE_TYPES.PROP, group: "orange", price: 180, rent: [14, 70, 200, 550, 750, 950], housePrice: 100 },
+            { id: 19, name: "Kls Pertahanan", emoji: "🛡️", type: TILE_TYPES.PROP, group: "orange", price: 200, rent: [16, 80, 220, 600, 800, 1000], housePrice: 100 },
+            { id: 20, name: "Parkir Bebas", emoji: "🅿️", type: TILE_TYPES.FREE },
+            { id: 21, name: "Asr. Gryffindor", emoji: "🦁", type: TILE_TYPES.PROP, group: "red", price: 220, rent: [18, 90, 250, 700, 875, 1050], housePrice: 150 },
+            { id: 22, name: "Peristiwa Magis", emoji: "✨", type: TILE_TYPES.CHANCE },
+            { id: 23, name: "Perpustakaan", emoji: "📚", type: TILE_TYPES.PROP, group: "red", price: 220, rent: [18, 90, 250, 700, 875, 1050], housePrice: 150 },
+            { id: 24, name: "Sayap Medis", emoji: "🏥", type: TILE_TYPES.PROP, group: "red", price: 240, rent: [20, 100, 300, 750, 925, 1100], housePrice: 150 },
+            { id: 25, name: "Perahu Ajaib", emoji: "🚂", type: TILE_TYPES.RR, price: 200, rent: [25, 50, 100, 200] },
+            { id: 26, name: "Hutan Terlarang", emoji: "🌲", type: TILE_TYPES.PROP, group: "yellow", price: 260, rent: [22, 110, 330, 800, 975, 1150], housePrice: 150 },
+            { id: 27, name: "Mnr Astronomi", emoji: "🔭", type: TILE_TYPES.PROP, group: "yellow", price: 260, rent: [22, 110, 330, 800, 975, 1150], housePrice: 150 },
+            { id: 28, name: "Lap. Quidditch", emoji: "🧹", type: TILE_TYPES.UTIL, price: 150 },
+            { id: 29, name: "R. Kebutuhan", emoji: "🚪", type: TILE_TYPES.PROP, group: "yellow", price: 280, rent: [24, 120, 360, 850, 1025, 1200], housePrice: 150 },
+            { id: 30, name: "Ke Detensi", emoji: "🚨", type: TILE_TYPES.GOTO },
+            { id: 31, name: "Kamar Rahasia", emoji: "🐍", type: TILE_TYPES.PROP, group: "green", price: 300, rent: [26, 130, 390, 900, 1100, 1275], housePrice: 200 },
+            { id: 32, name: "Aula Besar", emoji: "🕯️", type: TILE_TYPES.PROP, group: "green", price: 300, rent: [26, 130, 390, 900, 1100, 1275], housePrice: 200 },
+            { id: 33, name: "Peti Institut", emoji: "🧰", type: TILE_TYPES.CHEST },
+            { id: 34, name: "Kantor Kepsek", emoji: "🏛️", type: TILE_TYPES.PROP, group: "green", price: 320, rent: [28, 150, 450, 1000, 1200, 1400], housePrice: 200 },
+            { id: 35, name: "Jaringan Floo", emoji: "🚂", type: TILE_TYPES.RR, price: 200, rent: [25, 50, 100, 200] },
+            { id: 36, name: "Peristiwa Magis", emoji: "✨", type: TILE_TYPES.CHANCE },
+            { id: 37, name: "Gubuk Menjerit", emoji: "🏚️", type: TILE_TYPES.PROP, group: "darkblue", price: 350, rent: [35, 175, 500, 1100, 1300, 1500], housePrice: 200 },
+            { id: 38, name: "Pajak Didik", emoji: "💰", type: TILE_TYPES.TAX, amount: 100 },
+            { id: 39, name: "Kementerian", emoji: "⚖️", type: TILE_TYPES.PROP, group: "darkblue", price: 400, rent: [50, 200, 600, 1400, 1700, 2000], housePrice: 200 }
         ];
 
-        // Utils
         const $ = id => document.getElementById(id);
         const sleep = ms => new Promise(r => setTimeout(r, ms));
         
@@ -754,13 +743,9 @@
             const t = document.createElement('div');
             t.className = 'toast'; t.innerText = msg;
             $('toast-container').appendChild(t);
-            // Trigger reflow
             void t.offsetWidth;
             t.classList.add('show');
-            setTimeout(() => { 
-                t.classList.remove('show'); 
-                setTimeout(()=>t.remove(), 300); 
-            }, 3000);
+            setTimeout(() => { t.classList.remove('show'); setTimeout(()=>t.remove(), 300); }, 3000);
         };
         const generateCode = () => Math.random().toString(36).substring(2, 8).toUpperCase();
 
@@ -770,7 +755,6 @@
                 if (error) throw error;
                 me.userId = data.user.id;
                 
-                // Cek resume session lokal
                 const savedRoom = localStorage.getItem('hw_monopoly_room');
                 const savedPlayerId = localStorage.getItem('hw_monopoly_player_id');
                 if (savedRoom && savedPlayerId) {
@@ -784,14 +768,9 @@
                         localStorage.removeItem('hw_monopoly_player_id');
                     }
                 }
-            } catch (err) {
-                console.error("Auth error:", err);
-                showToast("Terjadi gangguan sihir. Mode Luring diaktifkan untuk visual.");
-                // Fallback UI test mode if DB fails entirely (optional)
-            }
+            } catch (err) { console.error("Auth error:", err); showToast("Terjadi gangguan sihir."); }
         }
 
-        // Event Listeners Auth
         $('btn-show-join').addEventListener('click', () => {
             $('join-form').classList.remove('hidden');
             $('btn-show-join').classList.add('hidden');
@@ -868,9 +847,7 @@
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'games', filter: `room_id=eq.${roomId}` }, handleGameChange)
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'properties', filter: `room_id=eq.${roomId}` }, handlePropertyChange)
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'game_events', filter: `room_id=eq.${roomId}` }, handleEventChange)
-                .subscribe((status) => {
-                    if(status === 'CLOSED' || status === 'CHANNEL_ERROR') showToast("Koneksi terputus. Refresh halaman.");
-                });
+                .subscribe();
         }
 
         async function fetchGameState() {
@@ -886,21 +863,14 @@
             gameState.game = game;
             gameState.properties = props || [];
 
-            // Inisialisasi state visual lokal
             gameState.players.forEach(p => { visualPiecesState[p.id] = { position: p.position }; });
-
             updateLobbyUI();
             
             if(gameState.status === 'playing') {
-                startGameUI();
-                initBoard();
-                updateHUD();
-                // Tunggu DOM selesai render board sebelum menaruh bidak
-                setTimeout(renderAllPiecesInstantly, 500); 
+                startGameUI(); initBoard(); updateHUD(); setTimeout(renderAllPiecesInstantly, 500); 
             }
         }
 
-        // Handle DB Updates
         function handlePlayerChange(payload) {
             if (payload.eventType === 'INSERT') {
                 gameState.players.push(payload.new);
@@ -911,8 +881,6 @@
                 if (idx > -1) {
                     const oldPlayer = gameState.players[idx];
                     gameState.players[idx] = payload.new;
-                    
-                    // Deteksi jika posisi berubah dan bukan sedang animasi (animasi lokal dihandle terpisah)
                     if (gameState.status === 'playing' && oldPlayer.position !== payload.new.position && !isAnimatingMove) {
                         triggerRemoteMovementAnimation(payload.new);
                     }
@@ -930,7 +898,6 @@
             }
             if(gameState.status === 'playing') {
                 updateHUD();
-                // Sinkronisasi animasi dadu remote
                 if(payload.new.phase === 'moving' && payload.new.current_player_id !== me.id) {
                     showDiceResult(payload.new.dice_1, payload.new.dice_2);
                 }
@@ -944,9 +911,7 @@
             renderBoardOwnership();
         }
 
-        function handleEventChange(payload) {
-            addLogEntry(payload.new.message);
-        }
+        function handleEventChange(payload) { addLogEntry(payload.new.message); }
 
         function addLogEntry(msg) {
             const logContainer = $('log-container');
@@ -961,8 +926,8 @@
             $('player-count').innerText = gameState.players.length;
             gameState.players.forEach(p => {
                 const li = document.createElement('li');
-                li.className = `p-2 rounded bg-white bg-opacity-80 border border-gray-300 flex justify-between items-center border-l-8 house-${p.house}`;
-                li.innerHTML = `<span><b class="text-gray-800">${p.player_name}</b> <span class="text-xs text-gray-500">(${p.piece})</span></span> ${p.is_host ? '<span class="text-yellow-600 text-xs font-bold border border-yellow-600 px-1 rounded">HOST</span>' : ''}`;
+                li.className = `p-2 rounded bg-white bg-opacity-90 border border-gray-400 flex justify-between items-center border-l-8 house-${p.house}`;
+                li.innerHTML = `<span><b class="text-gray-900">${p.player_name}</b> <span class="text-xs text-gray-700 font-bold">(${p.piece})</span></span> ${p.is_host ? '<span class="text-yellow-700 text-xs font-bold border border-yellow-700 px-1 rounded">HOST</span>' : ''}`;
                 list.appendChild(li);
             });
             if(me.isHost) $('btn-start-game').disabled = gameState.players.length < 2;
@@ -982,13 +947,11 @@
         function startGameUI() {
             $('screen-lobby').classList.add('hidden');
             $('screen-game').classList.remove('hidden');
-            // Menangani resize window untuk mengatur ulang posisi bidak
             window.addEventListener('resize', renderAllPiecesInstantly);
         }
 
         function initBoard() {
             const board = $('board');
-            // Hapus tile lama (kecuali center)
             Array.from(board.children).forEach(c => { if(!c.classList.contains('board-center')) c.remove(); });
             
             BOARD_DATA.forEach(tile => {
@@ -996,7 +959,7 @@
                 el.className = 'tile';
                 el.id = `tile-${tile.id}`;
                 
-                // Set Posisi Grid
+                // Menata baris & kolom Grid (Orientation Layouts)
                 if(tile.id === 0) { el.classList.add('row-bottom', 'col-right', 'tile-corner'); }
                 else if(tile.id < 10) { el.classList.add('row-bottom'); el.style.gridColumn = 11 - tile.id; }
                 else if(tile.id === 10) { el.classList.add('row-bottom', 'col-left', 'tile-corner'); }
@@ -1006,21 +969,14 @@
                 else if(tile.id === 30) { el.classList.add('row-top', 'col-right', 'tile-corner'); }
                 else { el.classList.add('col-right'); el.style.gridRow = tile.id - 29; }
 
-                // HTML Isi Tile
                 let html = '';
                 if(tile.group) html += `<div class="tile-color-bar" style="background-color: var(--prop-${tile.group})"></div>`;
                 
                 html += `<div class="tile-content">`;
+                if(tile.emoji) html += `<div class="tile-emoji">${tile.emoji}</div>`;
                 html += `<div class="tile-name">${tile.name}</div>`;
-                
-                // Ikon khusus untuk corner/utilitas
-                if(tile.type === TILE_TYPES.CHEST) html += `<div class="text-[1.2vw] mb-1">🧰</div>`;
-                else if(tile.type === TILE_TYPES.CHANCE) html += `<div class="text-[1.2vw] mb-1">✨</div>`;
-                else if(tile.type === TILE_TYPES.RR) html += `<div class="text-[1.2vw] mb-1">🚂</div>`;
-                else if(tile.type === TILE_TYPES.UTIL) html += `<div class="text-[1.2vw] mb-1">⚡</div>`;
-                
                 if(tile.price) html += `<div class="tile-price">₲${tile.price}</div>`;
-                else if(tile.desc) html += `<div class="text-[0.6vw] text-gray-600">${tile.desc}</div>`;
+                else if(tile.desc && !tile.emoji) html += `<div class="text-[clamp(6px,10cqmin,10px)] text-gray-700 font-bold">${tile.desc}</div>`;
                 html += `</div>`;
                 
                 html += `<div class="tile-owner-indicator" id="owner-bar-${tile.id}"></div>`;
@@ -1037,7 +993,8 @@
                 const owner = gameState.players.find(p => p.id === prop.owner_player_id);
                 if(owner) {
                     const bar = $(`owner-bar-${prop.tile_id}`);
-                    if(bar) bar.style.backgroundColor = `var(--${owner.house.toLowerCase()})`;
+                    // Gunakan border-color sebagai ganti background untuk indikator kepemilikan yang lebih rapi
+                    if(bar) bar.style.borderColor = `var(--${owner.house.toLowerCase()})`;
                     const levelDiv = $(`level-${prop.tile_id}`);
                     if(levelDiv && prop.level > 0) levelDiv.innerHTML = '★'.repeat(prop.level);
                 }
@@ -1051,38 +1008,30 @@
             const boardRect = $('board-container').getBoundingClientRect();
             const tileRect = tile.getBoundingClientRect();
             
-            // Posisi absolut relatif terhadap kontainer papan
             let x = tileRect.left - boardRect.left;
             let y = tileRect.top - boardRect.top;
             
-            // Hitung center tile
             let centerX = x + (tileRect.width / 2);
             let centerY = y + (tileRect.height / 2);
 
-            // Offset agar bidak tidak menumpuk sempurna jika berada di kotak yang sama
             const pieceSize = window.innerWidth < 900 ? 20 : 28;
-            const offsetDist = pieceSize * 0.4;
+            const offsetDist = pieceSize * 0.45;
             
             if (totalPlayersOnTile > 1) {
-                // Posisi melingkar (spiral sederhana)
                 const angle = (playerIndex / totalPlayersOnTile) * Math.PI * 2;
                 centerX += Math.cos(angle) * offsetDist;
                 centerY += Math.sin(angle) * offsetDist;
             }
             
-            return {
-                x: centerX - (pieceSize / 2),
-                y: centerY - (pieceSize / 2)
-            };
+            return { x: centerX - (pieceSize / 2), y: centerY - (pieceSize / 2) };
         }
 
         function renderAllPiecesInstantly() {
-            if(isAnimatingMove) return; // Jangan render ulang instan saat sedang animasi jalan
+            if(isAnimatingMove) return; 
             
             const layer = $('pieces-layer');
             layer.innerHTML = '';
             
-            // Kelompokkan pemain berdasarkan posisi visual
             const posMap = {};
             gameState.players.forEach(p => {
                 if(p.is_bankrupt) return;
@@ -1100,13 +1049,11 @@
                     piece.id = `piece-${p.id}`;
                     piece.style.borderColor = `var(--${p.house.toLowerCase()})`;
                     
-                    // Simbol dari select option text
                     const symbols = {"Topi":"🎩","Tongkat":"🪄","Snitch":"🦅","Burung":"🦉","Cauldron":"⚗️","Potion":"🧪"};
                     piece.innerHTML = symbols[p.piece] || "♟";
 
                     const coords = getTileCoordinates(pos, idx, playersHere.length);
                     piece.style.transform = `translate(${coords.x}px, ${coords.y}px)`;
-                    
                     layer.appendChild(piece);
                 });
             }
@@ -1118,53 +1065,37 @@
             if(!piece) { isAnimatingMove = false; return; }
             
             let current = startPos;
-            
-            // Hitung total langkah, pertimbangkan putaran melewati kotak GO (0)
             let steps = endPos - startPos;
             if (steps < 0) steps += 40; 
-            // Jika masuk penjara (GOTO JAIL), langkahnya khusus (langsung lompat atau animasi cepat)
-            if (startPos === 30 && endPos === 10) steps = -20; // Special case
+            if (startPos === 30 && endPos === 10) steps = -20; 
 
             if (steps === -20) {
-                 // Animasi diseret mundur ke detensi
                 visualPiecesState[playerId].position = 10;
                 const coords = getTileCoordinates(10, 0, 1);
                 piece.style.transform = `translate(${coords.x}px, ${coords.y}px) rotate(-720deg)`;
                 await sleep(600);
             } else {
-                // Jalan satu per satu
                 for(let i = 0; i < steps; i++) {
                     current = (current + 1) % 40;
                     visualPiecesState[playerId].position = current;
                     
-                    // Supaya tidak menumpuk saat animasi, gunakan idx 0 untuk menghitung koordinat
                     const coords = getTileCoordinates(current, 0, 1);
-                    
-                    // Beri sedikit efek lompat (bounce) via CSS translate
                     piece.style.transition = 'transform 0.25s linear';
-                    piece.style.transform = `translate(${coords.x}px, ${coords.y}px) scale(1.1)`;
-                    
-                    // Bunyikan langkah (opsional, tapi tidak disarankan tanpa interaksi user)
+                    piece.style.transform = `translate(${coords.x}px, ${coords.y}px) scale(1.15)`;
                     await sleep(250); 
-                    
-                    // Kembalikan ukuran normal di pertengahan jalan
                     piece.style.transform = `translate(${coords.x}px, ${coords.y}px) scale(1)`;
                     await sleep(50);
                 }
             }
-            
-            // Animasi selesai, paskan posisi (jika ada pemain lain di kotak tersebut)
             piece.style.transition = 'transform 0.4s ease-in-out';
-            renderAllPiecesInstantly(); // Render semua ulang untuk menata tumpukan
+            renderAllPiecesInstantly();
             isAnimatingMove = false;
         }
 
         async function triggerRemoteMovementAnimation(playerData) {
             const oldPos = visualPiecesState[playerData.id].position;
             const newPos = playerData.position;
-            if(oldPos !== newPos) {
-                await animateMovement(playerData.id, oldPos, newPos);
-            }
+            if(oldPos !== newPos) await animateMovement(playerData.id, oldPos, newPos);
         }
 
         function updateHUD() {
@@ -1175,7 +1106,6 @@
             $('turn-indicator').innerText = `Giliran: ${currentPlayer ? currentPlayer.player_name : '...'}`;
             $('turn-indicator').style.color = isMyTurn ? 'var(--gold)' : 'var(--text-dark)';
             
-            // Update Dadu Statis (jika baru masuk/refresh)
             if(!$('dice1').classList.contains('is-rolling')) {
                 setDiceFace('dice1', gameState.game.dice_1 || 1);
                 setDiceFace('dice2', gameState.game.dice_2 || 1);
@@ -1195,14 +1125,14 @@
                     <div class="flex items-center gap-2">
                         <div class="text-xl">${symbols[p.piece]}</div>
                         <div>
-                            <div class="font-bold text-gray-800">${p.player_name}</div>
-                            <div class="text-[0.65rem] text-gray-500 uppercase font-bold">${p.house}</div>
+                            <div class="font-bold text-gray-900">${p.player_name}</div>
+                            <div class="text-[0.65rem] text-gray-700 uppercase font-bold">${p.house}</div>
                         </div>
                     </div>
                     <div class="text-right">
-                        <div class="font-bold text-yellow-600 text-lg">₲${p.balance}</div>
-                        ${p.is_bankrupt ? '<span class="text-red-500 text-xs font-bold">BANGKRUT</span>' : ''}
-                        ${p.detention_turns > 0 ? `<span class="text-gray-500 text-xs border border-gray-400 rounded px-1">Detensi: ${p.detention_turns}</span>` : ''}
+                        <div class="font-bold text-yellow-700 text-lg">₲${p.balance}</div>
+                        ${p.is_bankrupt ? '<span class="text-red-600 text-xs font-bold">BANGKRUT</span>' : ''}
+                        ${p.detention_turns > 0 ? `<span class="text-gray-700 text-xs font-bold border border-gray-500 rounded px-1 bg-gray-200">Detensi: ${p.detention_turns}</span>` : ''}
                     </div>
                 `;
                 list.appendChild(div);
@@ -1211,24 +1141,20 @@
 
         function setDiceFace(diceId, number) {
             const dice = $(diceId);
-            dice.className = 'dice-3d'; // Reset classes
+            dice.className = 'dice-3d'; 
             if(number >= 1 && number <= 6) dice.classList.add(`show-${number}`);
         }
 
-        function showDiceResult(d1, d2) {
-            setDiceFace('dice1', d1); setDiceFace('dice2', d2);
-        }
+        function showDiceResult(d1, d2) { setDiceFace('dice1', d1); setDiceFace('dice2', d2); }
 
         $('btn-roll').addEventListener('click', async () => {
             $('btn-roll').disabled = true;
             
-            // Randomizer Lokal
             const d1 = Math.floor(Math.random() * 6) + 1;
             const d2 = Math.floor(Math.random() * 6) + 1;
             const isDouble = d1 === d2;
             const total = d1 + d2;
             
-            // Mulai Animasi Dadu
             $('dice1').classList.remove('show-1','show-2','show-3','show-4','show-5','show-6');
             $('dice2').classList.remove('show-1','show-2','show-3','show-4','show-5','show-6');
             $('dice1').classList.add('is-rolling');
@@ -1241,7 +1167,6 @@
             let newConsecutive = isDouble ? gameState.game.consecutive_doubles + 1 : 0;
             let phase = 'action';
             
-            // Logika Detensi (Penjara)
             if (myPlayer.detention_turns > 0) {
                 if (isDouble) {
                     addLogEvent('JAIL', `${myPlayer.player_name} mendapat Double! Bebas dari detensi.`);
@@ -1255,7 +1180,7 @@
                     } else {
                         addLogEvent('JAIL', `${myPlayer.player_name} gagal mendapat double. Sisa detensi: ${nextJail}`);
                         await supabase.from('players').update({ detention_turns: nextJail }).eq('id', me.id);
-                        phase = 'end'; newPos = oldPos; passedGo = false; // Skip gerak
+                        phase = 'end'; newPos = oldPos; passedGo = false;
                     }
                 }
             } else if (newConsecutive === 3) {
@@ -1264,7 +1189,6 @@
                 await supabase.from('players').update({ detention_turns: 3, position: 10 }).eq('id', me.id);
             }
 
-            // Tunggu animasi dadu (0.8s)
             await sleep(800);
             $('dice1').classList.remove('is-rolling');
             $('dice2').classList.remove('is-rolling');
@@ -1272,27 +1196,17 @@
             
             addLogEvent('DICE', `${myPlayer.player_name} melempar 🎲 ${total}.`);
 
-            // Update Game State DB ke 'moving'
             await supabase.from('games').update({
-                dice_1: d1, dice_2: d2, dice_total: total,
-                consecutive_doubles: newConsecutive,
-                phase: 'moving' 
+                dice_1: d1, dice_2: d2, dice_total: total, consecutive_doubles: newConsecutive, phase: 'moving' 
             }).eq('id', gameState.game.id);
 
-            // Jika boleh bergerak
             if (phase !== 'end') {
-                // Update DB Posisi
                 await supabase.from('players').update({ position: newPos }).eq('id', me.id);
-                
-                // Jalankan animasi lokal
                 await animateMovement(me.id, oldPos, newPos);
-                
                 if(passedGo) {
                     await supabase.rpc('adjust_balance', { p_player_id: me.id, p_amount: 200 });
                     addLogEvent('GO', `${myPlayer.player_name} melewati MULAI. Terima ₲200.`);
                 }
-                
-                // Evaluasi Tile tujuan
                 evaluateTile(newPos, isDouble);
             } else {
                 setPhase('end');
@@ -1305,7 +1219,7 @@
             
             if (tile.type === TILE_TYPES.GOTO) {
                 addLogEvent('JAIL', `Terpergok Filch! ${myPlayer.player_name} dikirim ke Detensi!`);
-                await animateMovement(me.id, 30, 10); // Animasi seret
+                await animateMovement(me.id, 30, 10);
                 await supabase.from('players').update({ position: 10, detention_turns: 3 }).eq('id', me.id);
                 setPhase('end'); return;
             }
@@ -1325,7 +1239,6 @@
                 const propState = gameState.properties.find(p => p.tile_id === posId);
                 
                 if (!propState || !propState.owner_player_id) {
-                    // Modal Beli
                     $('action-title').innerText = tile.name;
                     $('action-desc').innerText = "Aset ini belum dikuasai siapapun.";
                     $('action-price').innerText = `₲${tile.price}`;
@@ -1340,12 +1253,10 @@
                     $('btn-action-primary').disabled = myPlayer.balance < tile.price;
                     $('modal-action').classList.remove('hidden');
                 } else if (propState.owner_player_id !== me.id) {
-                    // Bayar Sewa
                     const owner = gameState.players.find(p => p.id === propState.owner_player_id);
                     if(!owner.is_bankrupt && owner.detention_turns === 0) {
                         let rentAmount = calculateRent(tile, propState);
                         addLogEvent('RENT', `${myPlayer.player_name} membayar ₲${rentAmount} kepada ${owner.player_name}.`);
-                        
                         const { data: success } = await supabase.rpc('pay_rent', {
                             p_payer_id: me.id, p_payee_id: owner.id, p_amount: rentAmount
                         });
@@ -1353,13 +1264,11 @@
                     }
                     setPhase(isDouble ? 'roll' : 'end');
                 } else {
-                    // Milik Sendiri
                     setPhase(isDouble ? 'roll' : 'end');
                 }
                 return;
             }
-            
-            setPhase(isDouble ? 'roll' : 'end'); // Default: Bebas
+            setPhase(isDouble ? 'roll' : 'end'); 
         }
 
         function calculateRent(tile, propState) {
@@ -1399,7 +1308,6 @@
                 { title: "Denda Perpustakaan", desc: "Buku sihir terlambat dikembalikan. Bayar ₲20.", amt: -20 },
                 { title: "Felix Felicis", desc: "Keberuntungan cair! Terima sumbangan ₲150.", amt: 150 }
             ];
-            
             const card = effects[Math.floor(Math.random() * effects.length)];
             
             $('card-title').innerText = card.title;
@@ -1407,17 +1315,15 @@
             
             $('btn-card-ok').onclick = async () => {
                 $('card-element').classList.remove('show');
-                setTimeout(() => $('modal-card').classList.add('hidden'), 300); // Tunggu flip animasi
-                
+                setTimeout(() => $('modal-card').classList.add('hidden'), 300);
                 addLogEvent('CARD', `Membuka Kartu: ${card.title}.`);
                 const {data: success} = await supabase.rpc('adjust_balance', { p_player_id: me.id, p_amount: card.amt });
                 if(!success) handleBankruptcy();
-                
                 setPhase(isDouble ? 'roll' : 'end');
             };
             
             $('modal-card').classList.remove('hidden');
-            setTimeout(() => $('card-element').classList.add('show'), 50); // Memicu transisi flip
+            setTimeout(() => $('card-element').classList.add('show'), 50);
         }
 
         async function setPhase(newPhase) {
@@ -1446,7 +1352,6 @@
         });
 
         async function addLogEvent(type, msg) {
-            // Helper function agar lebih ringkas
             await supabase.from('game_events').insert([{ room_id: me.roomId, player_id: me.id, event_type: type, message: msg }]);
         }
 
@@ -1457,7 +1362,6 @@
             });
             addLogEvent('BANKRUPT', `💀 ${gameState.players.find(p=>p.id===me.id).player_name} BANGKRUT!`);
             supabase.from('players').update({ is_bankrupt: true, balance: 0 }).eq('id', me.id);
-            
             if(gameState.game.current_player_id === me.id) $('btn-end-turn').click();
         }
 
@@ -1468,7 +1372,6 @@
                 $('winner-name').innerText = winner.player_name;
                 $('winner-stats').innerText = `Sisa Kekayaan: ₲${winner.balance}`;
                 $('modal-winner').classList.remove('hidden');
-                
                 if (me.isHost) supabase.from('rooms').update({ status: 'finished' }).eq('id', me.roomId);
             }
         }
@@ -1478,25 +1381,25 @@
             const myProps = gameState.properties.filter(p => p.owner_player_id === me.id);
             
             if (myProps.length === 0) {
-                list.innerHTML = '<p class="text-sm italic text-gray-500 text-center mt-4">Anda belum memiliki aset apapun.</p>';
+                list.innerHTML = '<p class="text-sm italic text-gray-700 font-medium text-center mt-4">Anda belum memiliki aset apapun.</p>';
             } else {
                 myProps.forEach(prop => {
                     const tile = BOARD_DATA[prop.tile_id];
                     const div = document.createElement('div');
-                    div.className = 'border-l-4 p-3 rounded bg-white bg-opacity-70 flex justify-between items-center shadow-sm';
+                    div.className = 'border-l-4 p-3 rounded bg-white flex justify-between items-center shadow-sm border border-gray-300';
                     div.style.borderLeftColor = `var(--prop-${tile.group || 'brown'})`;
                     
                     let upgradeBtn = '';
                     if (tile.type === TILE_TYPES.PROP && prop.level < 5) {
                         upgradeBtn = `<button onclick="upgradeProp('${prop.id}', ${tile.housePrice})" class="text-xs font-bold bg-green-700 text-white px-3 py-1.5 rounded hover:bg-green-600 transition">Tingkatkan (₲${tile.housePrice})</button>`;
                     } else if (prop.level === 5) {
-                        upgradeBtn = `<span class="text-xs text-yellow-600 font-bold">Maksimal (Hotel)</span>`;
+                        upgradeBtn = `<span class="text-xs text-yellow-700 font-bold">Maksimal (Hotel)</span>`;
                     }
                     
                     div.innerHTML = `
                         <div>
-                            <div class="font-bold text-gray-800">${tile.name}</div>
-                            <div class="text-xs text-gray-600 font-semibold mt-1">Level: ${'★'.repeat(prop.level) || '-'}</div>
+                            <div class="font-bold text-gray-900">${tile.emoji} ${tile.name}</div>
+                            <div class="text-xs text-gray-700 font-semibold mt-1">Level: ${'★'.repeat(prop.level) || '-'}</div>
                         </div>
                         <div>${upgradeBtn}</div>
                     `;
@@ -1517,11 +1420,10 @@
             if (success) {
                 await supabase.from('properties').update({ level: prop.level + 1 }).eq('id', propId);
                 addLogEvent('UPGRADE', `Meningkatkan level properti ${BOARD_DATA[prop.tile_id].name}.`);
-                $('btn-manage').click(); // Refresh list
+                $('btn-manage').click();
             }
         };
 
-        // Mulai Aplikasi
         initAuth();
 
     </script>
