@@ -1,118 +1,1540 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b0f15"><title>Elarion: Kronik Mahkota Retak</title><style>
-:root{--bg:#0b0f15;--panel:#141b25;--panel2:#1b2430;--line:#303b4a;--text:#edf2f7;--muted:#9ba7b6;--gold:#c8a45d;--good:#6fbb8b;--bad:#d16d75;--blue:#75a9d7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 70% -10%,#253145,#0b0f15 45%);color:var(--text);font:14px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}button,input,select,textarea{font:inherit}button{background:#202a37;border:1px solid var(--line);color:var(--text);border-radius:9px;padding:10px 12px;cursor:pointer}button:hover{border-color:var(--gold)}button:disabled{opacity:.4;cursor:not-allowed}.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}.side{position:sticky;top:0;height:100vh;overflow:auto;background:#080c12;border-right:1px solid var(--line);padding:16px}.brand{font:700 21px Georgia,serif;letter-spacing:3px;color:var(--gold)}.sub{color:var(--muted);font-size:11px;margin:3px 0 16px}.nav{display:grid;gap:5px}.nav button{text-align:left;background:transparent}.nav button.active{background:var(--panel2);border-color:#665a3e}.main{min-width:0}.top{position:sticky;top:0;z-index:10;background:#0b0f15ed;backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:11px 18px;display:flex;justify-content:space-between;gap:12px}.topstats{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:12px}.content{max-width:1500px;margin:auto;padding:18px}.hero,.panel{background:linear-gradient(145deg,#151d28,#10161f);border:1px solid var(--line);border-radius:14px;padding:17px;margin-bottom:13px}.hero h1{font:42px Georgia,serif;margin:7px 0}.hero p,.panel p{line-height:1.7}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{background:#101721;border:1px solid var(--line);border-radius:11px;padding:12px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.between{display:flex;justify-content:space-between;gap:8px;align-items:center}.muted{color:var(--muted)}.gold{color:var(--gold)}.good{color:var(--good)}.bad{color:var(--bad)}.tag{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:3px 7px;font-size:10px;color:var(--muted);margin:2px}.bar{height:8px;background:#090d12;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:var(--gold)}.bar.hp i{background:var(--bad)}.bar.mp i{background:var(--blue)}.bar.xp i{background:var(--good)}.item{padding:10px;background:#0e151e;border:1px solid var(--line);border-radius:9px;margin:6px 0}.avatar{width:84px;height:84px;object-fit:cover;border-radius:12px;background:#27313f;border:1px solid var(--line)}.avatar.sm{width:48px;height:48px}.list{display:grid;gap:7px}.scroll{max-height:420px;overflow:auto}.map{position:relative;min-height:570px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,#17241b,#15222d 55%,#261d25);overflow:hidden}.node{position:absolute;transform:translate(-50%,-50%);font-size:11px;padding:7px 9px}.node.locked{opacity:.25;filter:grayscale(1)}.modal{position:fixed;inset:0;background:#000b;z-index:30;display:none;align-items:center;justify-content:center;padding:14px}.modal.open{display:flex}.box{width:min(820px,100%);max-height:91vh;overflow:auto;background:#141b24;border:1px solid var(--line);border-radius:14px;padding:18px}.choice{width:100%;text-align:left;margin:5px 0}.toast{position:fixed;right:14px;bottom:14px;z-index:50;display:grid;gap:7px}.toast div{background:#222d3a;border:1px solid var(--line);padding:10px 13px;border-radius:9px;box-shadow:0 8px 30px #0008}.portraitgrid{display:flex;gap:10px;align-items:center}.small{font-size:11px}.big{font-size:26px;font-weight:800}.danger{color:var(--bad)}pre{white-space:pre-wrap}.hide{display:none!important}@media(max-width:900px){.app{display:block}.side{position:fixed;z-index:25;left:-270px;width:250px;transition:.2s}.side.open{left:0}.content{padding:12px}.grid,.grid2{grid-template-columns:1fr}.hero h1{font-size:31px}.top{padding:10px}.mobile{display:block!important}}@media(min-width:901px){.mobile{display:none!important}}
-</style></head><body><div id="app"></div><div id="modal" class="modal"><div id="box" class="box"></div></div><div id="toast" class="toast"></div><script>
-'use strict';
-const DB={"locations":[{"id":"asterra","name":"Asterra","region":"Ibu kota lama","type":"Kota","desc":"Jantung pemerintahan Elarion, tempat arsip mahkota dan pengadilan berdiri."},{"id":"lunaris","name":"Lunaris","region":"Kota pelabuhan","type":"Kota","desc":"Pelabuhan dagang tempat kabar, barang selundupan, dan diplomasi bertemu."},{"id":"valedorn","name":"Valedorn","region":"Benteng perbatasan","type":"Benteng","desc":"Benteng militer yang menjaga jalur utara kerajaan."},{"id":"mirewood","name":"Mirewood","region":"Hutan tua","type":"Hutan","desc":"Hutan purba dengan jalan yang berubah mengikuti kabut."},{"id":"irondeep","name":"Irondeep","region":"Tambang pegunungan","type":"Tambang","desc":"Tambang tua yang menyimpan logam dari zaman sebelum kerajaan."},{"id":"serevia","name":"Serevia","region":"Desa lembah","type":"Desa","desc":"Desa agraris yang bergantung pada jalur dagang kerajaan."},{"id":"grimhollow","name":"Grimhollow","region":"Desa rawa","type":"Desa","desc":"Desa rawa yang hidup di antara legenda lonceng tenggelam."},{"id":"solmere","name":"Solmere","region":"Kuil matahari","type":"Kuil","desc":"Kompleks kuil yang menjaga tradisi pemurnian cahaya."},{"id":"ashfall","name":"Ashfall","region":"Reruntuhan","type":"Reruntuhan","desc":"Kota yang hancur dalam eksperimen arkanis yang dirahasiakan."},{"id":"cindervale","name":"Cindervale","region":"Kota pengrajin","type":"Kota","desc":"Pusat pandai besi, pembuat armor, dan pengrajin kerajaan."},{"id":"elderglen","name":"Elderglen","region":"Lembah sarjana","type":"Lembah","desc":"Tempat para peneliti mempelajari sejarah dan sihir."},{"id":"dunrath","name":"Dunrath","region":"Kota gurun","type":"Kota","desc":"Persimpangan karavan di gurun timur."},{"id":"frostmarch","name":"Frostmarch","region":"Pegunungan utara","type":"Pegunungan","desc":"Wilayah dingin yang hanya aman bagi penjelajah berpengalaman."},{"id":"blackfen","name":"Blackfen","region":"Rawa terlarang","type":"Rawa","desc":"Rawa hitam yang dilarang kerajaan karena fenomena aneh."},{"id":"ravenrock","name":"Ravenrock","region":"Benteng pengasingan","type":"Benteng","desc":"Bekas benteng kerajaan yang menjadi pusat oposisi politik."},{"id":"thornpass","name":"Thornpass","region":"Jalur pegunungan","type":"Pegunungan","desc":"Jalur sempit dengan sarang monster dan gua tersembunyi."},{"id":"goldmere","name":"Goldmere","region":"Tanah bangsawan","type":"Wilayah","desc":"Perkebunan bangsawan dengan pesta dan intrik politik."},{"id":"umbral","name":"Umbral Coast","region":"Pantai berkabut","type":"Pantai","desc":"Pantai barat yang menjadi rumah jaringan kurir rahasia."},{"id":"kharad","name":"Kharad","region":"Kota bawah tanah","type":"Bawah Tanah","desc":"Kota para penempa kuno di bawah pegunungan."},{"id":"crownspire","name":"Crownspire","region":"Menara Mahkota","type":"Area Final","desc":"Menara purba yang dibangun di atas batu yang jatuh dari langit."}],"small":[{"id":"ardan","name":"Jembatan Ardan","desc":"Jembatan tua antara Asterra dan Serevia."},{"id":"penebang","name":"Kamp Penebang","desc":"Kamp kayu di pinggir Mirewood."},{"id":"menara","name":"Menara Penjaga","desc":"Pos jaga yang menghadap jalan utara."},{"id":"dermaga","name":"Dermaga Tua","desc":"Dermaga runtuh di Lunaris."},{"id":"kuil_tenggelam","name":"Kuil Tenggelam","desc":"Reruntuhan kuil di bawah rawa Grimhollow."},{"id":"tambang_timur","name":"Tambang Timur","desc":"Lorong cabang Irondeep."},{"id":"gua_serigala","name":"Gua Serigala","desc":"Gua dingin di Thornpass."},{"id":"kebun","name":"Kebun Veyra","desc":"Taman bangsawan di Goldmere."},{"id":"makam","name":"Makam Raja Tanpa Nama","desc":"Makam tua di bawah Ashfall."},{"id":"mercusuar","name":"Mercusuar Kelam","desc":"Mercusuar terpencil di Umbral Coast."}],"dungeons":[{"id":"d1","name":"Makam Raja Tanpa Nama","type":"Reruntuhan","desc":"Makam yang sengaja menghapus nama rajanya.","boss":"Raja Tanpa Nama"},{"id":"d2","name":"Tambang Irondeep","type":"Tambang","desc":"Lorong tambang yang dikuasai Golem Besi.","boss":"Golem Besi"},{"id":"d3","name":"Kuil Tenggelam","type":"Kuil","desc":"Kuil kuno yang muncul ketika air surut.","boss":"Penjaga Pasang"},{"id":"d4","name":"Menara Abu","type":"Reruntuhan","desc":"Laboratorium Varok yang terbakar.","boss":"Magister Varok"},{"id":"d5","name":"Gua Umbral","type":"Gua","desc":"Gua pantai yang menyimpan mata-mata lama.","boss":"Ibu Kelam"},{"id":"d6","name":"Benteng Ravenrock","type":"Benteng","desc":"Benteng pemberontak yang terpecah.","boss":"Jenderal Kael"},{"id":"d7","name":"Labirin Crownspire","type":"Labirin","desc":"Ruang yang berubah menurut sumpah pemain.","boss":"Penjaga Retak"},{"id":"d8","name":"Jurang Kharad","type":"Bawah Tanah","desc":"Kedalaman tempat logam pertama ditempa.","boss":"Naga Ferros"}],"secrets":[{"id":"sec1","name":"Perpustakaan Senyap","desc":"Ruang arsip di bawah Asterra."},{"id":"sec2","name":"Danau Cermin","desc":"Danau yang muncul ketika kabut bertemu tengah malam."},{"id":"sec3","name":"Bengkel Pertama","desc":"Bengkel asli pendiri kerajaan."},{"id":"sec4","name":"Ruang Kesaksian","desc":"Ruang pengadilan yang dihapus dari peta."},{"id":"sec5","name":"Taman Mahkota","desc":"Taman tempat sumpah pertama diucapkan."}],"npcs":[{"id":"n01","name":"Arven","job":"arsiparis","loc":"Asterra","bio":"Tenang, teliti, dan mengetahui bahwa sejarah resmi telah disunting."},{"id":"n02","name":"Maelis","job":"pedagang buku","loc":"Asterra","bio":"Menyimpan buku langka dan tidak menjualnya kepada sembarang orang."},{"id":"n03","name":"Talia","job":"pemilik penginapan","loc":"Asterra","bio":"Mendengar hampir semua gosip kota."},{"id":"n04","name":"Corvin","job":"penjaga kota","loc":"Asterra","bio":"Patuh aturan tetapi masih peduli pada warga."},{"id":"n05","name":"Irena","job":"hakim muda","loc":"Asterra","bio":"Berusaha membuat pengadilan lebih adil."},{"id":"n06","name":"Dorian","job":"bankir","loc":"Asterra","bio":"Memahami arus emas dan utang para bangsawan."},{"id":"n07","name":"Selene","job":"peramal","loc":"Asterra","bio":"Berbicara tentang pecahan mahkota tanpa menyebut namanya."},{"id":"n08","name":"Orlan","job":"arsiparis tua","loc":"Asterra","bio":"Mengingat masa perang dan beberapa nama yang telah dihapus."},{"id":"n09","name":"Mira","job":"nelayan","loc":"Lunaris","bio":"Mengetahui arus pantai dan rahasia Dermaga Tua."},{"id":"n10","name":"Oren","job":"kapten kapal","loc":"Lunaris","bio":"Keras kepala tetapi dapat dipercaya ketika dibayar dengan adil."},{"id":"n11","name":"Vaska","job":"pedagang","loc":"Lunaris","bio":"Mengelola jaringan dagang dan pasar malam."},{"id":"n12","name":"Rhett","job":"penjaga dermaga","loc":"Lunaris","bio":"Sering melihat transaksi mencurigakan."},{"id":"n13","name":"Lyra","job":"musisi jalanan","loc":"Lunaris","bio":"Mantan kurir yang kehilangan saudaranya dalam perang."},{"id":"n14","name":"Soren","job":"penyelundup","loc":"Lunaris","bio":"Berhubungan dengan jaringan bayangan."},{"id":"n15","name":"Nyx","job":"informan","loc":"Umbral Coast","bio":"Mengumpulkan rahasia untuk Persaudaraan Bayangan."},{"id":"n16","name":"Bela","job":"penjaga mercusuar","loc":"Umbral Coast","bio":"Menjaga cahaya agar kapal tidak menabrak karang."},{"id":"n17","name":"Elian","job":"komandan","loc":"Valedorn","bio":"Prajurit disiplin yang ingin mencegah perang saudara."},{"id":"n18","name":"Sabine","job":"quartermaster","loc":"Valedorn","bio":"Mengurus persediaan dan tahu siapa yang mencuri logistik."},{"id":"n19","name":"Hale","job":"penjaga menara","loc":"Valedorn","bio":"Pengamat yang jarang salah membaca gerak musuh."},{"id":"n20","name":"Cale","job":"utusan kerajaan","loc":"Valedorn","bio":"Diplomat muda yang dapat menjadi pendamping."},{"id":"n21","name":"Tarin","job":"penjaga jalur","loc":"Thornpass","bio":"Mengenal jalan gunung yang tidak tercatat."},{"id":"n22","name":"Juno","job":"pemburu monster","loc":"Thornpass","bio":"Memburu monster setelah keluarganya menjadi korban."},{"id":"n23","name":"Yara","job":"petani","loc":"Serevia","bio":"Mengkhawatirkan panen dan harga gandum."},{"id":"n24","name":"Tomas","job":"penggiling gandum","loc":"Serevia","bio":"Menjaga persediaan desa."},{"id":"n25","name":"Lio","job":"pembawa pesan","loc":"Serevia","bio":"Cepat berlari dan mengetahui jalur rahasia."},{"id":"n26","name":"Maren","job":"tabib","loc":"Serevia","bio":"Membuat obat dari tanaman lembah."},{"id":"n27","name":"Fen","job":"penjaga rawa","loc":"Grimhollow","bio":"Percaya bahwa lonceng rawa adalah peringatan."},{"id":"n28","name":"Olia","job":"penjual jamu","loc":"Grimhollow","bio":"Mengetahui tanaman yang hanya tumbuh saat kabut."},{"id":"n29","name":"Perrin","job":"pemburu","loc":"Grimhollow","bio":"Sering dituduh atas kejadian yang tidak dilakukannya."},{"id":"n30","name":"Edda","job":"pendeta","loc":"Solmere","bio":"Menjaga Piala Fajar dan tradisi kuil."},{"id":"n31","name":"Lucan","job":"penjaga kuil","loc":"Solmere","bio":"Setia kepada Ordo Fajar."},{"id":"n32","name":"Vera","job":"penjaga reruntuhan","loc":"Ashfall","bio":"Selamat dari kehancuran Ashfall."},{"id":"n33","name":"Marek","job":"pemburu relik","loc":"Ashfall","bio":"Mencari artefak sebelum jatuh ke tangan yang salah."},{"id":"n34","name":"Bram","job":"pandai besi","loc":"Cindervale","bio":"Memimpikan senjata yang dapat menahan energi mahkota."},{"id":"n35","name":"Nera","job":"apoteker","loc":"Cindervale","bio":"Meneliti ramuan dan racun."},{"id":"n36","name":"Garrick","job":"pengrajin armor","loc":"Cindervale","bio":"Dapat memperkuat armor jika bahan tepat tersedia."},{"id":"n37","name":"Ivo","job":"sarjana","loc":"Elderglen","bio":"Pemimpin Lingkaran Arkanis."},{"id":"n38","name":"Nadia","job":"peneliti","loc":"Elderglen","bio":"Meneliti asal-usul batu yang jatuh dari langit."},{"id":"n39","name":"Quill","job":"kartografer","loc":"Elderglen","bio":"Membuat peta dari kesaksian penjelajah."},{"id":"n40","name":"Veyra","job":"penjaga taman","loc":"Elderglen","bio":"Menjaga pengetahuan tentang Taman Mahkota."},{"id":"n41","name":"Razan","job":"pedagang gurun","loc":"Dunrath","bio":"Menguasai jalur karavan timur."},{"id":"n42","name":"Samir","job":"penjaga karavan","loc":"Dunrath","bio":"Menjaga karavan dengan prinsip yang ketat."},{"id":"n43","name":"Ayla","job":"pengrajin kaca","loc":"Dunrath","bio":"Mengenali kaca dari Kejatuhan Bintang."},{"id":"n44","name":"Kaia","job":"pengintai","loc":"Frostmarch","bio":"Pelacak jejak yang luar biasa."},{"id":"n45","name":"Ulric","job":"pemburu es","loc":"Frostmarch","bio":"Mengetahui monster yang muncul saat badai."},{"id":"n46","name":"Nils","job":"penjaga perbatasan","loc":"Frostmarch","bio":"Menjaga jalur utara."},{"id":"n47","name":"Rook","job":"pemimpin pengasingan","loc":"Ravenrock","bio":"Ingin mengakhiri dominasi keluarga kerajaan."},{"id":"n48","name":"Mila","job":"juru runding","loc":"Ravenrock","bio":"Berusaha mencegah perang terbuka."},{"id":"n49","name":"Isolde","job":"bangsawan","loc":"Goldmere","bio":"Memiliki pengaruh besar di dewan."},{"id":"n50","name":"Cedric","job":"pelayan istana","loc":"Goldmere","bio":"Menyimpan dokumen yang seharusnya tidak ia miliki."},{"id":"n51","name":"Rosal","job":"tuan tanah","loc":"Goldmere","bio":"Peduli pada pajak lebih daripada rakyat."},{"id":"n52","name":"Kara","job":"penempa bawah tanah","loc":"Kharad","bio":"Mengetahui teknik logam pertama."},{"id":"n53","name":"Drek","job":"pedagang logam","loc":"Kharad","bio":"Menilai logam berdasarkan sejarahnya."},{"id":"n54","name":"Venn","job":"penggali","loc":"Kharad","bio":"Menemukan lorong yang tidak tercatat."},{"id":"n55","name":"Sable","job":"penyair","loc":"Asterra","bio":"Menyimpan lagu yang memuat kata sandi sejarah."},{"id":"n56","name":"Merek","job":"penjaga malam","loc":"Asterra","bio":"Mengenali pencuri berdasarkan pola langkah."},{"id":"n57","name":"Tavia","job":"pembuat lilin","loc":"Asterra","bio":"Mengetahui siapa yang membeli lilin untuk ritual malam."},{"id":"n58","name":"Hest","job":"pengumpul pajak","loc":"Serevia","bio":"Dapat mengubah ekonomi desa melalui keputusan administratif."},{"id":"n59","name":"Renn","job":"penjaga makam","loc":"Ashfall","bio":"Menolak membuka makam tanpa alasan kuat."},{"id":"n60","name":"Aster","job":"penjaga gerbang","loc":"Crownspire","bio":"Hanya membuka jalan bagi pembawa sumpah yang sah."}],"factions":[{"id":"f1","name":"Mahkota Elarion","leader":"Irena","desc":"Menjaga pemerintahan kerajaan dan stabilitas hukum."},{"id":"f2","name":"Serikat Pedagang","leader":"Vaska","desc":"Menguasai jalur dagang dan harga pasar."},{"id":"f3","name":"Penjaga Perbatasan","leader":"Elian","desc":"Mencegah konflik bersenjata di perbatasan."},{"id":"f4","name":"Lingkaran Arkanis","leader":"Ivo","desc":"Mencari kebenaran tentang artefak dan sihir."},{"id":"f5","name":"Ordo Fajar","leader":"Edda","desc":"Menjaga tradisi cahaya dan relik kuil."},{"id":"f6","name":"Konfederasi Pengasingan","leader":"Rook","desc":"Menuntut reformasi dan representasi politik."},{"id":"f7","name":"Persaudaraan Bayangan","leader":"Nyx","desc":"Jaringan informasi, kurir, dan penyelundup."},{"id":"f8","name":"Klan Kharad","leader":"Kara","desc":"Penjaga teknik logam kuno."}],"companions":[{"id":"c1","name":"Lyra","role":"Musisi dan kurir","skill":"PERSUASION","bio":"Mantan kurir yang kehilangan saudara dalam perang."},{"id":"c2","name":"Cale","role":"Prajurit kerajaan","skill":"COMBAT","bio":"Perwira muda yang percaya hukum dapat diperbaiki."},{"id":"c3","name":"Nadia","role":"Peneliti arkanis","skill":"ARCANA","bio":"Sarjana yang mengejar asal-usul Mahkota Retak."},{"id":"c4","name":"Kaia","role":"Pengintai utara","skill":"SURVIVAL","bio":"Pelacak yang menghafal jalan pegunungan."},{"id":"c5","name":"Mila","role":"Juru runding pengasingan","skill":"PERSUASION","bio":"Diplomat yang menolak perang saudara."},{"id":"c6","name":"Juno","role":"Pemburu monster","skill":"COMBAT","bio":"Pemburu yang menjadikan monster sebagai sumpah hidup."},{"id":"c7","name":"Veyra","role":"Penjaga taman","skill":"INVESTIGATION","bio":"Menjaga pintu menuju Taman Mahkota."},{"id":"c8","name":"Kara","role":"Penempa Kharad","skill":"COMBAT","bio":"Pandai besi yang dapat menempa logam pertama."}],"enemies":[{"id":"e01","name":"Serigala Kelam","hp":70,"atk":14,"def":5,"weak":"Api","res":"Racun"},{"id":"e02","name":"Bandit Jalanan","hp":85,"atk":16,"def":7,"weak":"Petir","res":""},{"id":"e03","name":"Perampok Hutan","hp":95,"atk":18,"def":8,"weak":"Api","res":""},{"id":"e04","name":"Kelelawar Rawa","hp":60,"atk":15,"def":4,"weak":"Es","res":""},{"id":"e05","name":"Lendir Hijau","hp":55,"atk":11,"def":3,"weak":"Api","res":""},{"id":"e06","name":"Laba-laba Besi","hp":110,"atk":20,"def":10,"weak":"Petir","res":""},{"id":"e07","name":"Goblin Batu","hp":120,"atk":22,"def":13,"weak":"Petir","res":""},{"id":"e08","name":"Jamur Beracun","hp":75,"atk":13,"def":6,"weak":"Api","res":"Racun"},{"id":"e09","name":"Roh Kabut","hp":90,"atk":17,"def":8,"weak":"Api","res":"Fisik"},{"id":"e10","name":"Penjaga Tua","hp":150,"atk":24,"def":18,"weak":"Petir","res":"Es"},{"id":"e11","name":"Serigala Es","hp":130,"atk":25,"def":14,"weak":"Api","res":"Es"},{"id":"e12","name":"Pencuri Relik","hp":115,"atk":23,"def":12,"weak":"Es","res":""},{"id":"e13","name":"Ksatria Retak","hp":180,"atk":28,"def":20,"weak":"Petir","res":"Fisik"},{"id":"e14","name":"Hantu Pelabuhan","hp":125,"atk":22,"def":11,"weak":"Api","res":"Fisik"},{"id":"e15","name":"Buaya Rawa","hp":190,"atk":29,"def":18,"weak":"Petir","res":"Racun"},{"id":"e16","name":"Golem Pasir","hp":220,"atk":31,"def":28,"weak":"Es","res":"Fisik"},{"id":"e17","name":"Ular Gurun","hp":145,"atk":27,"def":12,"weak":"Es","res":"Racun"},{"id":"e18","name":"Penjaga Ashfall","hp":210,"atk":32,"def":22,"weak":"Air","res":"Api"},{"id":"e19","name":"Penyihir Buangan","hp":170,"atk":35,"def":16,"weak":"Fisik","res":"Arcana"},{"id":"e20","name":"Makhluk Umbral","hp":200,"atk":33,"def":18,"weak":"Api","res":"Gelap"},{"id":"e21","name":"Penambang Gila","hp":160,"atk":29,"def":17,"weak":"Mental","res":""},{"id":"e22","name":"Kelelawar Besar","hp":140,"atk":26,"def":12,"weak":"Es","res":""},{"id":"e23","name":"Serigala Perak","hp":180,"atk":31,"def":17,"weak":"Api","res":""},{"id":"e24","name":"Pengawal Palsu","hp":190,"atk":34,"def":20,"weak":"Petir","res":""},{"id":"e25","name":"Kultis Mahkota","hp":210,"atk":37,"def":19,"weak":"Fisik","res":"Arcana"},{"id":"e26","name":"Prajurit Pengasingan","hp":240,"atk":36,"def":25,"weak":"Persuasi","res":""},{"id":"e27","name":"Raksasa Rawa","hp":320,"atk":40,"def":30,"weak":"Api","res":"Racun"},{"id":"e28","name":"Naga Muda","hp":380,"atk":45,"def":34,"weak":"Es","res":"Api"},{"id":"e29","name":"Ksatria Abu","hp":300,"atk":43,"def":31,"weak":"Air","res":"Api"},{"id":"e30","name":"Pemburu Bayangan","hp":260,"atk":41,"def":23,"weak":"Api","res":"Gelap"}],"bosses":[{"id":"b01","name":"Raja Tanpa Nama","hp":700,"atk":58,"def":42,"weak":"Cahaya","res":"Gelap"},{"id":"b02","name":"Golem Besi","hp":900,"atk":65,"def":60,"weak":"Petir","res":"Fisik"},{"id":"b03","name":"Penjaga Pasang","hp":850,"atk":62,"def":45,"weak":"Petir","res":"Air"},{"id":"b04","name":"Magister Varok","hp":1000,"atk":75,"def":38,"weak":"Fisik","res":"Arcana"},{"id":"b05","name":"Ibu Kelam","hp":1200,"atk":82,"def":48,"weak":"Cahaya","res":"Gelap"},{"id":"b06","name":"Jenderal Kael","hp":1350,"atk":88,"def":60,"weak":"Persuasi","res":"Fisik"},{"id":"b07","name":"Penjaga Retak","hp":1600,"atk":95,"def":70,"weak":"Mitos","res":""},{"id":"b08","name":"Naga Ferros","hp":1900,"atk":105,"def":85,"weak":"Petir","res":"Api"},{"id":"b09","name":"Ksatria Mahkota","hp":2100,"atk":112,"def":82,"weak":"Arcana","res":"Fisik"},{"id":"b10","name":"Raja Bayangan","hp":2400,"atk":125,"def":90,"weak":"Cahaya","res":"Gelap"}],"items":[{"id":"w1","name":"Pedang Ardan","type":"Senjata","rarity":"Biasa","price":20,"atk":5,"def":0,"magic":0,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w2","name":"Pedang Penjaga","type":"Senjata","rarity":"Biasa","price":45,"atk":7,"def":0,"magic":1,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w3","name":"Pedang Bulan","type":"Senjata","rarity":"Biasa","price":70,"atk":9,"def":0,"magic":2,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w4","name":"Pedang Cindervale","type":"Senjata","rarity":"Biasa","price":95,"atk":11,"def":0,"magic":3,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w5","name":"Pedang Serigala","type":"Senjata","rarity":"Biasa","price":120,"atk":13,"def":0,"magic":4,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w6","name":"Pedang Valedorn","type":"Senjata","rarity":"Biasa","price":145,"atk":15,"def":0,"magic":5,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w7","name":"Pedang Serevia","type":"Senjata","rarity":"Biasa","price":170,"atk":17,"def":0,"magic":6,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w8","name":"Pedang Ashfall","type":"Senjata","rarity":"Biasa","price":195,"atk":19,"def":0,"magic":0,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w9","name":"Pedang Frostmarch","type":"Senjata","rarity":"Biasa","price":220,"atk":21,"def":0,"magic":1,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w10","name":"Pedang Umbral","type":"Senjata","rarity":"Biasa","price":245,"atk":23,"def":0,"magic":2,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w11","name":"Pedang Kharad","type":"Senjata","rarity":"Tidak Umum","price":270,"atk":25,"def":0,"magic":3,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w12","name":"Pedang Mahkota","type":"Senjata","rarity":"Tidak Umum","price":295,"atk":27,"def":0,"magic":4,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w13","name":"Tombak Fajar","type":"Senjata","rarity":"Tidak Umum","price":320,"atk":29,"def":0,"magic":5,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w14","name":"Tombak Thornpass","type":"Senjata","rarity":"Tidak Umum","price":345,"atk":31,"def":0,"magic":6,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w15","name":"Tombak Besi","type":"Senjata","rarity":"Tidak Umum","price":370,"atk":33,"def":0,"magic":0,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w16","name":"Tombak Gurun","type":"Senjata","rarity":"Tidak Umum","price":395,"atk":35,"def":0,"magic":1,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w17","name":"Tombak Rawa","type":"Senjata","rarity":"Tidak Umum","price":420,"atk":37,"def":0,"magic":2,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w18","name":"Tombak Pengasingan","type":"Senjata","rarity":"Tidak Umum","price":445,"atk":39,"def":0,"magic":3,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w19","name":"Tombak Bayangan","type":"Senjata","rarity":"Tidak Umum","price":470,"atk":41,"def":0,"magic":4,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w20","name":"Tombak Kuno","type":"Senjata","rarity":"Tidak Umum","price":495,"atk":43,"def":0,"magic":5,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w21","name":"Busur Pemburu","type":"Senjata","rarity":"Tidak Umum","price":520,"atk":45,"def":0,"magic":6,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w22","name":"Busur Hutan","type":"Senjata","rarity":"Tidak Umum","price":545,"atk":47,"def":0,"magic":0,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w23","name":"Busur Perak","type":"Senjata","rarity":"Tidak Umum","price":570,"atk":49,"def":0,"magic":1,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w24","name":"Busur Kabut","type":"Senjata","rarity":"Tidak Umum","price":595,"atk":51,"def":0,"magic":2,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w25","name":"Busur Utara","type":"Senjata","rarity":"Tidak Umum","price":620,"atk":53,"def":0,"magic":3,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w26","name":"Busur Gurun","type":"Senjata","rarity":"Langka","price":645,"atk":55,"def":0,"magic":4,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w27","name":"Busur Relik","type":"Senjata","rarity":"Langka","price":670,"atk":57,"def":0,"magic":5,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w28","name":"Busur Matahari","type":"Senjata","rarity":"Langka","price":695,"atk":59,"def":0,"magic":6,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w29","name":"Busur Senyap","type":"Senjata","rarity":"Langka","price":720,"atk":61,"def":0,"magic":0,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w30","name":"Busur Mahkota","type":"Senjata","rarity":"Langka","price":745,"atk":63,"def":0,"magic":1,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w31","name":"Tongkat Elderglen","type":"Senjata","rarity":"Langka","price":770,"atk":65,"def":0,"magic":2,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w32","name":"Tongkat Arkanis","type":"Senjata","rarity":"Langka","price":795,"atk":67,"def":0,"magic":3,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w33","name":"Tongkat Abu","type":"Senjata","rarity":"Langka","price":820,"atk":69,"def":0,"magic":4,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w34","name":"Tongkat Pasang","type":"Senjata","rarity":"Langka","price":845,"atk":71,"def":0,"magic":5,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w35","name":"Tongkat Umbral","type":"Senjata","rarity":"Langka","price":870,"atk":73,"def":0,"magic":6,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w36","name":"Tongkat Kharad","type":"Senjata","rarity":"Langka","price":895,"atk":75,"def":0,"magic":0,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w37","name":"Tongkat Raja","type":"Senjata","rarity":"Langka","price":920,"atk":77,"def":0,"magic":1,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w38","name":"Belati Pelabuhan","type":"Senjata","rarity":"Langka","price":945,"atk":79,"def":0,"magic":2,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w39","name":"Belati Bayangan","type":"Senjata","rarity":"Langka","price":970,"atk":81,"def":0,"magic":3,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w40","name":"Belati Racun","type":"Senjata","rarity":"Langka","price":995,"atk":83,"def":0,"magic":4,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w41","name":"Belati Es","type":"Senjata","rarity":"Epik","price":1020,"atk":85,"def":0,"magic":5,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w42","name":"Belati Api","type":"Senjata","rarity":"Epik","price":1045,"atk":87,"def":0,"magic":6,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w43","name":"Belati Petir","type":"Senjata","rarity":"Epik","price":1070,"atk":89,"def":0,"magic":0,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w44","name":"Belati Relik","type":"Senjata","rarity":"Epik","price":1095,"atk":91,"def":0,"magic":1,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w45","name":"Kapak Penebang","type":"Senjata","rarity":"Epik","price":1120,"atk":93,"def":0,"magic":2,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w46","name":"Kapak Gunung","type":"Senjata","rarity":"Epik","price":1145,"atk":95,"def":0,"magic":3,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w47","name":"Kapak Besi","type":"Senjata","rarity":"Epik","price":1170,"atk":97,"def":0,"magic":4,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w48","name":"Kapak Pengasingan","type":"Senjata","rarity":"Epik","price":1195,"atk":99,"def":0,"magic":5,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w49","name":"Kapak Naga","type":"Senjata","rarity":"Epik","price":1220,"atk":101,"def":0,"magic":6,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"w50","name":"Mahkota Retak","type":"Senjata","rarity":"Epik","price":1245,"atk":103,"def":0,"magic":0,"effect":"Serangan khusus berdasarkan sejarah senjata."},{"id":"a1","name":"Rompi Pengelana","type":"Armor","rarity":"Biasa","price":40,"atk":0,"def":5,"magic":0,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a2","name":"Kulit Pemburu","type":"Armor","rarity":"Biasa","price":64,"atk":0,"def":7,"magic":1,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a3","name":"Baju Besi Ardan","type":"Armor","rarity":"Tidak Umum","price":88,"atk":0,"def":9,"magic":2,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a4","name":"Baju Besi Valedorn","type":"Armor","rarity":"Tidak Umum","price":112,"atk":0,"def":11,"magic":3,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a5","name":"Jubah Elderglen","type":"Armor","rarity":"Tidak Umum","price":136,"atk":0,"def":13,"magic":4,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a6","name":"Jubah Fajar","type":"Armor","rarity":"Tidak Umum","price":160,"atk":0,"def":15,"magic":5,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a7","name":"Mantel Kabut","type":"Armor","rarity":"Tidak Umum","price":184,"atk":0,"def":17,"magic":6,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a8","name":"Baju Besi Cindervale","type":"Armor","rarity":"Tidak Umum","price":208,"atk":0,"def":19,"magic":7,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a9","name":"Baju Besi Kharad","type":"Armor","rarity":"Tidak Umum","price":232,"atk":0,"def":21,"magic":0,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a10","name":"Baju Besi Frostmarch","type":"Armor","rarity":"Tidak Umum","price":256,"atk":0,"def":23,"magic":1,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a11","name":"Baju Besi Umbral","type":"Armor","rarity":"Tidak Umum","price":280,"atk":0,"def":25,"magic":2,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a12","name":"Baju Besi Pengasingan","type":"Armor","rarity":"Tidak Umum","price":304,"atk":0,"def":27,"magic":3,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a13","name":"Baju Besi Ksatria","type":"Armor","rarity":"Tidak Umum","price":328,"atk":0,"def":29,"magic":4,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a14","name":"Jubah Arkanis","type":"Armor","rarity":"Tidak Umum","price":352,"atk":0,"def":31,"magic":5,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a15","name":"Jubah Matahari","type":"Armor","rarity":"Tidak Umum","price":376,"atk":0,"def":33,"magic":6,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a16","name":"Mantel Serigala","type":"Armor","rarity":"Tidak Umum","price":400,"atk":0,"def":35,"magic":7,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a17","name":"Mantel Perak","type":"Armor","rarity":"Tidak Umum","price":424,"atk":0,"def":37,"magic":0,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a18","name":"Baju Besi Ashfall","type":"Armor","rarity":"Langka","price":448,"atk":0,"def":39,"magic":1,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a19","name":"Baju Besi Raja","type":"Armor","rarity":"Langka","price":472,"atk":0,"def":41,"magic":2,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a20","name":"Baju Besi Mahkota","type":"Armor","rarity":"Langka","price":496,"atk":0,"def":43,"magic":3,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a21","name":"Pelindung Bahu Batu","type":"Armor","rarity":"Langka","price":520,"atk":0,"def":45,"magic":4,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a22","name":"Pelindung Rawa","type":"Armor","rarity":"Langka","price":544,"atk":0,"def":47,"magic":5,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a23","name":"Pelindung Gurun","type":"Armor","rarity":"Langka","price":568,"atk":0,"def":49,"magic":6,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a24","name":"Pelindung Pantai","type":"Armor","rarity":"Langka","price":592,"atk":0,"def":51,"magic":7,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a25","name":"Pelindung Menara","type":"Armor","rarity":"Langka","price":616,"atk":0,"def":53,"magic":0,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a26","name":"Pelindung Retak","type":"Armor","rarity":"Langka","price":640,"atk":0,"def":55,"magic":1,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a27","name":"Jubah Bayangan","type":"Armor","rarity":"Langka","price":664,"atk":0,"def":57,"magic":2,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a28","name":"Jubah Penjaga","type":"Armor","rarity":"Langka","price":688,"atk":0,"def":59,"magic":3,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a29","name":"Baju Besi Naga","type":"Armor","rarity":"Langka","price":712,"atk":0,"def":61,"magic":4,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a30","name":"Baju Besi Ferros","type":"Armor","rarity":"Langka","price":736,"atk":0,"def":63,"magic":5,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a31","name":"Baju Besi Legiun","type":"Armor","rarity":"Langka","price":760,"atk":0,"def":65,"magic":6,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a32","name":"Baju Besi Penjaga","type":"Armor","rarity":"Langka","price":784,"atk":0,"def":67,"magic":7,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a33","name":"Jubah Cermin","type":"Armor","rarity":"Epik","price":808,"atk":0,"def":69,"magic":0,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a34","name":"Jubah Senyap","type":"Armor","rarity":"Epik","price":832,"atk":0,"def":71,"magic":1,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a35","name":"Jubah Bintang","type":"Armor","rarity":"Epik","price":856,"atk":0,"def":73,"magic":2,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a36","name":"Baju Besi Relik","type":"Armor","rarity":"Epik","price":880,"atk":0,"def":75,"magic":3,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a37","name":"Baju Besi Fajar Agung","type":"Armor","rarity":"Epik","price":904,"atk":0,"def":77,"magic":4,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a38","name":"Baju Besi Raja Lama","type":"Armor","rarity":"Epik","price":928,"atk":0,"def":79,"magic":5,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a39","name":"Baju Besi Void","type":"Armor","rarity":"Epik","price":952,"atk":0,"def":81,"magic":6,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"a40","name":"Baju Besi Mitos","type":"Armor","rarity":"Epik","price":976,"atk":0,"def":83,"magic":7,"effect":"Ketahanan meningkat dan membuka jalur build."},{"id":"x1","name":"Cincin Tembaga","type":"Aksesori","rarity":"Tidak Umum","price":35,"atk":0,"def":0,"magic":0,"effect":"Wawasan +1 dan efek situasional."},{"id":"x2","name":"Cincin Penjaga","type":"Aksesori","rarity":"Tidak Umum","price":65,"atk":1,"def":1,"magic":1,"effect":"Wawasan +2 dan efek situasional."},{"id":"x3","name":"Cincin Hujan","type":"Aksesori","rarity":"Tidak Umum","price":95,"atk":2,"def":2,"magic":2,"effect":"Wawasan +3 dan efek situasional."},{"id":"x4","name":"Cincin Api","type":"Aksesori","rarity":"Tidak Umum","price":125,"atk":3,"def":3,"magic":3,"effect":"Wawasan +4 dan efek situasional."},{"id":"x5","name":"Cincin Es","type":"Aksesori","rarity":"Tidak Umum","price":155,"atk":4,"def":4,"magic":4,"effect":"Wawasan +5 dan efek situasional."},{"id":"x6","name":"Cincin Petir","type":"Aksesori","rarity":"Tidak Umum","price":185,"atk":5,"def":5,"magic":5,"effect":"Wawasan +1 dan efek situasional."},{"id":"x7","name":"Kalung Serevia","type":"Aksesori","rarity":"Tidak Umum","price":215,"atk":6,"def":0,"magic":6,"effect":"Wawasan +2 dan efek situasional."},{"id":"x8","name":"Kalung Fajar","type":"Aksesori","rarity":"Langka","price":245,"atk":0,"def":1,"magic":7,"effect":"Wawasan +3 dan efek situasional."},{"id":"x9","name":"Kalung Kabut","type":"Aksesori","rarity":"Langka","price":275,"atk":1,"def":2,"magic":8,"effect":"Wawasan +4 dan efek situasional."},{"id":"x10","name":"Kalung Bayangan","type":"Aksesori","rarity":"Langka","price":305,"atk":2,"def":3,"magic":9,"effect":"Wawasan +5 dan efek situasional."},{"id":"x11","name":"Gelang Pemburu","type":"Aksesori","rarity":"Langka","price":335,"atk":3,"def":4,"magic":0,"effect":"Wawasan +1 dan efek situasional."},{"id":"x12","name":"Gelang Arkanis","type":"Aksesori","rarity":"Langka","price":365,"atk":4,"def":5,"magic":1,"effect":"Wawasan +2 dan efek situasional."},{"id":"x13","name":"Gelang Kharad","type":"Aksesori","rarity":"Langka","price":395,"atk":5,"def":0,"magic":2,"effect":"Wawasan +3 dan efek situasional."},{"id":"x14","name":"Gelang Pengasingan","type":"Aksesori","rarity":"Langka","price":425,"atk":6,"def":1,"magic":3,"effect":"Wawasan +4 dan efek situasional."},{"id":"x15","name":"Gelang Mahkota","type":"Aksesori","rarity":"Langka","price":455,"atk":0,"def":2,"magic":4,"effect":"Wawasan +5 dan efek situasional."},{"id":"x16","name":"Jimat Serigala","type":"Aksesori","rarity":"Langka","price":485,"atk":1,"def":3,"magic":5,"effect":"Wawasan +1 dan efek situasional."},{"id":"x17","name":"Jimat Perak","type":"Aksesori","rarity":"Langka","price":515,"atk":2,"def":4,"magic":6,"effect":"Wawasan +2 dan efek situasional."},{"id":"x18","name":"Jimat Gurun","type":"Aksesori","rarity":"Langka","price":545,"atk":3,"def":5,"magic":7,"effect":"Wawasan +3 dan efek situasional."},{"id":"x19","name":"Jimat Rawa","type":"Aksesori","rarity":"Langka","price":575,"atk":4,"def":0,"magic":8,"effect":"Wawasan +4 dan efek situasional."},{"id":"x20","name":"Jimat Menara","type":"Aksesori","rarity":"Langka","price":605,"atk":5,"def":1,"magic":9,"effect":"Wawasan +5 dan efek situasional."},{"id":"x21","name":"Lencana Penjaga","type":"Aksesori","rarity":"Langka","price":635,"atk":6,"def":2,"magic":0,"effect":"Wawasan +1 dan efek situasional."},{"id":"x22","name":"Lencana Pedagang","type":"Aksesori","rarity":"Langka","price":665,"atk":0,"def":3,"magic":1,"effect":"Wawasan +2 dan efek situasional."},{"id":"x23","name":"Lencana Sarjana","type":"Aksesori","rarity":"Epik","price":695,"atk":1,"def":4,"magic":2,"effect":"Wawasan +3 dan efek situasional."},{"id":"x24","name":"Lencana Kuil","type":"Aksesori","rarity":"Epik","price":725,"atk":2,"def":5,"magic":3,"effect":"Wawasan +4 dan efek situasional."},{"id":"x25","name":"Lencana Pengasingan","type":"Aksesori","rarity":"Epik","price":755,"atk":3,"def":0,"magic":4,"effect":"Wawasan +5 dan efek situasional."},{"id":"x26","name":"Lencana Bayangan","type":"Aksesori","rarity":"Epik","price":785,"atk":4,"def":1,"magic":5,"effect":"Wawasan +1 dan efek situasional."},{"id":"x27","name":"Lencana Kharad","type":"Aksesori","rarity":"Epik","price":815,"atk":5,"def":2,"magic":6,"effect":"Wawasan +2 dan efek situasional."},{"id":"x28","name":"Mata Cermin","type":"Aksesori","rarity":"Epik","price":845,"atk":6,"def":3,"magic":7,"effect":"Wawasan +3 dan efek situasional."},{"id":"x29","name":"Segel Raja","type":"Aksesori","rarity":"Epik","price":875,"atk":0,"def":4,"magic":8,"effect":"Wawasan +4 dan efek situasional."},{"id":"x30","name":"Segel Retak","type":"Aksesori","rarity":"Epik","price":905,"atk":1,"def":5,"magic":9,"effect":"Wawasan +5 dan efek situasional."},{"id":"c1","name":"Ramuan Kecil","type":"Konsumsi","rarity":"Biasa","price":12,"atk":0,"def":0,"magic":0,"heal":25,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c2","name":"Ramuan Sedang","type":"Konsumsi","rarity":"Biasa","price":22,"atk":0,"def":0,"magic":0,"heal":35,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c3","name":"Ramuan Besar","type":"Konsumsi","rarity":"Biasa","price":32,"atk":0,"def":0,"magic":0,"heal":45,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c4","name":"Ramuan Mana","type":"Konsumsi","rarity":"Biasa","price":42,"atk":0,"def":0,"magic":0,"heal":55,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c5","name":"Ramuan Mana Besar","type":"Konsumsi","rarity":"Biasa","price":52,"atk":0,"def":0,"magic":0,"heal":65,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c6","name":"Antidot","type":"Konsumsi","rarity":"Biasa","price":62,"atk":0,"def":0,"magic":0,"heal":75,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c7","name":"Tonik Api","type":"Konsumsi","rarity":"Biasa","price":72,"atk":0,"def":0,"magic":0,"heal":85,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c8","name":"Tonik Es","type":"Konsumsi","rarity":"Biasa","price":82,"atk":0,"def":0,"magic":0,"heal":95,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c9","name":"Tonik Petir","type":"Konsumsi","rarity":"Biasa","price":92,"atk":0,"def":0,"magic":0,"heal":105,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c10","name":"Tonik Cahaya","type":"Konsumsi","rarity":"Biasa","price":102,"atk":0,"def":0,"magic":0,"heal":115,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c11","name":"Tonik Bayangan","type":"Konsumsi","rarity":"Biasa","price":112,"atk":0,"def":0,"magic":0,"heal":125,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c12","name":"Ramuan Regenerasi","type":"Konsumsi","rarity":"Biasa","price":122,"atk":0,"def":0,"magic":0,"heal":135,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c13","name":"Ramuan Stamina","type":"Konsumsi","rarity":"Biasa","price":132,"atk":0,"def":0,"magic":0,"heal":145,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c14","name":"Makanan Darurat","type":"Konsumsi","rarity":"Biasa","price":142,"atk":0,"def":0,"magic":0,"heal":155,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c15","name":"Ramuan Keberanian","type":"Konsumsi","rarity":"Biasa","price":152,"atk":0,"def":0,"magic":0,"heal":165,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c16","name":"Ramuan Fokus","type":"Konsumsi","rarity":"Tidak Umum","price":162,"atk":0,"def":0,"magic":0,"heal":175,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c17","name":"Ramuan Kecepatan","type":"Konsumsi","rarity":"Tidak Umum","price":172,"atk":0,"def":0,"magic":0,"heal":185,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c18","name":"Ramuan Perlindungan","type":"Konsumsi","rarity":"Tidak Umum","price":182,"atk":0,"def":0,"magic":0,"heal":195,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c19","name":"Ramuan Ketajaman","type":"Konsumsi","rarity":"Tidak Umum","price":192,"atk":0,"def":0,"magic":0,"heal":205,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c20","name":"Ramuan Pemulihan","type":"Konsumsi","rarity":"Tidak Umum","price":202,"atk":0,"def":0,"magic":0,"heal":215,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c21","name":"Sup Serevia","type":"Konsumsi","rarity":"Tidak Umum","price":212,"atk":0,"def":0,"magic":0,"heal":225,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c22","name":"Roti Fajar","type":"Konsumsi","rarity":"Tidak Umum","price":222,"atk":0,"def":0,"magic":0,"heal":235,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c23","name":"Ikan Panggang","type":"Konsumsi","rarity":"Tidak Umum","price":232,"atk":0,"def":0,"magic":0,"heal":245,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c24","name":"Daging Buruan","type":"Konsumsi","rarity":"Tidak Umum","price":242,"atk":0,"def":0,"magic":0,"heal":255,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c25","name":"Teh Kabut","type":"Konsumsi","rarity":"Tidak Umum","price":252,"atk":0,"def":0,"magic":0,"heal":265,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c26","name":"Stew Kharad","type":"Konsumsi","rarity":"Tidak Umum","price":262,"atk":0,"def":0,"magic":0,"heal":275,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c27","name":"Kue Lunaris","type":"Konsumsi","rarity":"Tidak Umum","price":272,"atk":0,"def":0,"magic":0,"heal":285,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c28","name":"Salad Elderglen","type":"Konsumsi","rarity":"Tidak Umum","price":282,"atk":0,"def":0,"magic":0,"heal":295,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c29","name":"Daging Naga","type":"Konsumsi","rarity":"Tidak Umum","price":292,"atk":0,"def":0,"magic":0,"heal":305,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"c30","name":"Masakan Mahkota","type":"Konsumsi","rarity":"Tidak Umum","price":302,"atk":0,"def":0,"magic":0,"heal":315,"effect":"Memulihkan HP/Mana dan dapat memberi buff."},{"id":"m1","name":"Kayu Pinus","type":"Material","rarity":"Biasa","price":8,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m2","name":"Batu Besi","type":"Material","rarity":"Biasa","price":20,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m3","name":"Bijih Kharad","type":"Material","rarity":"Biasa","price":32,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m4","name":"Herba Hijau","type":"Material","rarity":"Biasa","price":44,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m5","name":"Daun Fajar","type":"Material","rarity":"Biasa","price":56,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m6","name":"Jamur Kabut","type":"Material","rarity":"Biasa","price":68,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m7","name":"Akar Rawa","type":"Material","rarity":"Biasa","price":80,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m8","name":"Serat Hutan","type":"Material","rarity":"Tidak Umum","price":92,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m9","name":"Kulit Serigala","type":"Material","rarity":"Tidak Umum","price":104,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m10","name":"Taring Perak","type":"Material","rarity":"Tidak Umum","price":116,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m11","name":"Batu Api","type":"Material","rarity":"Tidak Umum","price":128,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m12","name":"Kristal Es","type":"Material","rarity":"Tidak Umum","price":140,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m13","name":"Kristal Petir","type":"Material","rarity":"Tidak Umum","price":152,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m14","name":"Pasir Kaca","type":"Material","rarity":"Tidak Umum","price":164,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m15","name":"Mutiara Pantai","type":"Material","rarity":"Tidak Umum","price":176,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m16","name":"Batu Abu","type":"Material","rarity":"Tidak Umum","price":188,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m17","name":"Serpih Mahkota","type":"Material","rarity":"Tidak Umum","price":200,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m18","name":"Benang Bayangan","type":"Material","rarity":"Tidak Umum","price":212,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m19","name":"Logam Retak","type":"Material","rarity":"Tidak Umum","price":224,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m20","name":"Inti Golem","type":"Material","rarity":"Tidak Umum","price":236,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m21","name":"Sisik Naga","type":"Material","rarity":"Tidak Umum","price":248,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m22","name":"Darah Raksasa","type":"Material","rarity":"Tidak Umum","price":260,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m23","name":"Bunga Cermin","type":"Material","rarity":"Langka","price":272,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m24","name":"Lumut Tua","type":"Material","rarity":"Langka","price":284,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m25","name":"Garam Hitam","type":"Material","rarity":"Langka","price":296,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m26","name":"Kaca Matahari","type":"Material","rarity":"Langka","price":308,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m27","name":"Bijih Bintang","type":"Material","rarity":"Langka","price":320,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m28","name":"Serbuk Arkanis","type":"Material","rarity":"Langka","price":332,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m29","name":"Jantung Rawa","type":"Material","rarity":"Langka","price":344,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m30","name":"Debu Raja","type":"Material","rarity":"Langka","price":356,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m31","name":"Batu Kesaksian","type":"Material","rarity":"Langka","price":368,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m32","name":"Tinta Rahasia","type":"Material","rarity":"Langka","price":380,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m33","name":"Kulit Ferros","type":"Material","rarity":"Langka","price":392,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m34","name":"Tulang Raja","type":"Material","rarity":"Langka","price":404,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m35","name":"Kristal Void","type":"Material","rarity":"Langka","price":416,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m36","name":"Serat Mahkota","type":"Material","rarity":"Langka","price":428,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m37","name":"Pecahan Fajar","type":"Material","rarity":"Langka","price":440,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m38","name":"Pecahan Bayangan","type":"Material","rarity":"Epik","price":452,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m39","name":"Logam Pertama","type":"Material","rarity":"Epik","price":464,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"m40","name":"Benih Taman","type":"Material","rarity":"Epik","price":476,"atk":0,"def":0,"magic":0,"effect":"Bahan untuk kerajinan dan quest."},{"id":"q1","name":"Surat Pedagang","type":"Quest","rarity":"Tidak Umum","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q2","name":"Segel Pengadilan","type":"Quest","rarity":"Tidak Umum","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q3","name":"Peta Tambang","type":"Quest","rarity":"Tidak Umum","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q4","name":"Buku Mahkota","type":"Quest","rarity":"Tidak Umum","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q5","name":"Kunci Ravenrock","type":"Quest","rarity":"Tidak Umum","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q6","name":"Bukti Palsu","type":"Quest","rarity":"Tidak Umum","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q7","name":"Medali Valedorn","type":"Quest","rarity":"Tidak Umum","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q8","name":"Kristal Saksi","type":"Quest","rarity":"Tidak Umum","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q9","name":"Fragmen Matahari","type":"Quest","rarity":"Tidak Umum","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q10","name":"Fragmen Bayangan","type":"Quest","rarity":"Tidak Umum","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q11","name":"Kunci Kuil","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q12","name":"Catatan Varok","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q13","name":"Lencana Rook","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q14","name":"Surat Nyx","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q15","name":"Peta Taman","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q16","name":"Cincin Irena","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q17","name":"Pecahan Mahkota I","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q18","name":"Pecahan Mahkota II","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q19","name":"Pecahan Mahkota III","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q20","name":"Jurnal Raja Lama","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q21","name":"Segel Gerbang","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q22","name":"Kunci Perpustakaan","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q23","name":"Buku Cipher","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q24","name":"Lukisan Dinasti","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q25","name":"Sumpah Penjaga","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q26","name":"Piala Fajar","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q27","name":"Kompas Umbral","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q28","name":"Tulang Penunjuk","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q29","name":"Relik Pertama","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"q30","name":"Nama Raja Pertama","type":"Quest","rarity":"Langka","price":0,"atk":0,"def":0,"magic":0,"effect":"Benda penting yang memiliki hubungan dengan kronik."},{"id":"r1","name":"Lentera Raja","type":"Artefak","rarity":"Epik","price":0,"atk":0,"def":0,"magic":0,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r2","name":"Cermin Kesaksian","type":"Artefak","rarity":"Epik","price":0,"atk":2,"def":2,"magic":3,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r3","name":"Jam Pasir Elarion","type":"Artefak","rarity":"Epik","price":0,"atk":4,"def":4,"magic":6,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r4","name":"Mahkota Pecah","type":"Artefak","rarity":"Epik","price":0,"atk":6,"def":6,"magic":9,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r5","name":"Batu Nama","type":"Artefak","rarity":"Epik","price":0,"atk":8,"def":8,"magic":12,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r6","name":"Mata Ferros","type":"Artefak","rarity":"Epik","price":0,"atk":10,"def":10,"magic":15,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r7","name":"Kitab Pertama","type":"Artefak","rarity":"Epik","price":0,"atk":12,"def":12,"magic":18,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r8","name":"Lonceng Senyap","type":"Artefak","rarity":"Epik","price":0,"atk":14,"def":14,"magic":21,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r9","name":"Benih Taman","type":"Artefak","rarity":"Epik","price":0,"atk":16,"def":16,"magic":24,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r10","name":"Pedang Pendiri","type":"Artefak","rarity":"Epik","price":0,"atk":18,"def":18,"magic":27,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r11","name":"Topeng Penguasa","type":"Artefak","rarity":"Legendaris","price":0,"atk":20,"def":20,"magic":30,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r12","name":"Cawan Fajar","type":"Artefak","rarity":"Legendaris","price":0,"atk":22,"def":22,"magic":33,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r13","name":"Mata Bayangan","type":"Artefak","rarity":"Legendaris","price":0,"atk":24,"def":24,"magic":36,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r14","name":"Kompas Bintang","type":"Artefak","rarity":"Legendaris","price":0,"atk":26,"def":26,"magic":39,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r15","name":"Kunci Void","type":"Artefak","rarity":"Legendaris","price":0,"atk":28,"def":28,"magic":42,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r16","name":"Jantung Menara","type":"Artefak","rarity":"Legendaris","price":0,"atk":30,"def":30,"magic":45,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r17","name":"Sisir Dinasti","type":"Artefak","rarity":"Mitos","price":0,"atk":32,"def":32,"magic":48,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r18","name":"Koin Raja","type":"Artefak","rarity":"Mitos","price":0,"atk":34,"def":34,"magic":51,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r19","name":"Relik Kharad","type":"Artefak","rarity":"Mitos","price":0,"atk":36,"def":36,"magic":54,"effect":"Artefak unik yang dapat membuka jalur rahasia."},{"id":"r20","name":"Mahkota Utuh","type":"Artefak","rarity":"Mitos","price":0,"atk":38,"def":38,"magic":57,"effect":"Artefak unik yang dapat membuka jalur rahasia."}],"main":[{"id":"MQ01","name":"Mahkota yang Retak","act":"Prolog","objective":"Temui Arven dan baca arsip pertama.","giver":"n01","xp":80,"gold":60},{"id":"MQ02","name":"Jejak Pelabuhan","act":"Act I","objective":"Selidiki hilangnya karavan di Lunaris.","giver":"n09","xp":110,"gold":80},{"id":"MQ03","name":"Surat dari Tambang","act":"Act I","objective":"Temukan surat dan masuki Irondeep.","giver":"n34","xp":130,"gold":100},{"id":"MQ04","name":"Buku yang Dilarang","act":"Act I","objective":"Dapatkan Buku Mahkota dari Maelis.","giver":"n02","xp":150,"gold":120},{"id":"MQ05","name":"Malam di Tambang","act":"Act I","objective":"Masuki Tambang Irondeep pada malam hari.","giver":"n35","xp":180,"gold":150},{"id":"MQ06","name":"Tiga Segel","act":"Act I","objective":"Temukan tiga segel kuno.","giver":"n37","xp":210,"gold":180},{"id":"MQ07","name":"Pihak yang Dipilih","act":"Act I","objective":"Pilih Mahkota, Pengasingan, atau Independen.","giver":"n05","xp":240,"gold":200},{"id":"MQ08","name":"Abu Masa Lalu","act":"Act II","objective":"Masuki Menara Abu dan cari Catatan Varok.","giver":"n32","xp":270,"gold":220},{"id":"MQ09","name":"Kesaksian yang Hilang","act":"Act II","objective":"Selesaikan investigasi pertama.","giver":"n05","xp":300,"gold":240},{"id":"MQ10","name":"Benteng Terbelah","act":"Act II","objective":"Tentukan nasib Ravenrock.","giver":"n47","xp":330,"gold":260},{"id":"MQ11","name":"Taman Tersembunyi","act":"Act II","objective":"Temukan pintu menuju Taman Mahkota.","giver":"n40","xp":360,"gold":280},{"id":"MQ12","name":"Bayangan di Pantai","act":"Act II","objective":"Ungkap jaringan bayangan.","giver":"n15","xp":390,"gold":300},{"id":"MQ13","name":"Kuil Tenggelam","act":"Act II","objective":"Pulihkan Fragmen Matahari.","giver":"n30","xp":420,"gold":320},{"id":"MQ14","name":"Perang Dagang","act":"Act III","objective":"Hentikan sabotase jalur dagang.","giver":"n11","xp":450,"gold":340},{"id":"MQ15","name":"Jantung Kharad","act":"Act III","objective":"Dapatkan Logam Pertama.","giver":"n52","xp":480,"gold":360},{"id":"MQ16","name":"Raja Tanpa Nama","act":"Act III","objective":"Kalahkan Raja Tanpa Nama.","giver":"n08","xp":520,"gold":400},{"id":"MQ17","name":"Empat Kesaksian","act":"Act III","objective":"Selesaikan semua kasus investigasi yang terbuka.","giver":"n05","xp":560,"gold":440},{"id":"MQ18","name":"Jenderal Pengasingan","act":"Act III","objective":"Hadapi Jenderal Kael tanpa memicu perang total.","giver":"n48","xp":600,"gold":480},{"id":"MQ19","name":"Pecahan Ketiga","act":"Act III","objective":"Temukan pecahan ketiga di Gua Umbral.","giver":"n15","xp":650,"gold":520},{"id":"MQ20","name":"Gerbang Menara","act":"Act IV","objective":"Buka gerbang Crownspire.","giver":"n20","xp":700,"gold":560},{"id":"MQ21","name":"Penjaga Retak","act":"Act IV","objective":"Kalahkan Penjaga Retak.","giver":"n38","xp":750,"gold":600},{"id":"MQ22","name":"Kebenaran Dinasti","act":"Act IV","objective":"Baca Jurnal Raja Lama.","giver":"n01","xp":800,"gold":650},{"id":"MQ23","name":"Harga Perdamaian","act":"Act IV","objective":"Tentukan perjanjian faksi.","giver":"n05","xp":850,"gold":700},{"id":"MQ24","name":"Badai Mahkota","act":"Final Arc","objective":"Bertahan dari Badai Mahkota.","giver":"n07","xp":900,"gold":750},{"id":"MQ25","name":"Labirin Crownspire","act":"Final Arc","objective":"Lewati lima ruang labirin.","giver":"n40","xp":950,"gold":800},{"id":"MQ26","name":"Ksatria Mahkota","act":"Final Arc","objective":"Kalahkan Ksatria Mahkota.","giver":"n20","xp":1000,"gold":900},{"id":"MQ27","name":"Mahkota yang Memilih","act":"Final Arc","objective":"Pilih menyatukan atau menghancurkan mahkota.","giver":"n38","xp":1100,"gold":1000},{"id":"MQ28","name":"Raja Bayangan","act":"Final Arc","objective":"Hadapi Raja Bayangan.","giver":"n15","xp":1200,"gold":1100},{"id":"MQ29","name":"Malam Terakhir","act":"Final Arc","objective":"Tentukan masa depan Elarion.","giver":"n07","xp":1400,"gold":1300},{"id":"MQ30","name":"Kronik Mahkota Retak","act":"Ending","objective":"Selesaikan alur utama dan lihat akibat keputusan.","giver":"n01","xp":1700,"gold":1600}],"side":[{"id":"SQ01","name":"Pedagang Hilang","desc":"Bantu Mira menemukan jejak karavan.","objective":"Bantu Mira menemukan jejak karavan.","xp":75,"gold":66,"loc":"lunaris","giver":"n02"},{"id":"SQ02","name":"Lampu Mercusuar","desc":"Nyalakan kembali Mercusuar Kelam.","objective":"Nyalakan kembali Mercusuar Kelam.","xp":80,"gold":72,"loc":"valedorn","giver":"n03"},{"id":"SQ03","name":"Serigala di Kebun","desc":"Lindungi Kebun Veyra.","objective":"Lindungi Kebun Veyra.","xp":85,"gold":78,"loc":"mirewood","giver":"n04"},{"id":"SQ04","name":"Gandum Serevia","desc":"Bantu Tomas mengatasi hama.","objective":"Bantu Tomas mengatasi hama.","xp":90,"gold":84,"loc":"irondeep","giver":"n05"},{"id":"SQ05","name":"Buku Basah","desc":"Cari buku yang hanyut di rawa.","objective":"Cari buku yang hanyut di rawa.","xp":95,"gold":90,"loc":"serevia","giver":"n06"},{"id":"SQ06","name":"Penambang Tersesat","desc":"Temukan penambang di Irondeep.","objective":"Temukan penambang di Irondeep.","xp":100,"gold":96,"loc":"grimhollow","giver":"n07"},{"id":"SQ07","name":"Harga Besi","desc":"Negosiasikan harga bijih Kharad.","objective":"Negosiasikan harga bijih Kharad.","xp":105,"gold":102,"loc":"solmere","giver":"n08"},{"id":"SQ08","name":"Pemburu Utara","desc":"Bantu Kaia melacak serigala perak.","objective":"Bantu Kaia melacak serigala perak.","xp":110,"gold":108,"loc":"ashfall","giver":"n09"},{"id":"SQ09","name":"Musisi Pelabuhan","desc":"Temukan alat musik Lyra.","objective":"Temukan alat musik Lyra.","xp":115,"gold":114,"loc":"cindervale","giver":"n10"},{"id":"SQ10","name":"Surat Tanpa Nama","desc":"Kirim surat rahasia ke Goldmere.","objective":"Kirim surat rahasia ke Goldmere.","xp":120,"gold":120,"loc":"elderglen","giver":"n11"},{"id":"SQ11","name":"Piala Fajar","desc":"Bantu Ordo Fajar menjaga piala.","objective":"Bantu Ordo Fajar menjaga piala.","xp":125,"gold":126,"loc":"dunrath","giver":"n12"},{"id":"SQ12","name":"Pencuri Relik","desc":"Tangkap pencuri relik Ashfall.","objective":"Tangkap pencuri relik Ashfall.","xp":130,"gold":132,"loc":"frostmarch","giver":"n13"},{"id":"SQ13","name":"Roti untuk Penjaga","desc":"Antarkan bekal ke Valedorn.","objective":"Antarkan bekal ke Valedorn.","xp":135,"gold":138,"loc":"blackfen","giver":"n14"},{"id":"SQ14","name":"Karavan Malam","desc":"Kawal karavan melalui Dunrath.","objective":"Kawal karavan melalui Dunrath.","xp":140,"gold":144,"loc":"ravenrock","giver":"n15"},{"id":"SQ15","name":"Batu Bernyanyi","desc":"Cari kristal aneh di pegunungan.","objective":"Cari kristal aneh di pegunungan.","xp":145,"gold":150,"loc":"thornpass","giver":"n16"},{"id":"SQ16","name":"Jamur Kabut","desc":"Kumpulkan jamur saat kabut.","objective":"Kumpulkan jamur saat kabut.","xp":150,"gold":156,"loc":"goldmere","giver":"n17"},{"id":"SQ17","name":"Peta Tua","desc":"Petakan jalur tersembunyi.","objective":"Petakan jalur tersembunyi.","xp":155,"gold":162,"loc":"umbral","giver":"n18"},{"id":"SQ18","name":"Prajurit Ragu","desc":"Yakinkan prajurit agar tidak membelot.","objective":"Yakinkan prajurit agar tidak membelot.","xp":160,"gold":168,"loc":"kharad","giver":"n19"},{"id":"SQ19","name":"Jimat Irena","desc":"Temukan jimat yang hilang.","objective":"Temukan jimat yang hilang.","xp":165,"gold":174,"loc":"crownspire","giver":"n20"},{"id":"SQ20","name":"Peti Terkubur","desc":"Gunakan petunjuk untuk menggali harta.","objective":"Gunakan petunjuk untuk menggali harta.","xp":170,"gold":180,"loc":"asterra","giver":"n21"},{"id":"SQ21","name":"Kucing Penjaga","desc":"Cari kucing milik penjaga kota.","objective":"Cari kucing milik penjaga kota.","xp":175,"gold":186,"loc":"lunaris","giver":"n22"},{"id":"SQ22","name":"Penyair Terlupakan","desc":"Kumpulkan tiga bait lagu lama.","objective":"Kumpulkan tiga bait lagu lama.","xp":180,"gold":192,"loc":"valedorn","giver":"n23"},{"id":"SQ23","name":"Perjanjian Air","desc":"Bantu desa menyelesaikan sengketa air.","objective":"Bantu desa menyelesaikan sengketa air.","xp":185,"gold":198,"loc":"mirewood","giver":"n24"},{"id":"SQ24","name":"Penjaga Malam","desc":"Patroli malam di Jembatan Ardan.","objective":"Patroli malam di Jembatan Ardan.","xp":190,"gold":204,"loc":"irondeep","giver":"n25"},{"id":"SQ25","name":"Relik Retak","desc":"Identifikasi artefak aneh.","objective":"Identifikasi artefak aneh.","xp":195,"gold":210,"loc":"serevia","giver":"n26"},{"id":"SQ26","name":"Tiga Ramuan","desc":"Buat tiga ramuan untuk Maren.","objective":"Buat tiga ramuan untuk Maren.","xp":200,"gold":216,"loc":"grimhollow","giver":"n27"},{"id":"SQ27","name":"Ikan Lunaris","desc":"Tangkap ikan langka.","objective":"Tangkap ikan langka.","xp":205,"gold":222,"loc":"solmere","giver":"n28"},{"id":"SQ28","name":"Kaca Dunrath","desc":"Cari pasir kaca berkualitas.","objective":"Cari pasir kaca berkualitas.","xp":210,"gold":228,"loc":"ashfall","giver":"n29"},{"id":"SQ29","name":"Pekerja Bayangan","desc":"Selidiki transaksi mencurigakan.","objective":"Selidiki transaksi mencurigakan.","xp":215,"gold":234,"loc":"cindervale","giver":"n30"},{"id":"SQ30","name":"Pintu Tanpa Kunci","desc":"Pecahkan teka-teki simbol.","objective":"Pecahkan teka-teki simbol.","xp":220,"gold":240,"loc":"elderglen","giver":"n31"},{"id":"SQ31","name":"Pengasingan","desc":"Bicaralah dengan Mila.","objective":"Bicaralah dengan Mila.","xp":225,"gold":246,"loc":"dunrath","giver":"n32"},{"id":"SQ32","name":"Surat Nyx","desc":"Cari penerima surat rahasia.","objective":"Cari penerima surat rahasia.","xp":230,"gold":252,"loc":"frostmarch","giver":"n33"},{"id":"SQ33","name":"Sisa Abu","desc":"Temukan nama korban Ashfall.","objective":"Temukan nama korban Ashfall.","xp":235,"gold":258,"loc":"blackfen","giver":"n34"},{"id":"SQ34","name":"Gelang Perak","desc":"Buat aksesori untuk pemburu.","objective":"Buat aksesori untuk pemburu.","xp":240,"gold":264,"loc":"ravenrock","giver":"n35"},{"id":"SQ35","name":"Bunga Cermin","desc":"Cari bunga saat tengah malam berkabut.","objective":"Cari bunga saat tengah malam berkabut.","xp":245,"gold":270,"loc":"thornpass","giver":"n36"},{"id":"SQ36","name":"Batu Kesaksian","desc":"Dapatkan material dari dungeon.","objective":"Dapatkan material dari dungeon.","xp":250,"gold":276,"loc":"goldmere","giver":"n37"},{"id":"SQ37","name":"Kapal Rusak","desc":"Bantu Oren memperbaiki kapal.","objective":"Bantu Oren memperbaiki kapal.","xp":255,"gold":282,"loc":"umbral","giver":"n38"},{"id":"SQ38","name":"Makanan Festival","desc":"Masak makanan untuk festival.","objective":"Masak makanan untuk festival.","xp":260,"gold":288,"loc":"kharad","giver":"n39"},{"id":"SQ39","name":"Penjaga Kuil","desc":"Bersihkan area Solmere.","objective":"Bersihkan area Solmere.","xp":265,"gold":294,"loc":"crownspire","giver":"n40"},{"id":"SQ40","name":"Jejak Darah","desc":"Ikuti jejak tanpa ketahuan.","objective":"Ikuti jejak tanpa ketahuan.","xp":270,"gold":300,"loc":"asterra","giver":"n41"},{"id":"SQ41","name":"Koin Raja","desc":"Cari koin dinasti lama.","objective":"Cari koin dinasti lama.","xp":275,"gold":306,"loc":"lunaris","giver":"n42"},{"id":"SQ42","name":"Tulang Penunjuk","desc":"Temukan tulang di makam.","objective":"Temukan tulang di makam.","xp":280,"gold":312,"loc":"valedorn","giver":"n43"},{"id":"SQ43","name":"Peta Taman","desc":"Bantu Veyra menyusun peta.","objective":"Bantu Veyra menyusun peta.","xp":285,"gold":318,"loc":"mirewood","giver":"n44"},{"id":"SQ44","name":"Logam Pertama","desc":"Temukan bengkel kuno.","objective":"Temukan bengkel kuno.","xp":290,"gold":324,"loc":"irondeep","giver":"n45"},{"id":"SQ45","name":"Benih Taman","desc":"Kembalikan benih ke taman.","objective":"Kembalikan benih ke taman.","xp":295,"gold":330,"loc":"serevia","giver":"n46"},{"id":"SQ46","name":"Suara Kabut","desc":"Selidiki suara tanpa bertarung.","objective":"Selidiki suara tanpa bertarung.","xp":300,"gold":336,"loc":"grimhollow","giver":"n47"},{"id":"SQ47","name":"Karavan Terakhir","desc":"Selamatkan karavan dari monster.","objective":"Selamatkan karavan dari monster.","xp":305,"gold":342,"loc":"solmere","giver":"n48"},{"id":"SQ48","name":"Kunci Perpustakaan","desc":"Cari kunci rahasia Asterra.","objective":"Cari kunci rahasia Asterra.","xp":310,"gold":348,"loc":"ashfall","giver":"n49"},{"id":"SQ49","name":"Saksi Diam","desc":"Bujuk saksi untuk bicara.","objective":"Bujuk saksi untuk bicara.","xp":315,"gold":354,"loc":"cindervale","giver":"n50"},{"id":"SQ50","name":"Nama Raja","desc":"Temukan nama Raja Tanpa Nama.","objective":"Temukan nama Raja Tanpa Nama.","xp":320,"gold":360,"loc":"elderglen","giver":"n51"}],"compq":[{"id":"CQ01","name":"Kisah Lyra","desc":"Selesaikan urusan pribadi Lyra.","objective":"Bantu Lyra menyelesaikan konflik masa lalu.","xp":220,"gold":180,"companion":"Lyra"},{"id":"CQ02","name":"Kisah Cale","desc":"Selesaikan urusan pribadi Cale.","objective":"Bantu Cale menyelesaikan konflik masa lalu.","xp":245,"gold":205,"companion":"Cale"},{"id":"CQ03","name":"Kisah Nadia","desc":"Selesaikan urusan pribadi Nadia.","objective":"Bantu Nadia menyelesaikan konflik masa lalu.","xp":270,"gold":230,"companion":"Nadia"},{"id":"CQ04","name":"Kisah Kaia","desc":"Selesaikan urusan pribadi Kaia.","objective":"Bantu Kaia menyelesaikan konflik masa lalu.","xp":295,"gold":255,"companion":"Kaia"},{"id":"CQ05","name":"Kisah Mila","desc":"Selesaikan urusan pribadi Mila.","objective":"Bantu Mila menyelesaikan konflik masa lalu.","xp":320,"gold":280,"companion":"Mila"},{"id":"CQ06","name":"Kisah Juno","desc":"Selesaikan urusan pribadi Juno.","objective":"Bantu Juno menyelesaikan konflik masa lalu.","xp":345,"gold":305,"companion":"Juno"},{"id":"CQ07","name":"Kisah Veyra","desc":"Selesaikan urusan pribadi Veyra.","objective":"Bantu Veyra menyelesaikan konflik masa lalu.","xp":370,"gold":330,"companion":"Veyra"},{"id":"CQ08","name":"Kisah Kara","desc":"Selesaikan urusan pribadi Kara.","objective":"Bantu Kara menyelesaikan konflik masa lalu.","xp":395,"gold":355,"companion":"Kara"}],"fq":[{"id":"FQ01","name":"Tugas Mahkota Elarion","desc":"Bantu Mahkota Elarion menjalankan kepentingan mereka.","objective":"Selesaikan tugas yang menaikkan reputasi Mahkota Elarion.","xp":180,"gold":180,"faction":"Mahkota Elarion"},{"id":"FQ02","name":"Tugas Serikat Pedagang","desc":"Bantu Serikat Pedagang menjalankan kepentingan mereka.","objective":"Selesaikan tugas yang menaikkan reputasi Serikat Pedagang.","xp":215,"gold":210,"faction":"Serikat Pedagang"},{"id":"FQ03","name":"Tugas Penjaga Perbatasan","desc":"Bantu Penjaga Perbatasan menjalankan kepentingan mereka.","objective":"Selesaikan tugas yang menaikkan reputasi Penjaga Perbatasan.","xp":250,"gold":240,"faction":"Penjaga Perbatasan"},{"id":"FQ04","name":"Tugas Lingkaran Arkanis","desc":"Bantu Lingkaran Arkanis menjalankan kepentingan mereka.","objective":"Selesaikan tugas yang menaikkan reputasi Lingkaran Arkanis.","xp":285,"gold":270,"faction":"Lingkaran Arkanis"},{"id":"FQ05","name":"Tugas Ordo Fajar","desc":"Bantu Ordo Fajar menjalankan kepentingan mereka.","objective":"Selesaikan tugas yang menaikkan reputasi Ordo Fajar.","xp":320,"gold":300,"faction":"Ordo Fajar"},{"id":"FQ06","name":"Tugas Konfederasi Pengasingan","desc":"Bantu Konfederasi Pengasingan menjalankan kepentingan mereka.","objective":"Selesaikan tugas yang menaikkan reputasi Konfederasi Pengasingan.","xp":355,"gold":330,"faction":"Konfederasi Pengasingan"},{"id":"FQ07","name":"Tugas Persaudaraan Bayangan","desc":"Bantu Persaudaraan Bayangan menjalankan kepentingan mereka.","objective":"Selesaikan tugas yang menaikkan reputasi Persaudaraan Bayangan.","xp":390,"gold":360,"faction":"Persaudaraan Bayangan"},{"id":"FQ08","name":"Tugas Klan Kharad","desc":"Bantu Klan Kharad menjalankan kepentingan mereka.","objective":"Selesaikan tugas yang menaikkan reputasi Klan Kharad.","xp":425,"gold":390,"faction":"Klan Kharad"}],"hidden":[{"id":"HQ01","name":"Perpustakaan Senyap","objective":"Temukan pintu arsip tersembunyi.","xp":350,"gold":0},{"id":"HQ02","name":"Danau Cermin","objective":"Datang saat kabut dan tengah malam.","xp":395,"gold":0},{"id":"HQ03","name":"Bengkel Pertama","objective":"Gunakan tiga petunjuk logam untuk membuka bengkel.","xp":440,"gold":0},{"id":"HQ04","name":"Ruang Kesaksian","objective":"Hubungkan bukti dari kasus investigasi.","xp":485,"gold":0},{"id":"HQ05","name":"Taman Mahkota","objective":"Buka gerbang taman purba.","xp":530,"gold":0},{"id":"HQ06","name":"Nama yang Dihapus","objective":"Temukan nama asli raja pertama.","xp":575,"gold":0},{"id":"HQ07","name":"Lonceng Senyap","objective":"Ambil artefak dari Kuil Tenggelam.","xp":620,"gold":0},{"id":"HQ08","name":"Pedang Pendiri","objective":"Tempa Pedang Pendiri.","xp":665,"gold":0},{"id":"HQ09","name":"Mata Bayangan","objective":"Ambil Mata Bayangan tanpa membunuh informan.","xp":710,"gold":0},{"id":"HQ10","name":"Mahkota Utuh","objective":"Satukan semua pecahan dan rahasia sejarah.","xp":755,"gold":0}],"investigations":[{"id":"INV1","name":"Kasus Karavan Hilang","desc":"Cari siapa yang membakar karavan di Serevia.","suspects":["Perrin","Vaska","Rhett"],"evidence":["jejak sepatu basah","surat dagang","serpihan kaca"],"answer":"Vaska","xp":300},{"id":"INV2","name":"Kasus Segel Palsu","desc":"Temukan pemalsu segel pengadilan.","suspects":["Dorian","Cedric","Cale"],"evidence":["tinta hitam","catatan bank","stempel rusak"],"answer":"Cedric","xp":350},{"id":"INV3","name":"Kasus Penambang Hilang","desc":"Selidiki hilangnya tiga penambang.","suspects":["Bram","Kell","Venn"],"evidence":["debu logam","lampu pecah","peta lorong"],"answer":"Venn","xp":400},{"id":"INV4","name":"Kasus Bayangan Pantai","desc":"Identifikasi pengkhianat jaringan pelabuhan.","suspects":["Soren","Nyx","Bela"],"evidence":["kompas Umbral","surat tanpa tanda","jadwal mercusuar"],"answer":"Soren","xp":450},{"id":"INV5","name":"Kasus Dinasti","desc":"Buktikan siapa yang menghapus sejarah raja pertama.","suspects":["Arven","Ivo","Orlan"],"evidence":["Jurnal Raja Lama","Buku Mahkota","lukisan dinasti"],"answer":"Orlan","xp":550}],"lore":[{"id":"L01","title":"Sejarah Elarion","text":"Elarion lahir dari perjanjian tujuh lembah setelah perang panjang."},{"id":"L02","title":"Dinasti Pertama","text":"Nama raja pertama sengaja dihapus dari prasasti kerajaan."},{"id":"L03","title":"Mahkota Retak","text":"Mahkota menyimpan sumpah penguasa, bukan sekadar lambang kekuasaan."},{"id":"L04","title":"Perang Tiga Sungai","text":"Perselisihan dagang lama menjadi akar konflik antar faksi."},{"id":"L05","title":"Ashfall","text":"Ashfall hancur ketika penelitian tentang batu langit gagal."},{"id":"L06","title":"Kharad","text":"Klan Kharad menempa logam sebelum kerajaan berdiri."},{"id":"L07","title":"Ordo Fajar","text":"Ordo Fajar menyimpan tradisi pemurnian cahaya."},{"id":"L08","title":"Ravenrock","text":"Ravenrock dahulu merupakan benteng kerajaan sebelum menjadi wilayah pengasingan."},{"id":"L09","title":"Persaudaraan Bayangan","text":"Jaringan bayangan bermula sebagai kurir perang."},{"id":"L10","title":"Taman Mahkota","text":"Taman adalah tempat sumpah pertama dibuat."},{"id":"L11","title":"Raja Tanpa Nama","text":"Makam raja tidak mencantumkan nama agar sumpahnya tidak dibangunkan."},{"id":"L12","title":"Crownspire","text":"Menara dibangun di atas batu yang jatuh dari langit."},{"id":"L13","title":"Jurnal Raja Lama","text":"Catatan lama menunjukkan sejarah resmi telah diubah."},{"id":"L14","title":"Badai Mahkota","text":"Badai aneh mengikuti perubahan pada pecahan mahkota."},{"id":"L15","title":"Kesaksian","text":"Bukti yang tepat dapat mengubah legitimasi dinasti."},{"id":"L16","title":"Pedang Pendiri","text":"Pedang ditempa dari Logam Pertama Kharad."},{"id":"L17","title":"Cermin Kesaksian","text":"Cermin dapat menunjukkan kenangan yang sengaja dilupakan."},{"id":"L18","title":"Mata Bayangan","text":"Artefak ini membaca jejak keputusan di suatu tempat."},{"id":"L19","title":"Bunga Cermin","text":"Bunga hanya mekar ketika kabut dan tengah malam bertemu."},{"id":"L20","title":"Taman Purba","text":"Taman menyimpan jawaban tentang tujuan awal Mahkota."}],"achievements":[{"id":"A01","name":"Langkah Pertama","desc":"Mencapai level 2"},{"id":"A02","name":"Pembaca","desc":"Membuka 5 lore"},{"id":"A03","name":"Penjelajah","desc":"Menemukan 5 lokasi"},{"id":"A04","name":"Kartografer","desc":"Menemukan 15 lokasi"},{"id":"A05","name":"Penyelidik","desc":"Menyelesaikan 1 kasus"},{"id":"A06","name":"Detektif","desc":"Menyelesaikan semua kasus"},{"id":"A07","name":"Pandai Besi","desc":"Smithing level 5"},{"id":"A08","name":"Alkemis","desc":"Alchemy level 5"},{"id":"A09","name":"Koki","desc":"Cooking level 5"},{"id":"A10","name":"Pemburu","desc":"Mengalahkan 25 musuh"},{"id":"A11","name":"Penjaga","desc":"Reputasi faksi mencapai 50"},{"id":"A12","name":"Sekutu","desc":"Reputasi faksi mencapai 80"},{"id":"A13","name":"Terkenal","desc":"Kemasyhuran 50"},{"id":"A14","name":"Terlarang","desc":"Wanted level 3"},{"id":"A15","name":"Pengampunan","desc":"Wanted kembali 0"},{"id":"A16","name":"Rumah","desc":"Upgrade rumah"},{"id":"A17","name":"Bankir","desc":"Simpan 500 gold"},{"id":"A18","name":"Surat","desc":"Menerima 5 surat"},{"id":"A19","name":"Pemburu Bounty","desc":"Selesaikan 5 bounty"},{"id":"A20","name":"Kolektor","desc":"Temukan 25 item berbeda"},{"id":"A21","name":"Pahlawan Serevia","desc":"Kembangkan desa Serevia"},{"id":"A22","name":"Diplomat","desc":"Mendamaikan Ravenrock"},{"id":"A23","name":"Kepercayaan Pengasingan","desc":"Reputasi Pengasingan 80"},{"id":"A24","name":"Fajar","desc":"Reputasi Ordo Fajar 80"},{"id":"A25","name":"Bayangan","desc":"Reputasi Bayangan 80"},{"id":"A26","name":"Kharad","desc":"Reputasi Kharad 80"},{"id":"A27","name":"Rahasia","desc":"Menemukan area rahasia"},{"id":"A28","name":"Pemecah Puzzle","desc":"Menyelesaikan 5 puzzle"},{"id":"A29","name":"Penakluk","desc":"Mengalahkan 10 boss"},{"id":"A30","name":"Mitos","desc":"Mendapat item Mitos"},{"id":"A31","name":"Kelompok","desc":"Merekrut 4 companion"},{"id":"A32","name":"Pemimpin","desc":"Merekrut semua companion"},{"id":"A33","name":"Tanpa Darah","desc":"Menyelesaikan quest tanpa combat"},{"id":"A34","name":"Kesaksian","desc":"Menyelesaikan MQ09"},{"id":"A35","name":"Kronik","desc":"Menyelesaikan MQ30"},{"id":"A36","name":"Kaya","desc":"Memiliki 5000 gold"},{"id":"A37","name":"Terampil","desc":"Membuka 10 skill"},{"id":"A38","name":"Badai","desc":"Selamat dari Badai Mahkota"},{"id":"A39","name":"Pemburu Relik","desc":"Mengumpulkan 10 artefak"},{"id":"A40","name":"Ahli Peta","desc":"Menemukan semua lokasi"},{"id":"A41","name":"Malam","desc":"Menang pada tengah malam"},{"id":"A42","name":"Bersama","desc":"Menyelesaikan quest companion"},{"id":"A43","name":"Dua Sekutu","desc":"Dua faksi mencapai 60"},{"id":"A44","name":"Pengamat","desc":"Membuka 15 entry Codex"},{"id":"A45","name":"Pemulih","desc":"Mengembangkan Serevia"},{"id":"A46","name":"Penyatu","desc":"Menyatukan Mahkota"},{"id":"A47","name":"Pemecah","desc":"Menghancurkan Mahkota"},{"id":"A48","name":"Bayangan Lama","desc":"Mengalahkan Raja Bayangan"},{"id":"A49","name":"Akhir Sejati","desc":"Mencapai True Ending"},{"id":"A50","name":"Pengulang","desc":"Memulai New Game+"}],"recipes":[{"id":"rx1","name":"Bilah 1","result":"w6","materials":[["w1",1],["w2",1]],"profession":"Smithing","level":1},{"id":"rx2","name":"Pelindung 2","result":"w13","materials":[["w4",1],["w5",1]],"profession":"Alchemy","level":1},{"id":"rx3","name":"Ramuan 3","result":"w20","materials":[["w7",1],["w8",1]],"profession":"Cooking","level":1},{"id":"rx4","name":"Masakan 4","result":"w27","materials":[["w10",1],["w11",1]],"profession":"Herbalism","level":1},{"id":"rx5","name":"Relik 5","result":"w34","materials":[["w13",1],["w14",1]],"profession":"Mining","level":1},{"id":"rx6","name":"Bilah 6","result":"w41","materials":[["w16",1],["w17",1]],"profession":"Smithing","level":1},{"id":"rx7","name":"Pelindung 7","result":"w48","materials":[["w19",1],["w20",1]],"profession":"Alchemy","level":2},{"id":"rx8","name":"Ramuan 8","result":"a5","materials":[["w22",1],["w23",1]],"profession":"Cooking","level":2},{"id":"rx9","name":"Masakan 9","result":"a12","materials":[["w25",1],["w26",1]],"profession":"Herbalism","level":2},{"id":"rx10","name":"Relik 10","result":"a19","materials":[["w28",1],["w29",1]],"profession":"Mining","level":2},{"id":"rx11","name":"Bilah 11","result":"a26","materials":[["w31",1],["w32",1]],"profession":"Smithing","level":2},{"id":"rx12","name":"Pelindung 12","result":"a33","materials":[["w34",1],["w35",1]],"profession":"Alchemy","level":2},{"id":"rx13","name":"Ramuan 13","result":"a40","materials":[["w37",1],["w38",1]],"profession":"Cooking","level":3},{"id":"rx14","name":"Masakan 14","result":"x7","materials":[["w40",1],["w41",1]],"profession":"Herbalism","level":3},{"id":"rx15","name":"Relik 15","result":"x14","materials":[["w43",1],["w44",1]],"profession":"Mining","level":3},{"id":"rx16","name":"Bilah 16","result":"x21","materials":[["w46",1],["w47",1]],"profession":"Smithing","level":3},{"id":"rx17","name":"Pelindung 17","result":"x28","materials":[["w49",1],["w50",1]],"profession":"Alchemy","level":3},{"id":"rx18","name":"Ramuan 18","result":"c5","materials":[["a2",1],["a3",1]],"profession":"Cooking","level":3},{"id":"rx19","name":"Masakan 19","result":"c12","materials":[["a5",1],["a6",1]],"profession":"Herbalism","level":4},{"id":"rx20","name":"Relik 20","result":"c19","materials":[["a8",1],["a9",1]],"profession":"Mining","level":4},{"id":"rx21","name":"Bilah 21","result":"c26","materials":[["a11",1],["a12",1]],"profession":"Smithing","level":4},{"id":"rx22","name":"Pelindung 22","result":"m3","materials":[["a14",1],["a15",1]],"profession":"Alchemy","level":4},{"id":"rx23","name":"Ramuan 23","result":"m10","materials":[["a17",1],["a18",1]],"profession":"Cooking","level":4},{"id":"rx24","name":"Masakan 24","result":"m17","materials":[["a20",1],["a21",1]],"profession":"Herbalism","level":4},{"id":"rx25","name":"Relik 25","result":"m24","materials":[["a23",1],["a24",1]],"profession":"Mining","level":5},{"id":"rx26","name":"Bilah 26","result":"m31","materials":[["a26",1],["a27",1]],"profession":"Smithing","level":5},{"id":"rx27","name":"Pelindung 27","result":"m38","materials":[["a29",1],["a30",1]],"profession":"Alchemy","level":5},{"id":"rx28","name":"Ramuan 28","result":"q5","materials":[["a32",1],["a33",1]],"profession":"Cooking","level":5},{"id":"rx29","name":"Masakan 29","result":"q12","materials":[["a35",1],["a36",1]],"profession":"Herbalism","level":5},{"id":"rx30","name":"Relik 30","result":"q19","materials":[["a38",1],["a39",1]],"profession":"Mining","level":5},{"id":"rx31","name":"Pedang Pendiri","result":"r10","materials":[["m39",5],["m17",2],["m31",1]],"profession":"Smithing","level":10},{"id":"rx32","name":"Jubah Cermin","result":"r3","materials":[["m23",3],["m28",3],["m36",1]],"profession":"Alchemy","level":10},{"id":"rx33","name":"Cawan Fajar","result":"r12","materials":[["m17",4],["m26",2],["m37",1]],"profession":"Herbalism","level":10}]}, VERSION=3, DBNAME='ELARION_LOCAL_DB', STORE='saves', PHOTOS='photos';let S=null,slot=1,db=null,combat=null,currentPage='Beranda';
-const $=s=>document.querySelector(s), esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function clone(x){return JSON.parse(JSON.stringify(x))}function findItem(id){return DB.items.find(x=>x.id===id)}function findLoc(id){return DB.locations.find(x=>x.id===id)}function toast(t){let d=document.createElement('div');d.textContent=t;$('#toast').appendChild(d);setTimeout(()=>d.remove(),2600)}
-function beep(type='click'){try{let A=window._ac||(window._ac=new AudioContext()),o=A.createOscillator(),g=A.createGain();o.frequency.value={click:440,win:880,boss:90,bad:120,level:660}[type]||440;g.gain.value=.025;o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+.09)}catch(e){}}
-function fresh(){return {version:VERSION,profile:null,photoId:null,level:1,xp:0,xpNext:100,hp:120,maxHp:120,mana:50,maxMana:50,stamina:40,maxStamina:40,stats:{attack:14,defense:8,magic:8,speed:8,critical:5,accuracy:90,evasion:4,resistance:5,wisdom:5},skills:{COMBAT:0,SURVIVAL:0,ARCANA:0,INVESTIGATION:0,PERSUASION:0},equipment:{weapon:null,armor:null,accessory:null},inventory:{w1:1,a1:1,c1:3,c4:2,m1:5,m4:4},gold:250,bankGold:0,bank:{},quests:{MQ01:{status:'active',progress:0}},completed:[],decisions:{},reputation:{f1:0,f2:0,f3:0,f4:0,f5:0,f6:0,f7:0,f8:0},regionRep:{},honor:0,fame:0,infamy:0,wanted:0,companions:{},party:[],reserve:[],profession:{Smithing:1,Alchemy:1,Cooking:1,Herbalism:1,Mining:1},profXp:{Smithing:0,Alchemy:0,Cooking:0,Herbalism:0,Mining:0},discovered:['asterra'],visited:['asterra'],dungeons:{},secrets:[],codex:{lore:['L01'],npcs:['n01'],enemies:[],bosses:[],locations:['asterra'],items:[]},achievements:[],collection:['w1','a1','c1','c4','m1','m4'],mail:[],journal:['Hari pertama: kau tiba di Asterra membawa kompas tua yang jarumnya menunjuk ke bawah tanah.'],rumors:[],caseProgress:{},bounties:{},puzzles:{},craftFound:['rx1','rx2','rx3','rx4','rx5','rx6'],home:{level:1,storage:30,displays:0},world:{hour:9,day:1,week:1,season:'Musim Semi',weather:'Cerah',event:null,serivia:'normal',ravenrock:'unstable',trade:'normal',crown:'intact',ashfall:'quiet'},flags:{kills:0,bossKills:0,nightWin:false,storm:false,crownFragments:0,crownUnited:false,crownBroken:false,trueClue:false,shadowKing:false,gate:false,oldJournal:false,companionQuest:false},ending:null,newGamePlus:false};}
-function merge(a,b){for(let k in b){if(b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k])&&a[k]&&typeof a[k]==='object')a[k]=merge(a[k],b[k]);else a[k]=b[k]}return a}function normalize(x){return merge(fresh(),x)}
-function initDB(){return new Promise((ok,bad)=>{let r=indexedDB.open(DBNAME,1);r.onupgradeneeded=e=>{let d=e.target.result;if(!d.objectStoreNames.contains(STORE))d.createObjectStore(STORE,{keyPath:'slot'});if(!d.objectStoreNames.contains(PHOTOS))d.createObjectStore(PHOTOS)};r.onsuccess=e=>{db=e.target.result;ok()};r.onerror=()=>bad(r.error)})}
-function get(store,key){return new Promise((ok,bad)=>{let t=db.transaction(store).objectStore(store).get(key);t.onsuccess=()=>ok(t.result);t.onerror=()=>bad(t.error)})}function put(store,key,val){return new Promise((ok,bad)=>{let t=db.transaction(store,'readwrite').objectStore(store).put(val,key);t.onsuccess=ok;t.onerror=()=>bad(t.error)})}function del(store,key){return new Promise((ok,bad)=>{let t=db.transaction(store,'readwrite').objectStore(store).delete(key);t.onsuccess=ok;t.onerror=()=>bad(t.error)})}
-async function save(n=slot,silent=false){if(!S||!db)return;slot=n;let x=clone(S);x.savedAt=Date.now();try{await put(STORE,slot,x);localStorage.setItem('elarion_slot_'+slot,JSON.stringify({name:S.profile?.name,level:S.level,savedAt:x.savedAt}));if(!silent)toast('Kemajuan disimpan di Slot '+slot+'.')}catch(e){toast('Penyimpanan gagal.')}}
-async function load(n){let x=await get(STORE,n);if(!x){toast('Slot '+n+' kosong.');return}S=normalize(x);slot=n;await loadPhoto();render();toast('Save Slot '+n+' dimuat.')}
-async function loadPhoto(){if(S._photoURL)URL.revokeObjectURL(S._photoURL);S._photoURL=null;if(S.photoId&&db){let b=await get(PHOTOS,S.photoId);if(b)S._photoURL=URL.createObjectURL(b)}}
-async function uploadPhoto(inp){let f=inp.files?.[0];if(!f)return;let u=URL.createObjectURL(f),img=new Image();img.onload=async()=>{let sc=Math.min(1,640/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.max(1,img.width*sc);c.height=Math.max(1,img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);c.toBlob(async b=>{let id=S.photoId||crypto.randomUUID();await put(PHOTOS,id,b);S.photoId=id;await loadPhoto();await save(slot,true);render();toast('Foto karakter disimpan secara lokal.');URL.revokeObjectURL(u)},'image/jpeg',.78)};img.src=u}
-async function deletePhoto(){if(S.photoId)await del(PHOTOS,S.photoId);S.photoId=null;S._photoURL=null;await save(slot,true);render();toast('Foto dihapus.')}
-function startCharacter(){let bg=$('#bg').value;S=fresh();S.profile={name:$('#name').value.trim()||'Aren',title:$('#title').value.trim()||'Pengembara',gender:$('#gender').value,bg,desc:$('#desc').value.trim()||'Seorang pengembara yang mencari jawaban tentang Mahkota Retak.'};if(bg==='Mantan Prajurit'){S.stats.attack+=4;S.stats.defense+=3;S.honor+=5;S.reputation.f3=8}else if(bg==='Anak Pedagang'){S.gold+=180;S.reputation.f2=12}else if(bg==='Penyelidik'){S.stats.wisdom+=5;S.skills.INVESTIGATION=2}else if(bg==='Pengembara'){S.stats.speed+=4;S.stats.evasion+=3}else if(bg==='Bangsawan'){S.reputation.f1=15;S.stats.wisdom+=3}S.journal.push('Latar belakang dipilih: '+bg+'.');save(1,true);render()}
-function continueGame(){Promise.all([get(STORE,1),get(STORE,2),get(STORE,3)]).then(xs=>{let i=xs.findIndex(Boolean);if(i>=0)load(i+1);else toast('Belum ada save.')})}
-function startScreen(){document.body.innerHTML='<div class="content"><div class="hero" style="max-width:900px;margin:8vh auto"><div class="gold small">RPG OFFLINE — SATU FILE</div><h1>ELARION: KRONIK MAHKOTA RETAK</h1><p>Mahkota kerajaan pecah menjadi tujuh. Setiap pecahan membawa sumpah, dan setiap sumpah membuka jalan yang berbeda. Jelajahi Elarion, bangun hubungan, pecahkan kasus, tempa perlengkapan, dan tentukan sejarah yang akan diingat.</p><div class="grid2"><label>Nama<input id="name" value="Aren" style="width:100%;padding:10px;background:#0d131b;color:white;border:1px solid #303b4a;border-radius:8px"></label><label>Gelar<input id="title" value="Pengembara" style="width:100%;padding:10px;background:#0d131b;color:white;border:1px solid #303b4a;border-radius:8px"></label><label>Jenis kelamin<select id="gender" style="width:100%;padding:10px;background:#0d131b;color:white;border:1px solid #303b4a;border-radius:8px"><option>Laki-laki</option><option>Perempuan</option><option>Nonbiner</option></select></label><label>Latar belakang<select id="bg" style="width:100%;padding:10px;background:#0d131b;color:white;border:1px solid #303b4a;border-radius:8px"><option>Mantan Prajurit</option><option>Anak Pedagang</option><option>Penyelidik</option><option>Pengembara</option><option>Bangsawan</option></select></label></div><label>Deskripsi<textarea id="desc" style="width:100%;min-height:90px;background:#0d131b;color:white;border:1px solid #303b4a;border-radius:8px">Seorang pengembara yang mencari jawaban tentang Mahkota Retak.</textarea></label><div class="row"><button onclick="startCharacter()">Mulai Permainan</button><button onclick="continueGame()">Continue</button><button onclick="manageFromStart()">Kelola Save</button></div><p class="small muted">Foto dapat diunggah setelah masuk permainan. Data foto disimpan di IndexedDB dan diproses hanya di perangkat.</p></div></div>'}
-function manageFromStart(){S=fresh();S.profile={name:'Pengelola Save',title:'',gender:'',bg:'',desc:''};render();go('Save')}
-function render(){if(!S){startScreen();return}document.body.innerHTML='<div class="app"><aside class="side" id="side"><div class="brand">ELARION</div><div class="sub">KRONIK MAHKOTA RETAK</div><div class="nav">'+['Beranda','Peta','Dunia','Karakter','Inventaris','Equipment','Skill','Party','Companion','Quest','Faksi','Codex','Jurnal','Crafting','Profesi','Toko','Bounty','Investigasi','Puzzle','Rumah','Bank','Surat','Achievement','Pengaturan','Save'].map(x=>`<button data-page="${x}" onclick="go('${x}')">${x}</button>`).join('')+'</div><div class="item small">Save Slot ${slot}<br>Semua progress tersimpan lokal.</div></aside><main class="main"><header class="top"><div class="row"><button class="mobile" onclick="document.getElementById(&quot;side&quot;).classList.toggle(&quot;open&quot;)">Menu</button><b>${esc(S.profile.name)}</b><span class="muted">${esc(S.profile.title)}</span></div><div class="topstats"><span>Lv ${S.level}</span><span>HP ${S.hp}/${S.maxHp}</span><span>Mana ${S.mana}/${S.maxMana}</span><span>Gold ${S.gold}</span><span>Hari ${S.world.day}</span><span>${S.world.weather}</span></div></header><main class="content" id="view"></main></main></div><div id="modal" class="modal"><div id="box" class="box"></div></div><div id="toast" class="toast"></div>';go('Beranda',true)}
-const pages={Beranda:home,Peta:mapPage,Dunia:worldPage,Karakter:characterPage,Inventaris:inventoryPage,Equipment:equipmentPage,Skill:skillPage,Party:partyPage,Companion:companionPage,Quest:questPage,Faksi:factionPage,Codex:codexPage,Jurnal:journalPage,Crafting:craftPage,Profesi:professionPage,Toko:shopPage,Bounty:bountyPage,Investigasi:investigationPage,Puzzle:puzzlePage,Rumah:homePage,Bank:bankPage,Surat:mailPage,Achievement:achievementPage,Pengaturan:settingsPage,Save:savePage};
-function go(p,first=false){if(!S)return;currentPage=p;document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===p));if(pages[p])pages[p]($('#view'));if(innerWidth<900&&!first)$('#side')?.classList.remove('open');if(!first)beep()}
-function home(v){let q=Object.values(S.quests).filter(q=>q.status==='active').slice(0,5);v.innerHTML=`<div class="hero"><div class="gold small">TAHUN 734 · ERA RETAK</div><h1>Mahkota Itu Tidak Memiliki Pewaris.</h1><p>Tujuh pecahan Mahkota Retak tersebar di Elarion. Pemerintah, pedagang, sarjana, pengasingan, dan jaringan bayangan memiliki versi sejarah yang berbeda. Pilihanmu akan menentukan mana yang bertahan.</p><div class="row"><button onclick="explore()">Eksplorasi</button><button onclick="advance(1);go('Beranda')">Tunggu 1 jam</button><button onclick="rest()">Beristirahat</button><button onclick="save(slot)">Simpan</button></div></div><div class="grid">${panel('Tujuan utama',q.length?q.map(x=>`<div class="item"><b>${esc(x.name)}</b><p>${esc(x.objective)}</p></div>`).join(''):'Alur utama selesai. Dunia tetap terbuka untuk endgame.')} ${panel('Keadaan dunia',`<div>Cuaca: <b>${S.world.weather}</b></div><div>Waktu: <b>${timeName()}</b></div><div>Stabilitas: <b>${worldStability()}%</b></div><div>Pecahan: <b>${S.flags.crownFragments}/7</b></div>`)} ${panel('Progress',`<div class="bar xp"><i style="width:${S.xp/S.xpNext*100}%"></i></div><p>XP ${S.xp}/${S.xpNext}</p><p>Fame ${S.fame} · Kehormatan ${S.honor} · Infamy ${S.infamy} · Wanted ${S.wanted}</p>`)} ${panel('Kronik terbaru',S.journal.slice(-6).reverse().map(x=>`<div class="item">${esc(x)}</div>`).join(''))}</div>`}
-function panel(t,b){return `<div class="panel"><h2>${t}</h2>${b}</div>`}function timeName(){let h=S.world.hour;return h<6?'Tengah Malam':h<11?'Pagi':h<16?'Siang':h<20?'Sore':'Malam'}function worldStability(){return Math.max(0,Math.min(100,60-S.infamy*2+(S.honor>30?10:0)+(S.world.serivia==='developed'?8:0)))}
-function advance(h){S.world.hour+=h;while(S.world.hour>=24){S.world.hour-=24;S.world.day++;if(S.world.day%7===1)S.world.week++;}if(Math.random()<.22)S.world.weather=['Cerah','Hujan','Kabut','Badai'][Math.floor(Math.random()*4)];if(S.world.weather==='Badai')S.flags.storm=true;if(Math.random()<.14)worldEvent(false);save(slot,true)}
-function rest(){if(combat)return toast('Tidak dapat beristirahat saat bertarung.');S.hp=S.maxHp;S.mana=S.maxMana;S.stamina=S.maxStamina;advance(6);S.journal.push('Beristirahat dan memulihkan kondisi.');toast('Kondisi pulih.');go('Beranda')}
-function mapPage(v){const pos={asterra:[50,48],lunaris:[82,72],valedorn:[17,35],mirewood:[40,22],irondeep:[18,14],serevia:[68,33],grimhollow:[72,15],solmere:[54,10],ashfall:[29,68],cindervale:[26,55],elderglen:[62,50],dunrath:[89,30],frostmarch:[9,8],blackfen:[78,8],ravenrock:[10,62],thornpass:[25,27],goldmere:[70,55],umbral:[88,88],kharad:[38,88],crownspire:[50,5]};v.innerHTML=panel('Atlas Elarion',`<div class="map">${Object.entries(pos).map(([id,p])=>{let l=findLoc(id),ok=S.discovered.includes(id);return `<button class="node ${ok?'':'locked'}" style="left:${p[0]}%;top:${p[1]}%" ${ok?`onclick="travel('${id}')"`:'disabled'}>${ok?esc(l.name):'Terkunci'}</button>`}).join('')}</div><p class="muted">Peta tidak dibuka sekaligus. Wilayah baru ditemukan melalui perjalanan, quest, rumor, investigasi, dan eksplorasi.</p>`)}
-function travel(id){if(!S.discovered.includes(id))return toast('Lokasi belum ditemukan.');S.visited.push(id);S.regionRep[id]=(S.regionRep[id]||0)+1;advance(1);S.journal.push('Perjalanan menuju '+findLoc(id).name+'.');go('Dunia')}
-function discoverLoc(id){if(!S.discovered.includes(id)){S.discovered.push(id);S.codex.locations.push(id);toast('Lokasi ditemukan: '+findLoc(id).name)}}
-function worldPage(v){let ls=S.discovered.map(findLoc).filter(Boolean);v.innerHTML=panel('Dunia',`<div class="grid">${ls.map(l=>`<div class="card"><div class="between"><b>${esc(l.name)}</b><span class="tag">${l.type}</span></div><p class="muted">${esc(l.desc)}</p><div class="row"><button onclick="locationAction('${l.id}')">Interaksi</button><button onclick="exploreAt('${l.id}')">Eksplorasi</button></div></div>`).join('')}</div><hr><h3>Lokasi kecil</h3><div class="grid2">${DB.small.filter(x=>S.visited.includes(x.id)||S.discovered.length>5).map(x=>`<div class="item"><b>${esc(x.name)}</b><p>${esc(x.desc)}</p><button onclick="smallAction('${x.id}')">Periksa</button></div>`).join('')}</div><hr><h3>Dungeon</h3><div class="grid2">${DB.dungeons.map(d=>`<div class="item"><b>${esc(d.name)}</b><p>${esc(d.desc)}</p><button onclick="enterDungeon('${d.id}')">Masuk</button></div>`).join('')}</div>`)}
-function locationAction(id){let l=findLoc(id),ns=DB.npcs.filter(n=>n.loc===id);open('Interaksi: '+l.name,`<p>${esc(l.desc)}</p><div class="row"><button onclick="specialLocation('${id}')">Aktivitas wilayah</button><button onclick="gatherAction()">Gathering</button><button onclick="worldEvent(true)">Kabar dunia</button></div><hr>${ns.map(n=>`<div class="item"><b>${esc(n.name)}</b> — ${esc(n.job)}<br><span class="muted">${esc(n.bio)}</span><br><button onclick="dialog('${n.id}')">Bicara</button></div>`).join('')||'Tidak ada NPC tetap di sini.'}`)}
-function smallAction(id){let x=DB.small.find(s=>s.id===id);advance(1);if(id==='kebun'){S.world.serivia='developed';S.fame+=5}if(id==='makam')discoverLore('L11');if(id==='mercusuar'){addItem('q26');S.reputation.f2+=3}toast(x.name+' diperiksa.');close()}
-function specialLocation(id){if(id==='asterra'){S.skills.INVESTIGATION=Math.min(5,S.skills.INVESTIGATION+1);unlockSecret('sec1')}if(id==='lunaris'){S.reputation.f2+=3;S.fame+=2}if(id==='mirewood'){S.reputation.f4+=2;unlockSecret('sec2')}if(id==='irondeep'){if(S.world.hour<6||S.world.hour>=22){S.flags.firstMetal=true;addItem('m39');unlockSecret('sec3')}else toast('Terowongan terdalam hanya aman pada malam hari.')}if(id==='serevia'){S.world.serivia='developed';S.regionRep.serevia=(S.regionRep.serevia||0)+5}if(id==='ravenrock'){S.world.ravenrock='reconciled';S.reputation.f6+=8}if(id==='umbral'){S.reputation.f7+=5;unlockSecret('sec4')}if(id==='crownspire'){S.flags.gate=true}S.journal.push('Interaksi wilayah: '+findLoc(id).name+'.');checkAchievements();close();render()}
-function dialog(id){let n=DB.npcs.find(x=>x.id===id);if(!n)return;S.codex.npcs.includes(id)||S.codex.npcs.push(id);let known=S.decisions['met_'+id]?'Kau sudah kembali. Aku masih mengingat percakapan kita.':'Aku belum pernah melihatmu sebelumnya.';let rumor=['Ada lonceng yang berbunyi dari bawah rawa.','Buku lama di Asterra menyebut tujuh sumpah.','Pedagang tertentu membeli kaca dari langit.','Jalan ke Ravenrock berubah ketika politik berubah.','Bunga Cermin hanya mekar dalam kabut tengah malam.'];open(n.name,`<p>${esc(known)}</p><p>${esc(n.bio)}</p><button class="choice" onclick="dialogAct('${id}','rumor')">Tanyakan rumor</button><button class="choice" onclick="dialogAct('${id}','help')">Tawarkan bantuan</button><button class="choice" onclick="dialogAct('${id}','quest')">Tanyakan pekerjaan</button>${S.skills.PERSUASION>=2?`<button class="choice" onclick="dialogAct('${id}','persuade')">Gunakan Persuasi</button>`:''}${S.skills.INVESTIGATION>=2?`<button class="choice" onclick="dialogAct('${id}','investigate')">Amati detail</button>`:''}`);S.decisions['met_'+id]=true}
-function dialogAct(id,type){let n=DB.npcs.find(x=>x.id===id);if(type==='rumor'){let r=['Ada lonceng yang berbunyi dari bawah rawa.','Buku lama di Asterra menyebut tujuh sumpah.','Pedagang tertentu membeli kaca dari langit.','Jalan ke Ravenrock berubah ketika politik berubah.','Bunga Cermin hanya mekar dalam kabut tengah malam.'][Math.floor(Math.random()*5)];S.rumors.push(r);toast('Rumor: '+r)}if(type==='help'){S.decisions['helped_'+id]=true;S.honor+=2;gainXP(25);toast(n.name+' mengingat bantuanmu.')}if(type==='quest'){let q=DB.side[Math.floor(Math.random()*DB.side.length)];S.quests[q.id]={...q,status:'active',progress:0};toast('Quest terbuka: '+q.name)}if(type==='persuade'){let ok=S.stats.wisdom+S.skills.PERSUASION*5+Math.random()*10>=18;if(ok){S.reputation.f1+=8;S.fame+=4;toast('Persuasi berhasil.')}else{S.infamy+=2;toast('Persuasi gagal.')}}if(type==='investigate'){discoverLore('L'+(1+Math.floor(Math.random()*20)));gainXP(40);toast('Detail tersembunyi ditemukan.')}close();checkAchievements();render()}
-function questPage(v){let all=[...DB.main,...DB.side,...DB.compq,...DB.fq,...DB.hidden];all.forEach(q=>{if(S.quests[q.id])return;if(q.id==='MQ01')return;if(q.id==='SQ01'&&S.level>=1)S.quests[q.id]={...q,status:'available',progress:0}});v.innerHTML=panel('Jurnal Misi',`<div class="row"><button onclick="unlockMain('MQ01')">Mulai Utama</button><button onclick="openQuestCategories()">Buka daftar jalur</button></div><div class="list">${Object.entries(S.quests).map(([id,q])=>`<div class="item"><div class="between"><b>${esc(q.name)}</b><span class="tag">${q.status}</span></div><p>${esc(q.objective||q.desc)}</p>${q.status==='available'?`<button onclick="accept('${id}')">Terima</button>`:''}${q.status==='active'?`<button onclick="workQuest('${id}')">Kerjakan</button>`:''}${q.status==='complete'?'<span class="good">Selesai</span>':''}</div>`).join('')}</div>`)}
-function openQuestCategories(){open('Jalur Quest',`<h3>Utama</h3>${DB.main.map(q=>`<div class="item"><b>${q.id} · ${esc(q.name)}</b><p>${esc(q.objective)}</p><button onclick="unlockMain('${q.id}')">Buka</button></div>`).join('')}<h3>Companion</h3>${DB.compq.map(q=>`<div class="item"><b>${esc(q.name)}</b><button onclick="unlockMain('${q.id}')">Buka</button></div>`).join('')}<h3>Faksi</h3>${DB.fq.map(q=>`<div class="item"><b>${esc(q.name)}</b><button onclick="unlockMain('${q.id}')">Buka</button></div>`).join('')}</div>`)}
-function unlockMain(id){let q=[...DB.main,...DB.side,...DB.compq,...DB.fq,...DB.hidden].find(q=>q.id===id);if(!q)return;if(id.startsWith('MQ')&&+id.slice(2)>1&&S.level<Math.min(2+(+id.slice(2)-1)*.25,8))return toast('Perkembangan cerita belum cukup.');S.quests[id]={...q,status:'active',progress:0};S.journal.push('Quest terbuka: '+q.name);toast('Quest terbuka: '+q.name);close();render()}
-function accept(id){let q=[...DB.side,...DB.compq,...DB.fq,...DB.hidden].find(q=>q.id===id);if(q){S.quests[id]={...q,status:'active',progress:0};toast('Quest diterima: '+q.name);render()}}
-function workQuest(id){let q=S.quests[id];if(!q)return;if(id==='MQ07')return choosePolitical();if(id==='MQ09')return startCase('INV1');if(id==='MQ17')return startCase('INV5');if(id==='MQ20'){if(S.flags.crownFragments>=5){S.flags.gate=true;discoverLoc('crownspire');complete(id)}else toast('Lima pecahan diperlukan untuk membuka gerbang.');return}if(id==='MQ27')return chooseCrown();if(id==='MQ29')return endingCheck();if(id==='MQ30')return endingCheck();if(q.companion&&!S.companions[q.companion])return toast('Companion belum bergabung.');if(Math.random()<.35){startCombat(pickEnemy(),()=>complete(id));return}if(q.id==='SQ04')S.world.serivia='developed';if(q.id==='SQ35'&&S.world.weather==='Kabut'&&S.world.hour<6)unlockSecret('sec2');complete(id)}
-function complete(id){let q=S.quests[id];if(!q||q.status==='complete')return;q.status='complete';q.progress=1;S.completed.push(id);gainXP(q.xp||100);S.gold+=q.gold||0;S.journal.push('Quest selesai: '+q.name);if(id==='MQ01'){discoverLoc('lunaris');discoverLore('L03');S.quests.MQ02={...DB.main[1],status:'active',progress:0}}if(id==='MQ02'){discoverLoc('irondeep');S.quests.MQ03={...DB.main[2],status:'active',progress:0};S.reputation.f2+=8}if(id==='MQ03'){addItem('q3');S.quests.MQ04={...DB.main[3],status:'active',progress:0}}if(id==='MQ04'){addItem('q4');discoverLore('L13');S.quests.MQ05={...DB.main[4],status:'active',progress:0}}if(id==='MQ05'){discoverLoc('ashfall');S.quests.MQ06={...DB.main[5],status:'active',progress:0};addItem('m17',2)}if(id==='MQ06'){S.flags.crownFragments=Math.max(1,S.flags.crownFragments);S.quests.MQ07={...DB.main[6],status:'active',progress:0}}if(id==='MQ07'){S.quests.MQ08={...DB.main[7],status:'active',progress:0}}if(id==='MQ08'){addItem('q12');S.quests.MQ09={...DB.main[8],status:'active',progress:0};discoverLore('L05')}if(id==='MQ09'){S.flags.trueClue=true;S.quests.MQ10={...DB.main[9],status:'active',progress:0}}if(id==='MQ10'){S.world.ravenrock='reconciled';S.reputation.f6+=20;S.quests.MQ11={...DB.main[10],status:'active',progress:0}}if(id==='MQ11'){unlockSecret('sec5');S.quests.MQ12={...DB.main[11],status:'active',progress:0};discoverLore('L10')}if(id==='MQ12'){S.reputation.f7+=15;S.quests.MQ13={...DB.main[12],status:'active',progress:0}}if(id==='MQ13'){addItem('q9');S.flags.crownFragments++;S.quests.MQ14={...DB.main[13],status:'active',progress:0}}if(id==='MQ14'){S.reputation.f2+=15;S.quests.MQ15={...DB.main[14],status:'active',progress:0}}if(id==='MQ15'){addItem('m39');S.quests.MQ16={...DB.main[15],status:'active',progress:0};discoverLore('L06')}if(id==='MQ16'){S.flags.crownFragments++;S.quests.MQ17={...DB.main[16],status:'active',progress:0};discoverLore('L11')}if(id==='MQ17'){S.quests.MQ18={...DB.main[17],status:'active',progress:0}}if(id==='MQ18'){S.quests.MQ19={...DB.main[18],status:'active',progress:0};S.reputation.f6+=10}if(id==='MQ19'){S.flags.crownFragments++;S.quests.MQ20={...DB.main[19],status:'active',progress:0};unlockSecret('sec4')}if(id==='MQ20'){S.quests.MQ21={...DB.main[20],status:'active',progress:0}}if(id==='MQ21'){S.flags.crownFragments++;S.quests.MQ22={...DB.main[21],status:'active',progress:0};discoverLore('L12')}if(id==='MQ22'){S.flags.oldJournal=true;S.quests.MQ23={...DB.main[22],status:'active',progress:0};discoverLore('L13')}if(id==='MQ23'){S.quests.MQ24={...DB.main[23],status:'active',progress:0};S.honor+=15}if(id==='MQ24'){S.flags.storm=true;S.quests.MQ25={...DB.main[24],status:'active',progress:0}}if(id==='MQ25'){S.quests.MQ26={...DB.main[25],status:'active',progress:0}}if(id==='MQ26'){S.quests.MQ27={...DB.main[26],status:'active',progress:0}}if(id==='MQ27'){S.quests.MQ28={...DB.main[27],status:'active',progress:0}}if(id==='MQ28'){S.flags.shadowKing=true;S.quests.MQ29={...DB.main[28],status:'active',progress:0}}if(id==='MQ29'){S.quests.MQ30={...DB.main[29],status:'active',progress:0}}if(id.startsWith('CQ'))S.flags.companionQuest=true;checkAchievements();save(slot,true);render();toast('Quest selesai: '+q.name)}
-function choosePolitical(){open('Pihak yang Dipilih',`<p>Pilihan ini memengaruhi faksi, companion, dan ending.</p><button class="choice" onclick="political('crown')">Mendukung Mahkota</button><button class="choice" onclick="political('exile')">Mendukung Pengasingan</button><button class="choice" onclick="political('independent')">Tetap Independen</button>`)}function political(x){S.decisions.political=x;if(x==='crown'){S.reputation.f1+=35;S.reputation.f6-=15}else if(x==='exile'){S.reputation.f6+=35;S.reputation.f1-=15}else{S.reputation.f4+=25;S.honor+=5}close();complete('MQ07')}
-function chooseCrown(){open('Mahkota yang Memilih',`<p>Tujuh pecahan tidak harus menjadi satu. Apa yang kau pilih akan mengubah Elarion.</p><button class="choice" onclick="crownChoice('unite')">Satukan Mahkota</button><button class="choice" onclick="crownChoice('break')">Hancurkan Mahkota</button>`)}function crownChoice(x){S.decisions.crown=x;if(x==='unite'){S.flags.crownUnited=true;S.flags.crownFragments=7;addItem('r4');discoverLore('L03')}else{S.flags.crownBroken=true;S.world.crown='broken';S.honor-=20}close();complete('MQ27')}
-function factionPage(v){v.innerHTML=panel('Faksi',`<div class="grid2">${DB.factions.map(f=>{let r=S.reputation[f.id]||0;let rank=r>=80?'Sekutu':r>=60?'Dipercaya':r>=40?'Ramah':r>=0?'Netral':r>=-30?'Tidak Disukai':'Hostile';return `<div class="card"><b>${esc(f.name)}</b><p>${esc(f.desc)}</p><div>Reputasi ${r} · ${rank}</div><div class="bar"><i style="width:${Math.max(0,Math.min(100,(r+100)/2))}%"></i></div><button onclick="factionWork('${f.id}')">Bantu</button></div>`}).join('')}</div>`)}
-function factionWork(id){let r=S.reputation[id]||0;if(id==='f1'&&S.wanted>0){S.wanted--;S.honor+=3}else if(id==='f2'){S.gold=Math.max(0,S.gold-30);S.reputation.f2+=8}else if(id==='f3'){S.reputation.f3+=8;S.stats.defense++}else if(id==='f4'){if(has('m17')){removeItem('m17');S.reputation.f4+=12;discoverLore('L04')}else return toast('Bawa Serpih Mahkota sebagai bukti.')}else if(id==='f5'){S.reputation.f5+=8;S.honor+=3}else if(id==='f6'){S.reputation.f6+=8;S.world.ravenrock='reconciled'}else if(id==='f7'){S.reputation.f7+=8;S.infamy++;}else if(id==='f8'){if(has('m39')){S.reputation.f8+=12;S.profession.Smithing=Math.max(S.profession.Smithing,4)}else return toast('Klan Kharad meminta Logam Pertama.')}S.fame++;unlockMain('FQ'+id.slice(1));checkAchievements();render()}
-function characterPage(v){let p=S.profile;v.innerHTML=panel('Lembar Karakter',`<div class="portraitgrid"><img class="avatar" src="${S._photoURL||''}"><div><div class="big">${esc(p.name)}</div><div class="gold">${esc(p.title)}</div><div>${esc(p.gender)} · ${esc(p.bg)}</div></div></div><p>${esc(p.desc)}</p><div class="grid2">${Object.entries(S.stats).map(([k,x])=>`<div class="item"><b>${k}</b><div class="big">${x}</div></div>`).join('')}</div><hr><label>Foto karakter <input type="file" accept="image/*" onchange="uploadPhoto(this)"></label><button onclick="deletePhoto()">Hapus foto</button>`)}
-function inventoryPage(v){v.innerHTML=panel('Inventaris',`<div class="grid2">${Object.entries(S.inventory).filter(x=>x[1]>0).map(([id,n])=>{let i=findItem(id);return `<div class="item"><div class="between"><b>${esc(i?.name||id)}</b><span>x${n}</span></div><span class="tag">${i?.rarity||''}</span> <span class="tag">${i?.type||''}</span><p class="muted small">${esc(i?.effect||'')}</p>${i?.type==='Konsumsi'?`<button onclick="useItem('${id}')">Gunakan</button>`:''}</div>`}).join('')}</div>`)}
-function equipmentPage(v){v.innerHTML=panel('Equipment',`<div class="grid2">${[['weapon','Senjata'],['armor','Armor'],['accessory','Aksesori']].map(([s,t])=>{let i=findItem(S.equipment[s]);return `<div class="item"><b>${t}</b><p>${i?esc(i.name):'Kosong'}</p><button onclick="equipPicker('${s}','${t}')">Pilih</button></div>`}).join('')}</div><p class="muted">Stat combat saat ini: ${JSON.stringify(totalStats())}</p>`)}
-function equipPicker(s,t){let arr=DB.items.filter(i=>i.type===t&&S.inventory[i.id]);open('Pilih '+t,arr.map(i=>`<div class="item"><b>${esc(i.name)}</b><span class="tag">${i.rarity}</span><p>${esc(i.effect)}</p><button onclick="equip('${s}','${i.id}')">Pasang</button></div>`).join('')||'Tidak ada item.')}
-function equip(s,id){S.equipment[s]=id;close();render();toast('Equipment diperbarui.')}
-function totalStats(){let t={...S.stats};Object.values(S.equipment).forEach(id=>{let i=findItem(id);if(i){t.attack+=i.atk||0;t.defense+=i.def||0;t.magic+=i.magic||0}});t.attack+=S.skills.COMBAT*3;t.magic+=S.skills.ARCANA*3;t.speed+=S.skills.SURVIVAL*2;return t}
-function skillPage(v){let def={COMBAT:['Serangan Kuat','Tangkisan','Serangan Balik','Fokus Kritis','Veteran'],SURVIVAL:['Langkah Ringan','Pengumpulan','Pemburu Malam','Jejak Rahasia','Survivalis'],ARCANA:['Konsentrasi','Perisai Mana','Pengetahuan Relik','Pemecah Sihir','Arkana Tinggi'],INVESTIGATION:['Amati Bukti','Analisis','Kontradiksi','Rekonstruksi','Mata Kebenaran'],PERSUASION:['Bujuk','Tawar Harga','Intimidasi','Diplomasi','Karisma']};v.innerHTML=panel('Skill Tree',Object.entries(def).map(([b,ns])=>`<div class="card"><h3>${b}</h3>${ns.map((n,i)=>`<div class="item"><b>${i+1}. ${n}</b><p class="small muted">${skillDesc(b,i)}</p><button onclick="learn('${b}',${i+1})" ${S.skills[b]>=i+1||S.skills[b]!==i?'disabled':''}>${S.skills[b]>=i+1?'Terbuka':'Buka'}</button></div>`).join('')}</div>`).join(''))}function skillDesc(b,i){return {COMBAT:['Kerusakan +3%.','Bertahan lebih kuat.','Serangan balik meningkat.','Critical +4%.','Attack +8.'],SURVIVAL:['Evasion +2.','Material tambahan.','Encounter malam lebih aman.','Petunjuk rahasia lebih mudah.','Hasil gathering +10%.'],ARCANA:['Mana maksimum +10.','Perisai awal combat.','Artefak dapat diidentifikasi.','Peluang meniadakan serangan sihir.','Magic +12.'],INVESTIGATION:['Bukti tambahan.','Analisis lebih akurat.','Kontradiksi muncul.','Rekonstruksi kasus.','Membuka rahasia.'],PERSUASION:['Dialog lunak.','Diskon 5%.','Intimidasi.','Diplomasi.','Dialog langka.']}[b][i]}
-function learn(b,l){if(S.skills[b]!==l-1)return;S.skills[b]=l;if(b==='ARCANA'&&l===5)S.stats.magic+=12;if(b==='COMBAT'&&l===5)S.stats.attack+=8;toast('Skill '+b+' tingkat '+l+' terbuka.');checkAchievements();render()}
-function partyPage(v){v.innerHTML=panel('Party',`<div class="grid2">${S.party.map(n=>`<div class="item"><b>${esc(n)}</b><p>Loyalitas ${S.companions[n].loyalty}</p><button onclick="reserve('${n}')">Cadangkan</button></div>`).join('')||'Belum ada anggota aktif.'}</div><h3>Cadangan</h3>${S.reserve.map(n=>`<button onclick="activate('${n}')">${esc(n)}</button>`).join(' ')||'Tidak ada cadangan.'}`)}
-function companionPage(v){v.innerHTML=panel('Companion',`<div class="grid2">${DB.companions.map(c=>{let x=S.companions[c.name];return `<div class="card"><div class="portraitgrid"><div class="avatar sm" style="display:grid;place-items:center">${esc(c.name[0])}</div><div><b>${esc(c.name)}</b><div class="muted">${esc(c.role)}</div></div></div><p>${esc(c.bio)}</p><span class="tag">${c.skill}</span><p>Loyalitas: ${x?.loyalty||0}</p><button onclick="recruit('${c.name}')">${x?'Rekrut/Temui':'Rekrut'}</button>${x?`<button onclick="loyalty('${c.name}')">Bangun loyalitas</button><button onclick="unlockCompQuest('${c.name}')">Quest pribadi</button>`:''}</div>`}).join('')}</div>`)}
-function recruit(name){let c=DB.companions.find(x=>x.name===name);if(!c)return;if(S.companions[name])return toast('Companion sudah bergabung.');let req={Lyra:0,Cale:10,Nadia:15,Kaia:20,Mila:30,Juno:5,Veyra:35,Kara:40}[name]??0;if((S.reputation.f4||0)<req&&['Nadia','Veyra'].includes(name))return toast('Reputasi Lingkaran Arkanis belum cukup.');if(name==='Mila'&&(S.reputation.f6||0)<10)return toast('Reputasi Pengasingan belum cukup.');if(name==='Kara'&&(S.reputation.f8||0)<10)return toast('Klan Kharad belum mempercayaimu.');S.companions[name]={level:S.level,loyalty:45};if(S.party.length<3)S.party.push(name);else S.reserve.push(name);S.journal.push(name+' bergabung ke kelompok.');toast(name+' bergabung.');checkAchievements();save(slot,true);render()}
-function reserve(n){S.party=S.party.filter(x=>x!==n);S.reserve.push(n);render()}function activate(n){if(S.party.length>=3)return toast('Party sudah penuh.');S.reserve=S.reserve.filter(x=>x!==n);S.party.push(n);render()}function loyalty(n){let c=S.companions[n];if(S.gold<40)return toast('Membutuhkan 40 gold.');S.gold-=40;c.loyalty=Math.min(100,c.loyalty+10);toast('Loyalitas '+n+' meningkat.');render()}function unlockCompQuest(n){let i=DB.companions.findIndex(c=>c.name===n);let q=DB.compq[i];if(q){S.quests[q.id]={...q,status:'active',progress:0};toast('Quest companion terbuka.');render()}}
-function codexPage(v){let lore=DB.lore.filter(x=>S.codex.lore.includes(x.id)),ns=DB.npcs.filter(x=>S.codex.npcs.includes(x.id)),es=DB.enemies.filter(x=>S.codex.enemies.includes(x.id)),bs=DB.bosses.filter(x=>S.codex.bosses.includes(x.id));v.innerHTML=panel('Codex',`<h3>Lore ${lore.length}/${DB.lore.length}</h3><div class="grid2">${lore.map(x=>`<div class="item"><b>${esc(x.title)}</b><p>${esc(x.text)}</p></div>`).join('')}</div><h3>Karakter ${ns.length}/${DB.npcs.length}</h3><div class="grid2">${ns.map(x=>`<div class="item"><b>${esc(x.name)}</b> — ${esc(x.job)}</div>`).join('')}</div><h3>Monster ${es.length}/${DB.enemies.length}</h3><div class="grid2">${es.map(x=>`<div class="item"><b>${esc(x.name)}</b> — kelemahan ${esc(x.weak)}</div>`).join('')}</div><h3>Boss ${bs.length}/${DB.bosses.length}</h3><div class="grid2">${bs.map(x=>`<div class="item"><b>${esc(x.name)}</b></div>`).join('')}</div>`)}
-function discoverLore(id){if(!S.codex.lore.includes(id)){S.codex.lore.push(id);toast('Lore ditemukan.')}}function unlockSecret(id){if(!S.secrets.includes(id)){S.secrets.push(id);discoverLore('L'+(10+S.secrets.length));toast('Area rahasia ditemukan.')}}
-function journalPage(v){v.innerHTML=panel('Jurnal',`<h3>Catatan</h3><div class="list">${S.journal.slice().reverse().map(x=>`<div class="item">${esc(x)}</div>`).join('')}</div><h3>Keputusan</h3><pre>${esc(JSON.stringify(S.decisions,null,2))}</pre>`)}
-function craftPage(v){v.innerHTML=panel('Crafting',`<p>Resep terbuka ${S.craftFound.length}/${DB.recipes.length}. Profesi membatasi resep tingkat tinggi.</p><div class="grid2">${DB.recipes.filter(r=>S.craftFound.includes(r.id)).map(r=>{let ok=r.materials.every(m=>(S.inventory[m[0]]||0)>=m[1])&&S.profession[r.profession]>=r.level;let out=findItem(r.result);return `<div class="item"><b>${esc(r.name)}</b><span class="tag">${r.profession} Lv ${r.level}</span><p>${r.materials.map(m=>esc(findItem(m[0])?.name||m[0])+' x'+m[1]).join(', ')}</p><p>Hasil: ${esc(out?.name||r.result)}</p><button ${ok?'':'disabled'} onclick="craft('${r.id}')">Buat</button></div>`}).join('')}</div>`)}
-function craft(id){let r=DB.recipes.find(x=>x.id===id);if(!r||!S.craftFound.includes(id)||S.profession[r.profession]<r.level)return toast('Resep atau tingkat profesi belum memenuhi.');if(!r.materials.every(m=>(S.inventory[m[0]]||0)>=m[1]))return toast('Bahan tidak cukup.');r.materials.forEach(m=>S.inventory[m[0]]-=m[1]);addItem(r.result);profGain(r.profession,35);gainXP(60);toast('Berhasil membuat '+findItem(r.result).name);render()}
-function professionPage(v){v.innerHTML=panel('Profesi',Object.entries(S.profession).map(([p,l])=>`<div class="item"><div class="between"><b>${p}</b><b>Lv ${l}</b></div><div class="bar xp"><i style="width:${Math.min(100,S.profXp[p]/(l*100)*100)}%"></i></div><div class="small">${S.profXp[p]}/${l*100} XP</div></div>`).join('')+`<hr><button onclick="gatherAction('Mining')">Mining</button> <button onclick="gatherAction('Herbalism')">Herbalism</button> <button onclick="gatherAction('Cooking')">Fishing</button> <button onclick="gatherAction('Survival')">Hunting</button> <button onclick="gatherAction('Gathering')">Gathering</button>`)}
-function profGain(p,n){if(!S.profXp[p])S.profXp[p]=0;S.profXp[p]+=n;while(S.profXp[p]>=S.profession[p]*100&&S.profession[p]<10){S.profXp[p]-=S.profession[p]*100;S.profession[p]++;toast(p+' naik ke level '+S.profession[p])}}
-function gatherAction(type='Mining'){advance(1);let pool=DB.items.filter(i=>i.type==='Material');if(type==='Mining')pool=pool.filter(i=>['m2','m3','m11','m12','m13','m27','m39'].includes(i.id));if(type==='Herbalism')pool=pool.filter(i=>['m4','m5','m6','m7','m23','m24','m40'].includes(i.id));if(S.world.weather==='Kabut')pool=pool.filter(i=>i.id==='m6'||i.id==='m23'||i.id==='m38'||i.id==='m24').concat(pool.slice(0,2));let it=pool[Math.floor(Math.random()*pool.length)]||DB.items.find(i=>i.id==='m1');let q=1+(S.skills.SURVIVAL>=2?1:0);addItem(it.id,q);profGain(['Mining','Herbalism','Cooking','Survival','Survival'].includes(type)?type:'Mining',20);toast('Mendapat '+it.name+' x'+q);render()}
-function shopPage(v){let pool=DB.items.filter(i=>i.price>0&&i.type!=='Quest'&&i.rarity!=='Mitos').slice(0,75);v.innerHTML=panel('Toko',`<p>Harga dipengaruhi reputasi Serikat Pedagang. Pasar khusus terbuka setelah tengah malam di Lunaris.</p><div class="grid2">${pool.map(i=>{let p=Math.max(1,Math.floor(i.price*(1-Math.min(30,S.reputation.f2||0)/100)));return `<div class="item"><b>${esc(i.name)}</b><span class="tag">${i.rarity}</span><p>${p} gold</p><button onclick="buy('${i.id}',${p})">Beli</button><button onclick="sell('${i.id}')">Jual</button></div>`}).join('')}</div>`)}
-function buy(id,p){if(S.gold<p)return toast('Gold tidak cukup.');S.gold-=p;addItem(id);toast('Membeli '+findItem(id).name);render()}function sell(id){if(!S.inventory[id])return;let i=findItem(id);if(!i||i.price<=0)return;S.inventory[id]--;S.gold+=Math.floor(i.price*.45);toast('Item dijual.');render()}
-function bountyPage(v){let arr=DB.enemies.slice(5,20);v.innerHTML=panel('Bounty',`<p>Target dapat diselesaikan dengan combat. Target tertentu menjadi lebih sulit pada mode Sulit dan Mimpi Buruk.</p><div class="grid2">${arr.map((e,i)=>`<div class="item"><b>${esc(e.name)}</b><p>Hadiah ${120+i*35} gold.</p><button onclick="takeBounty('${e.id}',${120+i*35})">Ambil</button></div>`).join('')}</div>`)}function takeBounty(id,reward){if(S.bounties[id]?.done)return toast('Bounty sudah selesai.');S.bounties[id]={active:true};startCombat(DB.enemies.find(e=>e.id===id),()=>{S.bounties[id]={done:true};S.gold+=reward;S.fame+=4;toast('Bounty selesai.');checkAchievements();render()})}
-function investigationPage(v){v.innerHTML=panel('Investigasi',`<p>Kasus tidak memberikan jawaban sebelum kesimpulan. Kumpulkan bukti, wawancarai saksi melalui NPC, lalu tentukan tersangka.</p><div class="grid2">${DB.investigations.map((c,i)=>`<div class="item"><b>${esc(c.name)}</b><p>${esc(c.desc)}</p><span class="tag">${S.caseProgress[c.id]||'belum dimulai'}</span><button onclick="startCase('${c.id}')">Mulai</button></div>`).join('')}</div>`)}
-function startCase(id){let c=DB.investigations.find(x=>x.id===id);if(!c)return;let key=id+'_e',found=S.caseProgress[key]||[];open(c.name,`<p>${esc(c.desc)}</p><p><b>Tersangka:</b> ${c.suspects.map(esc).join(', ')}</p><p><b>Bukti:</b> ${found.length}/${c.evidence.length}</p>${c.evidence.map((e,i)=>`<button class="choice" onclick="evidence('${id}',${i})">${found.includes(i)?'Bukti sudah diperiksa':'Periksa: '+esc(e)}</button>`).join('')}${found.length>=2?'<hr><b>Kesimpulan</b>'+c.suspects.map(s=>`<button class="choice" onclick="solveCase('${id}','${s}')">Tuduh ${esc(s)}</button>`).join(''):''}`)}
-function evidence(id,i){let c=DB.investigations.find(x=>x.id===id),key=id+'_e',a=S.caseProgress[key]||[];if(!a.includes(i)){a.push(i);S.caseProgress[key]=a;gainXP(35)}close();startCase(id)}function solveCase(id,a){let c=DB.investigations.find(x=>x.id===id);if(a===c.answer){S.caseProgress[id]='solved';S.honor+=8;gainXP(c.xp);if(id==='INV5')S.flags.trueClue=true;toast('Kesimpulan benar.')}else{S.caseProgress[id]='failed';S.wanted++;S.infamy+=5;toast('Kesimpulan salah; konsekuensi dicatat.')}close();checkAchievements();render()}
-function puzzlePage(v){v.innerHTML=panel('Puzzle',`<p>Beberapa puzzle memiliki hadiah yang tidak tersedia di toko.</p><div class="grid2">${[['p1','Cipher Menara','Geser setiap huruf satu langkah ke belakang. Kode: GNGNXNR','FMFMWMQ','r14'],['p2','Urutan Segel','Urutkan simbol berdasarkan usia: Matahari, Batu, Bayangan, Mahkota. Masukkan 1-2-3-4.','1-2-3-4','r15'],['p3','Kesaksian Cuaca','Saat badai, tanyakan kepada saksi yang berubah sesuai cuaca. Jawaban: saksi cuaca.','saksi cuaca','r17'],['p4','Kunci Logam','Masukkan jumlah pecahan mahkota dikali tujuh.','21','r19'],['p5','Taman Cermin','Cuaca yang membuat bunga Cermin mekar?','kabut','r20']].map(p=>`<div class="item"><b>${p[1]}</b><p>${p[2]}</p><button onclick="solvePuzzle('${p[0]}','${p[3]}','${p[4]}')">Coba</button></div>`).join('')}</div>`)}
-function solvePuzzle(id,ans,reward){open('Jawab Puzzle',`<p>Masukkan jawaban.</p><input id="pa" style="width:100%;padding:10px;background:#0d131b;color:white;border:1px solid #303b4a;border-radius:8px"><button onclick="checkPuzzle('${id}','${ans}','${reward}')">Periksa</button>`)}function checkPuzzle(id,ans,reward){if($('#pa').value.trim().toLowerCase()===ans.toLowerCase()){S.puzzles[id]=true;addItem(reward);gainXP(250);toast('Puzzle berhasil.');close();checkAchievements();render()}else toast('Jawaban belum tepat.')} 
-function enterDungeon(id){let d=DB.dungeons.find(x=>x.id===id);if(!d)return;if(d.id==='d7'&&S.flags.crownFragments<5)return toast('Lima pecahan diperlukan.');if(d.id==='d8'&&S.level<10)return toast('Level 10 diperlukan.');let st=S.dungeons[id]||{room:0,cleared:false};S.dungeons[id]=st;open(d.name,`<p>${esc(d.desc)}</p><p>Ruang ${st.room}/5.</p><button onclick="dungeonStep('${id}')">Masuk lebih dalam</button><button onclick="dungeonPuzzle('${id}')">Periksa mekanisme</button><p class="muted">Boss: ${esc(d.boss)}</p>`)}
-function dungeonPuzzle(id){let p=id==='d3'?'p2':id==='d7'?'p4':'p1';close();solvePuzzle(p,'',p==='p1'?'r14':'r15')}
-function dungeonStep(id){let d=DB.dungeons.find(x=>x.id===id),st=S.dungeons[id];st.room++;advance(1);if(st.room>=5){let b=DB.bosses.find(x=>x.name===d.boss);close();startCombat(b,()=>{st.cleared=true;addItem(randomRarity(['Langka','Epik','Legendaris']).id);toast('Dungeon selesai.');render()});return}if(Math.random()<.6){close();startCombat(pickEnemy())}else{let i=DB.items.filter(i=>i.type==='Material')[Math.floor(Math.random()*40)];addItem(i.id);toast('Treasure ditemukan: '+i.name);close();enterDungeon(id)}}
-function randomRarity(rs){let a=DB.items.filter(i=>rs.includes(i.rarity)&&i.price>0);return a[Math.floor(Math.random()*a.length)]}function pickEnemy(){let pool=DB.enemies;if(S.world.weather==='Kabut')pool=pool.slice(0,25);if(S.level>=8)pool=DB.enemies.slice(10);return pool[Math.floor(Math.random()*pool.length)]}
-function startCombat(enemy,onWin=null){if(combat)return toast('Pertarungan sedang berlangsung.');let d={Cerita:.75,Normal:1,Sulit:1.25,'Mimpi Buruk':1.55}[S.difficulty||'Normal']||1;let e={...enemy,maxHp:Math.floor(enemy.hp*d),hp:Math.floor(enemy.hp*d),phase:1};combat={enemy:e,onWin,turn:1,log:['Pertarungan dimulai melawan '+enemy.name+'.'],def:false,boss:e.maxHp>500};S.codex.enemies.includes(enemy.id)||S.codex.enemies.push(enemy.id);if(combat.boss){beep('boss');}renderCombat()}
-function renderCombat(){if(!combat){return}open('Pertarungan: '+combat.enemy.name,`<div class="between"><b>${esc(combat.enemy.name)}</b><span>Fase ${combat.enemy.phase}</span></div><div class="bar hp"><i style="width:${Math.max(0,combat.enemy.hp/combat.enemy.maxHp*100)}%"></i></div><p>HP musuh ${Math.max(0,combat.enemy.hp)}/${combat.enemy.maxHp}</p><p>HP ${S.hp}/${S.maxHp} · Mana ${S.mana}/${S.maxMana}</p><div class="row"><button onclick="fight('attack')">Serang</button><button onclick="fight('skill')">Skill</button><button onclick="fight('item')">Item</button><button onclick="fight('def')">Bertahan</button><button onclick="fight('run')">Melarikan diri</button></div><div class="item scroll">${combat.log.slice(-10).map(esc).join('<br>')}</div>`)}
-function fight(a){if(!combat)return;let e=combat.enemy,t=totalStats();combat.turn++;if(a==='run'){if(Math.random()<(0.45+t.speed/100)){combat=null;close();toast('Berhasil melarikan diri.');render();return}combat.log.push('Pelarian gagal.')}else if(a==='def'){combat.def=true;combat.log.push('Kau bertahan.')}else if(a==='item'){let id=Object.keys(S.inventory).find(i=>S.inventory[i]>0&&findItem(i)?.type==='Konsumsi');if(id)useSilent(id);else combat.log.push('Tidak ada konsumsi.')}else if(a==='skill'){if(S.mana<12){combat.log.push('Mana tidak cukup.')}else{S.mana-=12;let dmg=Math.floor((t.attack+t.magic*1.7)*(1+S.skills.COMBAT*.08));if(e.weak==='Api')dmg=Math.floor(dmg*1.25);if(e.res==='Arcana')dmg=Math.floor(dmg*.65);e.hp-=dmg;combat.log.push('Skill menghasilkan '+dmg+' kerusakan.')}}else{let hit=Math.random()*100<t.accuracy;if(hit){let dmg=Math.max(1,t.attack-e.def+Math.floor(Math.random()*7));if(e.weak==='Fisik')dmg=Math.floor(dmg*1.15);if(S.skills.COMBAT>=4&&Math.random()<.12)dmg*=2; e.hp-=Math.floor(dmg);combat.log.push('Serangan menghasilkan '+Math.floor(dmg)+' kerusakan.')}else combat.log.push('Serangan meleset.')}if(e.hp<=0)return winCombat();if(combat.boss&&e.hp<e.maxHp*.55&&e.phase===1){e.phase=2;e.atk+=18;e.def+=8;combat.log.push('Boss memasuki fase kedua dan mengubah pola serangan.')}if(combat.boss&&e.hp<e.maxHp*.25&&e.phase===2){e.phase=3;e.atk+=22;combat.log.push('Boss memasuki fase ketiga. Serangan khusus menjadi lebih sering.')}let dmg=Math.max(1,e.atk-t.def+Math.floor(Math.random()*8));if(combat.turn%3===0)dmg+=12;if(combat.def)dmg=Math.floor(dmg*.45);if(Math.random()*100<t.evasion)dmg=0;S.hp-=dmg;combat.log.push(e.name+' menyerang: '+dmg+' kerusakan.');combat.def=false;if(S.hp<=0)return lose();renderCombat()}
-function useSilent(id){let i=findItem(id);S.inventory[id]--;S.hp=Math.min(S.maxHp,S.hp+(i.heal||0));S.mana=Math.min(S.maxMana,S.mana+Math.floor((i.heal||0)/3));combat.log.push('Menggunakan '+i.name+'.')}
-function winCombat(){let e=combat.enemy,g=50+Math.floor(Math.random()*120)+(combat.boss?300:0);S.gold+=g;gainXP(Math.floor(e.maxHp/3));S.flags.kills++;if(combat.boss)S.flags.bossKills++;let drop=combat.boss?randomRarity(['Langka','Epik','Legendaris']):randomRarity(['Biasa','Tidak Umum','Langka']);addItem(drop.id);if(combat.boss&&Math.random()<.25&&S.flags.crownFragments<7){S.flags.crownFragments++;addItem('q17');toast('Serpihan Mahkota ditemukan.')}if(e.name==='Raja Bayangan')S.flags.shadowKing=true;if(timeName()==='Tengah Malam')S.flags.nightWin=true;combat.log.push('Menang. '+g+' gold dan '+drop.name+' diperoleh.');beep('win');let cb=combat.onWin;combat=null;close();checkAchievements();save(slot,true);if(cb)cb();else render()}
-function lose(){combat=null;close();S.gold=Math.floor(S.gold*.8);S.hp=Math.floor(S.maxHp*.5);S.wanted=Math.max(0,S.wanted-1);advance(12);toast('Kau kalah. Sebagian gold hilang.');render()}
-function homePage(v){v.innerHTML=panel('Rumah',`<p>Rumah adalah tempat aman untuk menyimpan barang, menampilkan artefak, dan memulihkan kondisi.</p><div class="grid2"><div class="item">Level ${S.home.level}<br>Penyimpanan ${S.home.storage}<br><button onclick="upgradeHome()">Upgrade (${300*S.home.level} gold)</button></div><div class="item">Display ${S.home.displays}<br><button onclick="displayItem()">Tampilkan item</button></div></div><button onclick="rest()">Tidur</button>`)}function upgradeHome(){let c=300*S.home.level;if(S.gold<c)return toast('Gold tidak cukup.');S.gold-=c;S.home.level++;S.home.storage+=20;S.home.displays++;toast('Rumah ditingkatkan.');checkAchievements();render()}function displayItem(){let id=S.collection.find(i=>S.inventory[i]&&findItem(i)?.type==='Artefak');if(!id)return toast('Tidak ada artefak untuk display.');S.inventory[id]--;S.home.displays++;toast('Artefak ditampilkan di rumah.');render()}
-function bankPage(v){v.innerHTML=panel('Bank',`<div class="big">${S.bankGold} gold</div><button onclick="deposit(100)">Simpan 100</button><button onclick="withdraw(100)">Ambil 100</button><p class="muted">Bank menggunakan state save yang sama dan tidak membutuhkan server.</p>`)}function deposit(n){if(S.gold<n)return toast('Gold tidak cukup.');S.gold-=n;S.bankGold+=n;checkAchievements();render()}function withdraw(n){if(S.bankGold<n)return toast('Saldo tidak cukup.');S.bankGold-=n;S.gold+=n;render()}
-function mailPage(v){v.innerHTML=panel('Surat',`${S.mail.map(m=>`<div class="item"><b>${esc(m.from)}</b><p>${esc(m.text)}</p></div>`).join('')||'Kotak surat kosong.'}<button onclick="receiveMail()">Periksa kotak surat</button>`)}function receiveMail(){let l=[['Arven','Arsip menemukan kata yang hilang. Cari Buku Cipher.'],['Mila','Ravenrock berubah; jangan percaya kabar pertama yang kau dengar.'],['Nadia','Kristal di Menara Abu bereaksi pada pecahan.'],['Nyx','Seseorang menghapus nama dari dokumen pelabuhan.'],['Irena','Pengadilan membutuhkan saksi yang berani.']][S.mail.length%5];S.mail.push({from:l[0],text:l[1]});toast('Surat baru diterima.');checkAchievements();render()}
-function achievementPage(v){v.innerHTML=panel('Achievement',`<p>${S.achievements.length}/${DB.achievements.length} terbuka.</p><div class="grid2">${DB.achievements.map(a=>`<div class="item"><b>${S.achievements.includes(a.id)?'Terbuka':'Rahasia'} — ${esc(a.name)}</b><p class="small">${S.achievements.includes(a.id)?esc(a.desc):'Syarat disembunyikan.'}</p></div>`).join('')}</div>`)}
-function checkAchievements(){let ok=(id,c)=>{if(c&&!S.achievements.includes(id)){S.achievements.push(id);let a=DB.achievements.find(x=>x.id===id);toast('Achievement: '+a.name);beep('level')}};ok('A01',S.level>=2);ok('A02',S.codex.lore.length>=5);ok('A03',S.discovered.length>=5);ok('A04',S.discovered.length>=15);ok('A05',Object.values(S.caseProgress).includes('solved'));ok('A06',DB.investigations.every(x=>S.caseProgress[x.id]==='solved'));ok('A07',S.profession.Smithing>=5);ok('A08',S.profession.Alchemy>=5);ok('A09',S.profession.Cooking>=5);ok('A10',S.flags.kills>=25);ok('A11',Object.values(S.reputation).some(x=>x>=50));ok('A12',Object.values(S.reputation).some(x=>x>=80));ok('A13',S.fame>=50);ok('A14',S.wanted>=3);ok('A15',S.wanted===0&&S.infamy>0);ok('A16',S.home.level>=2);ok('A17',S.bankGold>=500);ok('A18',S.mail.length>=5);ok('A19',Object.values(S.bounties).filter(x=>x.done).length>=5);ok('A20',S.collection.length>=25);ok('A21',S.world.serivia==='developed');ok('A22',S.world.ravenrock==='reconciled');ok('A23',S.reputation.f6>=80);ok('A24',S.reputation.f5>=80);ok('A25',S.reputation.f7>=80);ok('A26',S.reputation.f8>=80);ok('A27',S.secrets.length>=1);ok('A28',Object.keys(S.puzzles).filter(k=>S.puzzles[k]).length>=5);ok('A29',S.flags.bossKills>=10);ok('A30',S.collection.some(id=>findItem(id)?.rarity==='Mitos'));ok('A31',Object.keys(S.companions).length>=4);ok('A32',Object.keys(S.companions).length>=8);ok('A34',S.quests.MQ09?.status==='complete');ok('A35',S.quests.MQ30?.status==='complete');ok('A36',S.gold>=5000);ok('A37',Object.values(S.skills).reduce((a,b)=>a+b,0)>=10);ok('A38',S.flags.storm);ok('A39',S.collection.filter(id=>findItem(id)?.type==='Artefak').length>=10);ok('A40',S.discovered.length>=20);ok('A41',S.flags.nightWin);ok('A42',S.flags.companionQuest);ok('A43',Object.values(S.reputation).filter(x=>x>=60).length>=2);ok('A44',S.codex.lore.length+S.codex.npcs.length+S.codex.enemies.length>=15);ok('A45',S.world.serivia==='developed');ok('A46',S.flags.crownUnited);ok('A47',S.flags.crownBroken);ok('A48',S.flags.shadowKing);ok('A49',S.ending==='true');ok('A50',S.newGamePlus)}
-function settingsPage(v){v.innerHTML=panel('Pengaturan',`<p>Mode permainan menentukan kekuatan musuh dan tekanan progression.</p><select onchange="S.difficulty=this.value;save(slot,true)"><option ${S.difficulty==='Cerita'?'selected':''}>Cerita</option><option ${S.difficulty==='Normal'||!S.difficulty?'selected':''}>Normal</option><option ${S.difficulty==='Sulit'?'selected':''}>Sulit</option><option ${S.difficulty==='Mimpi Buruk'?'selected':''}>Mimpi Buruk</option></select><button onclick="beep('click')">Tes audio lokal</button>`)}
-function savePage(v){Promise.all([1,2,3].map(i=>get(STORE,i))).then(xs=>{v.innerHTML=panel('Save & Backup',`${xs.map((x,i)=>`<div class="item"><b>Slot ${i+1}</b><p>${x?esc(x.profile?.name||'Tanpa Nama')+' · Lv '+x.level:'Kosong'}</p><button onclick="save(${i+1})">Simpan</button><button onclick="load(${i+1})">Muat</button><button onclick="deleteSlot(${i+1})">Hapus</button></div>`).join('')}<hr><button onclick="exportSave()">Export Save JSON</button><label><input id="imp" type="file" accept="application/json" hidden><button onclick="$('#imp').click()">Import Save JSON</button></label><button onclick="backup()">Backup Lokal</button><button onclick="resetAll()">Reset Game</button>`);$('#imp').onchange=importSave})}
-async function deleteSlot(n){if(confirm('Hapus Slot '+n+'?')){await del(STORE,n);localStorage.removeItem('elarion_slot_'+n);toast('Slot dihapus.');go('Save')}}async function backup(){await put(STORE,'backup',clone(S));toast('Backup lokal dibuat.')}function exportSave(){let x=clone(S);delete x._photoURL;let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({game:'Elarion',version:VERSION,save:x})],{type:'application/json'}));a.download='elarion-save.json';a.click();URL.revokeObjectURL(a.href)}function importSave(){let f=$('#imp').files?.[0];if(!f)return;f.text().then(t=>{try{let x=JSON.parse(t);if(x.game!=='Elarion'||!x.save)throw 0;S=normalize(x.save);save(1,true).then(()=>{render();toast('Save diimpor.')})}catch(e){toast('Save tidak valid.')}})}async function resetAll(){if(!confirm('Hapus semua save lokal?'))return;for(let i=1;i<=3;i++)await del(STORE,i);localStorage.removeItem('elarion_settings');location.reload()}
-function open(t,b){$('#box').innerHTML=`<div class="between"><h2>${esc(t)}</h2><button onclick="close()">Tutup</button></div>${b}`;$('#modal').classList.add('open')}function close(){if(combat)return;$('#modal').classList.remove('open')}
-function addItem(id,n=1){if(!S.inventory[id])S.inventory[id]=0;S.inventory[id]+=n;if(!S.collection.includes(id))S.collection.push(id);if(findItem(id)?.rarity==='Mitos')toast('Item Mitos diperoleh: '+findItem(id).name)}function removeItem(id,n=1){S.inventory[id]=Math.max(0,(S.inventory[id]||0)-n);if(!S.inventory[id])delete S.inventory[id]}function has(id,n=1){return(S.inventory[id]||0)>=n}
-function gainXP(n){S.xp+=n;while(S.xp>=S.xpNext){S.xp-=S.xpNext;S.level++;S.xpNext=Math.floor(S.xpNext*1.18);S.maxHp+=14;S.maxMana+=5;S.maxStamina+=4;S.hp=S.maxHp;S.mana=S.maxMana;S.stamina=S.maxStamina;S.stats.attack+=2;S.stats.defense++;toast('Level '+S.level+' tercapai.');beep('level')}}
-function professionUnlocks(){for(let r of DB.recipes)if(S.profession[r.profession]>=r.level&&!S.craftFound.includes(r.id)&&r.level<=S.profession[r.profession])S.craftFound.push(r.id)}
-function professionPageOld(){}
-function endgame(){return}
-function endingCheck(){let trueEnd=S.flags.trueClue&&S.flags.crownUnited&&S.flags.shadowKing&&S.secrets.includes('sec5')&&DB.investigations.every(x=>S.caseProgress[x.id]==='solved')&&Object.keys(S.companions).length>=4;let e=trueEnd?'true':S.flags.crownBroken?'break':S.decisions.political==='exile'?'exile':S.honor>=50&&S.decisions.political==='crown'?'crown':S.fame>=80?'fame':S.world.serivia==='developed'?'village':S.wanted>=4?'outlaw':'wanderer';S.ending=e;S.quests.MQ30={...DB.main[29],status:'complete',progress:1};gainXP(1700);checkAchievements();save(slot,true);showEnding(e)}
-function showEnding(e){let d={true:['True Ending — Kronik yang Benar','Kau menemukan sejarah yang sengaja dihapus, menyelesaikan rangkaian kesaksian, menjaga sekutu, dan memutus siklus Mahkota. Elarion memasuki zaman baru tanpa mengulang dosa dinastinya.'],break:['Ending — Mahkota Hancur','Kau menghancurkan Mahkota Retak. Kekuasaan lama berakhir, tetapi Elarion harus belajar hidup tanpa simbol yang selama berabad-abad menentukan legitimasi.'],exile:['Ending — Pengasingan Menang','Ravenrock mendapat tempat di meja kekuasaan. Perubahan datang melalui tekanan politik dan negosiasi.'],crown:['Ending — Penjaga Mahkota','Kau menata ulang kerajaan di bawah sumpah baru. Mahkota menjadi simbol, bukan alat penguasaan.'],fame:['Ending — Zaman Kemasyhuran','Namamu menyatukan banyak wilayah. Para pedagang dan rakyat menjadikan kisahmu legenda.'],village:['Ending — Pemulihan Lembah','Perubahan terbesar terjadi di desa-desa. Elarion pulih dari bawah ke atas.'],outlaw:['Ending — Raja Para Buronan','Terlalu banyak aturan telah kau langgar. Sejarah mencatatmu sebagai penantang hukum.'],wanderer:['Ending — Pengembara Abadi','Kau menolak mahkota dan gelar. Jalan masih terbuka, dan rahasia dunia belum habis.']}[e]||['Ending','Elarion berubah karena keputusanmu.'];open(d[0],`<div class="hero"><h1>${esc(d[0])}</h1><p>${esc(d[1])}</p><p class="muted">Cerita utama selesai. Dunia tetap dapat dijelajahi.</p><button onclick="newGamePlus()">Mulai New Game+</button><button onclick="close();go('Beranda')">Kembali ke dunia</button></div>`)}
-function newGamePlus(){let keep={achievements:S.achievements.slice(),collection:S.collection.slice(),codex:clone(S.codex),level:S.level};S=fresh();S.newGamePlus=true;S.profile=JSON.parse(JSON.stringify({name:'Aren',title:'Pengembara',gender:'Laki-laki',bg:'Pengembara',desc:'Penerus kronik dari siklus sebelumnya.'}));S.achievements=keep.achievements;S.collection=keep.collection;S.codex=keep.codex;S.level=Math.max(1,keep.level);S.xpNext=Math.floor(100*Math.pow(1.18,S.level-1));S.maxHp+=S.level*8;S.maxMana+=S.level*3;S.stats.attack+=S.level;close();save(1,true);render();toast('New Game+ dimulai. Dialog dan tantangan dunia kini lebih berat.')}
-function factionRanks(){return}
-function worldEvent(show=true){let ev=['Festival Lentera di Asterra','Konflik buruh di Irondeep','Kabut Hitam di Grimhollow','Pasar Tengah Malam di Lunaris','Sidang darurat di Valedorn','Karavan diserang monster','Harga bijih meningkat','Penjaga memperketat patroli'];let x=ev[Math.floor(Math.random()*ev.length)];S.world.event=x;if(x.includes('Festival'))S.reputation.f2+=2;if(x.includes('Konflik'))S.reputation.f3-=2;if(x.includes('Kabut'))S.reputation.f5-=1;if(x.includes('Pasar'))S.reputation.f2+=3;if(x.includes('patroli'))S.wanted=Math.max(0,S.wanted-1);S.journal.push('World Event: '+x);if(show)toast('Peristiwa dunia: '+x);checkAchievements();save(slot,true);render()}
-function runCrime(){S.infamy++;S.wanted++;S.gold+=80;S.reputation.f1-=8;S.reputation.f2-=2;S.journal.push('Kejahatan dilakukan: keuntungan cepat, tetapi Wanted meningkat.');toast('Kejahatan berhasil. Wanted meningkat.');checkAchievements();render()}
-function jail(){if(S.wanted<=0)return toast('Tidak ada Wanted Level.');open('Penahanan',`<p>Penjaga telah menangkapmu. Pilih jalan keluar.</p><button class="choice" onclick="payFine()">Bayar denda 150 gold</button><button class="choice" onclick="serve()">Jalani hukuman</button><button class="choice" onclick="persuadeJail()">Gunakan Persuasi</button>`)}function payFine(){if(S.gold<150)return toast('Gold tidak cukup.');S.gold-=150;S.wanted=0;close();render()}function serve(){S.wanted=Math.max(0,S.wanted-2);advance(24);close();render()}function persuadeJail(){if(S.skills.PERSUASION>=4){S.wanted=Math.max(0,S.wanted-2);close();toast('Penjaga menerima alasanmu.');render()}else toast('Skill Persuasi tingkat 4 diperlukan.')}
-function professionDummy(){professionUnlocks()}
-// Extra actual systems shown through dedicated pages without creating disconnected state.
-function partyBonus(){return S.party.length*2}
-function peoplePage(){}
-function collectionPage(){}
-// Add crime and jail controls to Settings so they are reachable and functional.
-const oldSettings=settingsPage;settingsPage=function(v){oldSettings(v);$('#view .panel').append(`<hr><h3>Crime & Jail</h3><button onclick="runCrime()">Lakukan pencurian</button><button onclick="jail()">Hadapi Penjaga</button>`)};
-// Improve inventory consumption.
-function useItem(id){if(!has(id))return;let i=findItem(id);if(i.type!=='Konsumsi')return toast('Item ini tidak dapat digunakan.');removeItem(id);S.hp=Math.min(S.maxHp,S.hp+(i.heal||0));S.mana=Math.min(S.maxMana,S.mana+Math.floor((i.heal||0)/3));toast(i.name+' digunakan.');if(combat)combat.log.push('Menggunakan '+i.name+'.');render()}
-window.addEventListener('beforeunload',()=>{if(S&&db)put(STORE,slot,clone(S)).catch(()=>{})});
-(async()=>{try{await initDB()}catch(e){toast('IndexedDB tidak tersedia pada browser ini.')}let first=await get(STORE,1).catch(()=>null);if(first){S=normalize(first);slot=1;await loadPhoto();render()}else render();})();
-</script></body></html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Hogwarts Monopoly</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    min-height:100vh;
+    color:#eee9d8;
+    font-family:Inter,sans-serif;
+    background:
+        radial-gradient(circle at 50% 10%,#263c2b 0%,transparent 32%),
+        radial-gradient(circle at 10% 90%,#17241a 0%,transparent 30%),
+        linear-gradient(145deg,#030504,#0b110d 48%,#020302);
+    overflow-x:hidden;
+}
+
+body:before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.055;
+    background-image:
+        linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);
+    background-size:35px 35px;
+}
+
+.container{
+    width:min(900px,94%);
+    margin:auto;
+    padding-bottom:50px;
+}
+
+/* ================= HEADER ================= */
+
+header{
+    text-align:center;
+    padding:32px 10px 18px;
+}
+
+.crest{
+    width:105px;
+    height:120px;
+    margin:auto auto 12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    filter:drop-shadow(0 14px 15px #000);
+}
+
+.shield{
+    width:76px;
+    height:94px;
+    border:3px solid #c6ad63;
+    background:
+        linear-gradient(145deg,#243b28,#071008);
+    clip-path:polygon(
+        8% 0,
+        92% 0,
+        92% 68%,
+        50% 100%,
+        8% 68%
+    );
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#d4bf72;
+    font:800 38px Cinzel;
+    text-shadow:0 3px 8px #000;
+}
+
+h1{
+    font:800 clamp(27px,7vw,48px) Cinzel;
+    letter-spacing:3px;
+    color:#d7c37a;
+    text-shadow:0 5px 18px #000;
+}
+
+.subtitle{
+    margin-top:8px;
+    color:#999e94;
+    font-size:11px;
+    letter-spacing:3px;
+}
+
+/* ================= CARD ================= */
+
+.card{
+    margin-top:18px;
+    padding:25px;
+    border:1px solid #53604f;
+    border-radius:18px;
+    background:
+        linear-gradient(145deg,
+            rgba(27,41,30,.96),
+            rgba(5,9,7,.98));
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.55),
+        inset 0 1px rgba(255,255,255,.06);
+    transform:perspective(900px) rotateX(.4deg);
+}
+
+.title{
+    margin-bottom:18px;
+    color:#d7c37a;
+    font:700 21px Cinzel;
+}
+
+.description{
+    color:#9da49a;
+    font-size:13px;
+    line-height:1.7;
+    margin-bottom:17px;
+}
+
+/* ================= FORM ================= */
+
+input{
+    display:block;
+    width:100%;
+    padding:15px;
+    margin:8px 0;
+    border-radius:10px;
+    border:1px solid #485648;
+    outline:none;
+    background:#070b08;
+    color:#f0eee5;
+    font-size:15px;
+}
+
+input:focus{
+    border-color:#b8a35f;
+    box-shadow:0 0 0 2px rgba(184,163,95,.12);
+}
+
+button{
+    width:100%;
+    padding:14px 17px;
+    margin-top:9px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.4px;
+    transition:.2s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+    filter:brightness(1.12);
+}
+
+.primary{
+    color:#111;
+    border:0;
+    background:linear-gradient(135deg,#d9c67d,#a38e4d);
+    box-shadow:0 8px 20px rgba(0,0,0,.35);
+}
+
+.secondary{
+    color:#ddd;
+    border:1px solid #526151;
+    background:linear-gradient(145deg,#26372a,#172119);
+}
+
+button:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+    transform:none;
+}
+
+/* ================= DIVIDER ================= */
+
+.divider{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:22px 0;
+    color:#6f766e;
+    font-size:11px;
+}
+
+.divider:before,
+.divider:after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:#374137;
+}
+
+/* ================= LOBBY ================= */
+
+.roomTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.roomLabel{
+    color:#899188;
+    font-size:11px;
+    letter-spacing:1px;
+    margin-bottom:7px;
+}
+
+.roomCode{
+    display:inline-block;
+    padding:11px 17px;
+    border-radius:10px;
+    border:1px solid #5b654d;
+    background:#070b08;
+    color:#dcca82;
+    font:700 24px Cinzel;
+    letter-spacing:5px;
+    box-shadow:inset 0 0 20px #000;
+}
+
+.copyButton{
+    width:auto;
+    margin:0;
+    padding:11px 15px;
+}
+
+.status{
+    margin-top:17px;
+    padding:12px;
+    border-radius:9px;
+    border:1px solid #303d32;
+    background:#080d09;
+    color:#9ca49a;
+    font-size:13px;
+    text-align:center;
+}
+
+.players{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-top:16px;
+}
+
+.player{
+    min-height:105px;
+    position:relative;
+    padding:17px;
+    border-radius:13px;
+    border:1px solid #3e4b40;
+    background:linear-gradient(145deg,#1a281d,#080d09);
+    box-shadow:
+        5px 7px 0 rgba(0,0,0,.28),
+        inset 0 1px rgba(255,255,255,.035);
+}
+
+.playerNumber{
+    position:absolute;
+    top:10px;
+    right:12px;
+    color:#676b5b;
+    font:700 14px Cinzel;
+}
+
+.playerName{
+    max-width:80%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:#ded39e;
+    font:600 16px Cinzel;
+}
+
+.playerInfo{
+    margin-top:8px;
+    color:#7f897f;
+    font-size:11px;
+}
+
+.ready{
+    margin-top:10px;
+    color:#a9d19f;
+    font-size:12px;
+    font-weight:700;
+}
+
+.notReady{
+    margin-top:10px;
+    color:#878d85;
+    font-size:12px;
+}
+
+.empty{
+    min-height:105px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px dashed #394339;
+    border-radius:13px;
+    color:#555d55;
+    font-size:12px;
+}
+
+.hostNotice{
+    margin-top:15px;
+    padding:12px;
+    border-radius:9px;
+    background:#151d17;
+    border:1px solid #3d4a3e;
+    color:#a7aea4;
+    font-size:12px;
+    line-height:1.6;
+}
+
+/* ================= GAME PLACEHOLDER ================= */
+
+.gameScreen{
+    text-align:center;
+}
+
+.gameLogo{
+    font:700 32px Cinzel;
+    color:#d8c57e;
+    margin-bottom:14px;
+}
+
+.gameText{
+    color:#9da49b;
+    line-height:1.8;
+    font-size:14px;
+}
+
+/* ================= TOAST ================= */
+
+#toast{
+    position:fixed;
+    z-index:99;
+    left:50%;
+    bottom:22px;
+    max-width:90%;
+    padding:13px 18px;
+    border:1px solid #b39d5a;
+    border-radius:10px;
+    background:#101711;
+    color:#eee;
+    box-shadow:0 12px 35px #000;
+    transform:translate(-50%,120px);
+    transition:.3s;
+    font-size:13px;
+    text-align:center;
+}
+
+#toast.show{
+    transform:translate(-50%,0);
+}
+
+.hidden{
+    display:none!important;
+}
+
+@media(max-width:600px){
+
+    .card{
+        padding:19px;
+    }
+
+    .players{
+        grid-template-columns:1fr;
+    }
+
+    .roomCode{
+        font-size:20px;
+    }
+
+    .copyButton{
+        width:100%;
+        margin-top:10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <div class="crest">
+        <div class="shield">H</div>
+    </div>
+
+    <h1>HOGWARTS MONOPOLY</h1>
+
+    <div class="subtitle">
+        PERMAINAN PAPAN MULTIPEMAIN
+    </div>
+</header>
+
+
+<!-- ================= HOME ================= -->
+
+<section id="homeScreen" class="card">
+
+    <div class="title">
+        Mulai Permainan
+    </div>
+
+    <div class="description">
+        Buat sebuah ruang permainan atau masukkan
+        kode ruang milik temanmu.
+    </div>
+
+    <input
+        id="playerName"
+        type="text"
+        maxlength="20"
+        autocomplete="off"
+        placeholder="Nama pemain"
+    >
+
+    <button
+        class="primary"
+        onclick="buatRoom()"
+        id="createButton"
+    >
+        BUAT RUANG
+    </button>
+
+    <div class="divider">
+        ATAU
+    </div>
+
+    <input
+        id="roomInput"
+        type="text"
+        maxlength="6"
+        autocomplete="off"
+        placeholder="Kode ruang"
+        style="text-transform:uppercase"
+    >
+
+    <button
+        class="secondary"
+        onclick="gabungRoom()"
+        id="joinButton"
+    >
+        GABUNG KE RUANG
+    </button>
+
+</section>
+
+
+<!-- ================= LOBBY ================= -->
+
+<section id="lobbyScreen" class="card hidden">
+
+    <div class="roomTop">
+
+        <div>
+            <div class="roomLabel">
+                KODE RUANG
+            </div>
+
+            <div
+                class="roomCode"
+                id="roomCode"
+            >
+                ------
+            </div>
+        </div>
+
+        <button
+            class="secondary copyButton"
+            onclick="salinKode()"
+        >
+            SALIN KODE
+        </button>
+
+    </div>
+
+
+    <div
+        class="status"
+        id="lobbyStatus"
+    >
+        Menunggu pemain...
+    </div>
+
+
+    <div
+        class="players"
+        id="playersList"
+    ></div>
+
+
+    <button
+        id="readyButton"
+        class="secondary"
+        onclick="ubahKesiapan()"
+    >
+        SAYA SIAP
+    </button>
+
+
+    <button
+        id="startButton"
+        class="primary hidden"
+        onclick="mulaiPermainan()"
+    >
+        MULAI PERMAINAN
+    </button>
+
+
+    <div
+        id="hostNotice"
+        class="hostNotice"
+    >
+        Pemain pertama menjadi pemilik ruang.
+        Permainan dapat dimulai setelah minimal
+        dua pemain siap.
+    </div>
+
+</section>
+
+
+<!-- ================= GAME ================= -->
+
+<section
+    id="gameScreen"
+    class="card gameScreen hidden"
+>
+
+    <div class="gameLogo">
+        HOGWARTS MONOPOLY
+    </div>
+
+    <div class="gameText">
+        Permainan telah dimulai.
+        <br><br>
+        Papan permainan sedang dipersiapkan...
+    </div>
+
+</section>
+
+</div>
+
+
+<div id="toast"></div>
+
+
+<script>
+
+/* =====================================================
+   SUPABASE
+   ===================================================== */
+
+const SUPABASE_URL =
+    "https://nikpedxjwvrkndivkzql.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_vn-7vdOTA9i64sA7miFISQ_CiwJ4Kz3";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =====================================================
+   VARIABEL
+   ===================================================== */
+
+let roomSekarang = null;
+let pemainSekarang = null;
+let channelRoom = null;
+
+
+/* =====================================================
+   TOAST
+   ===================================================== */
+
+function pesan(teks){
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = teks;
+
+    toast.classList.add("show");
+
+    clearTimeout(window.toastTimer);
+
+    window.toastTimer =
+        setTimeout(()=>{
+            toast.classList.remove("show");
+        },2800);
+}
+
+
+/* =====================================================
+   VALIDASI NAMA
+   ===================================================== */
+
+function ambilNama(){
+
+    const input =
+        document.getElementById("playerName");
+
+    const nama =
+        input.value.trim();
+
+    if(!nama){
+
+        pesan("Masukkan nama pemain terlebih dahulu.");
+
+        input.focus();
+
+        return null;
+    }
+
+    return nama;
+}
+
+
+/* =====================================================
+   BUAT KODE ROOM
+   ===================================================== */
+
+function buatKode(){
+
+    const karakter =
+        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+    let kode = "";
+
+    for(let i=0;i<6;i++){
+
+        kode += karakter[
+            Math.floor(
+                Math.random()*karakter.length
+            )
+        ];
+
+    }
+
+    return kode;
+}
+
+
+/* =====================================================
+   BUAT ROOM
+   ===================================================== */
+
+async function buatRoom(){
+
+    const nama = ambilNama();
+
+    if(!nama) return;
+
+
+    const createButton =
+        document.getElementById("createButton");
+
+    createButton.disabled = true;
+    createButton.textContent = "MEMBUAT RUANG...";
+
+
+    try{
+
+        let kode;
+        let room = null;
+
+
+        /* Hindari kode room yang sama */
+
+        for(let percobaan=0;percobaan<10;percobaan++){
+
+            kode = buatKode();
+
+            const hasil =
+                await supabaseClient
+                .from("rooms")
+                .insert({
+                    room_code:kode,
+                    status:"waiting",
+                    game_state:{}
+                })
+                .select()
+                .single();
+
+
+            if(!hasil.error){
+
+                room = hasil.data;
+
+                break;
+
+            }
+
+        }
+
+
+        if(!room){
+
+            throw new Error(
+                "Gagal membuat kode ruang."
+            );
+
+        }
+
+
+        /* Masukkan host sebagai pemain pertama */
+
+        const hasilPemain =
+            await supabaseClient
+            .from("players")
+            .insert({
+
+                room_id:room.id,
+
+                player_name:nama,
+
+                player_number:1,
+
+                money:1500,
+
+                position:0,
+
+                properties:[],
+
+                is_ready:false
+
+            })
+            .select()
+            .single();
+
+
+        if(hasilPemain.error){
+
+            await supabaseClient
+                .from("rooms")
+                .delete()
+                .eq("id",room.id);
+
+            throw hasilPemain.error;
+
+        }
+
+
+        roomSekarang = room;
+
+        pemainSekarang =
+            hasilPemain.data;
+
+
+        bukaLobby();
+
+
+    }catch(error){
+
+        console.error(error);
+
+        pesan(
+            "Gagal membuat ruang. Periksa koneksi internet."
+        );
+
+    }finally{
+
+        createButton.disabled = false;
+
+        createButton.textContent =
+            "BUAT RUANG";
+
+    }
+
+}
+
+
+/* =====================================================
+   GABUNG ROOM
+   ===================================================== */
+
+async function gabungRoom(){
+
+    const nama = ambilNama();
+
+    if(!nama) return;
+
+
+    const input =
+        document.getElementById("roomInput");
+
+    const kode =
+        input.value.trim().toUpperCase();
+
+
+    if(kode.length !== 6){
+
+        pesan(
+            "Kode ruang harus terdiri dari 6 karakter."
+        );
+
+        input.focus();
+
+        return;
+    }
+
+
+    const joinButton =
+        document.getElementById("joinButton");
+
+    joinButton.disabled = true;
+
+    joinButton.textContent =
+        "MENCARI RUANG...";
+
+
+    try{
+
+        const hasilRoom =
+            await supabaseClient
+            .from("rooms")
+            .select("*")
+            .eq("room_code",kode)
+            .maybeSingle();
+
+
+        if(hasilRoom.error){
+
+            throw hasilRoom.error;
+
+        }
+
+
+        const room =
+            hasilRoom.data;
+
+
+        if(!room){
+
+            pesan("Ruang tidak ditemukan.");
+
+            return;
+        }
+
+
+        if(room.status !== "waiting"){
+
+            pesan(
+                "Permainan di ruang ini sudah dimulai."
+            );
+
+            return;
+        }
+
+
+        const hasilPemain =
+            await supabaseClient
+            .from("players")
+            .select("*")
+            .eq("room_id",room.id)
+            .order("player_number");
+
+
+        if(hasilPemain.error){
+
+            throw hasilPemain.error;
+
+        }
+
+
+        const daftar =
+            hasilPemain.data || [];
+
+
+        if(daftar.length >= 4){
+
+            pesan("Ruang ini sudah penuh.");
+
+            return;
+        }
+
+
+        const nomor =
+            cariNomorPemain(daftar);
+
+
+        const pemainBaru =
+            await supabaseClient
+            .from("players")
+            .insert({
+
+                room_id:room.id,
+
+                player_name:nama,
+
+                player_number:nomor,
+
+                money:1500,
+
+                position:0,
+
+                properties:[],
+
+                is_ready:false
+
+            })
+            .select()
+            .single();
+
+
+        if(pemainBaru.error){
+
+            throw pemainBaru.error;
+
+        }
+
+
+        roomSekarang = room;
+
+        pemainSekarang =
+            pemainBaru.data;
+
+
+        bukaLobby();
+
+
+    }catch(error){
+
+        console.error(error);
+
+        pesan(
+            "Gagal bergabung ke ruang."
+        );
+
+    }finally{
+
+        joinButton.disabled = false;
+
+        joinButton.textContent =
+            "GABUNG KE RUANG";
+
+    }
+
+}
+
+
+/* =====================================================
+   NOMOR PEMAIN
+   ===================================================== */
+
+function cariNomorPemain(daftar){
+
+    for(let i=1;i<=4;i++){
+
+        const sudahAda =
+            daftar.some(
+                pemain =>
+                pemain.player_number === i
+            );
+
+        if(!sudahAda){
+
+            return i;
+
+        }
+
+    }
+
+    return 4;
+}
+
+
+/* =====================================================
+   BUKA LOBBY
+   ===================================================== */
+
+function bukaLobby(){
+
+    document
+        .getElementById("homeScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("lobbyScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("gameScreen")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("roomCode")
+        .textContent =
+        roomSekarang.room_code;
+
+
+    muatPemain();
+
+    mulaiRealtime();
+
+}
+
+
+/* =====================================================
+   MUAT PEMAIN
+   ===================================================== */
+
+async function muatPemain(){
+
+    if(!roomSekarang) return;
+
+
+    const hasil =
+        await supabaseClient
+        .from("players")
+        .select("*")
+        .eq("room_id",roomSekarang.id)
+        .order("player_number");
+
+
+    if(hasil.error){
+
+        console.error(hasil.error);
+
+        return;
+    }
+
+
+    const daftar =
+        hasil.data || [];
+
+
+    const list =
+        document.getElementById("playersList");
+
+
+    list.innerHTML = "";
+
+
+    for(let nomor=1;nomor<=4;nomor++){
+
+        const pemain =
+            daftar.find(
+                p => p.player_number === nomor
+            );
+
+
+        if(!pemain){
+
+            const kosong =
+                document.createElement("div");
+
+            kosong.className = "empty";
+
+            kosong.textContent =
+                "Menunggu pemain...";
+
+            list.appendChild(kosong);
+
+            continue;
+        }
+
+
+        const div =
+            document.createElement("div");
+
+        div.className = "player";
+
+
+        const nama =
+            escapeHTML(
+                pemain.player_name
+            );
+
+
+        div.innerHTML = `
+
+            <div class="playerNumber">
+                ${pemain.player_number}
+            </div>
+
+            <div class="playerName">
+                ${nama}
+            </div>
+
+            <div class="playerInfo">
+                ${
+                    pemain.player_number === 1
+                    ? "Pemilik Ruang"
+                    : "Pemain"
+                }
+            </div>
+
+            <div class="${
+                pemain.is_ready
+                ? "ready"
+                : "notReady"
+            }">
+
+                ${
+                    pemain.is_ready
+                    ? "✓ SIAP"
+                    : "○ BELUM SIAP"
+                }
+
+            </div>
+        `;
+
+
+        list.appendChild(div);
+
+    }
+
+
+    document
+        .getElementById("lobbyStatus")
+        .textContent =
+        `${daftar.length}/4 pemain berada di ruang.`;
+
+
+    const saya =
+        daftar.find(
+            p => p.id === pemainSekarang.id
+        );
+
+
+    if(saya){
+
+        pemainSekarang = saya;
+
+
+        document
+            .getElementById("readyButton")
+            .textContent =
+            saya.is_ready
+            ? "BATALKAN KESIAPAN"
+            : "SAYA SIAP";
+
+    }
+
+
+    const semuaSiap =
+        daftar.length >= 2 &&
+        daftar.every(
+            pemain => pemain.is_ready
+        );
+
+
+    const sayaHost =
+        pemainSekarang.player_number === 1;
+
+
+    const startButton =
+        document.getElementById("startButton");
+
+
+    if(sayaHost && semuaSiap){
+
+        startButton.classList.remove(
+            "hidden"
+        );
+
+    }else{
+
+        startButton.classList.add(
+            "hidden"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   REALTIME
+   ===================================================== */
+
+function mulaiRealtime(){
+
+    if(channelRoom){
+
+        supabaseClient
+            .removeChannel(channelRoom);
+
+    }
+
+
+    channelRoom =
+        supabaseClient
+        .channel(
+            "monopoly-room-" +
+            roomSekarang.id
+        );
+
+
+    channelRoom
+        .on(
+            "postgres_changes",
+            {
+                event:"*",
+                schema:"public",
+                table:"players",
+                filter:
+                    "room_id=eq." +
+                    roomSekarang.id
+            },
+            ()=>{
+                muatPemain();
+            }
+        )
+        .on(
+            "postgres_changes",
+            {
+                event:"UPDATE",
+                schema:"public",
+                table:"rooms",
+                filter:
+                    "id=eq." +
+                    roomSekarang.id
+            },
+            payload=>{
+
+                roomSekarang =
+                    payload.new;
+
+
+                if(
+                    payload.new.status ===
+                    "playing"
+                ){
+
+                    tampilkanGame();
+
+                }
+
+            }
+        )
+        .subscribe(
+            status => {
+
+                console.log(
+                    "Realtime:",
+                    status
+                );
+
+            }
+        );
+
+}
+
+
+/* =====================================================
+   SIAP / TIDAK SIAP
+   ===================================================== */
+
+async function ubahKesiapan(){
+
+    if(!pemainSekarang) return;
+
+
+    const nilaiBaru =
+        !pemainSekarang.is_ready;
+
+
+    const hasil =
+        await supabaseClient
+        .from("players")
+        .update({
+            is_ready:nilaiBaru
+        })
+        .eq("id",pemainSekarang.id);
+
+
+    if(hasil.error){
+
+        console.error(hasil.error);
+
+        pesan(
+            "Gagal mengubah status kesiapan."
+        );
+
+        return;
+    }
+
+
+    pemainSekarang.is_ready =
+        nilaiBaru;
+
+
+    await muatPemain();
+
+}
+
+
+/* =====================================================
+   MULAI PERMAINAN
+   ===================================================== */
+
+async function mulaiPermainan(){
+
+    if(
+        !pemainSekarang ||
+        pemainSekarang.player_number !== 1
+    ){
+
+        return;
+    }
+
+
+    const hasil =
+        await supabaseClient
+        .from("players")
+        .select("*")
+        .eq("room_id",roomSekarang.id);
+
+
+    if(hasil.error){
+
+        pesan("Gagal memeriksa pemain.");
+
+        return;
+    }
+
+
+    const daftar =
+        hasil.data || [];
+
+
+    if(daftar.length < 2){
+
+        pesan(
+            "Minimal dua pemain diperlukan."
+        );
+
+        return;
+    }
+
+
+    if(
+        !daftar.every(
+            pemain => pemain.is_ready
+        )
+    ){
+
+        pesan(
+            "Semua pemain harus siap terlebih dahulu."
+        );
+
+        return;
+    }
+
+
+    const gameState = {
+
+        giliran:1,
+
+        putaran:1,
+
+        dadu:[1,1],
+
+        fase:"lempar_dadu",
+
+        selesai:false
+
+    };
+
+
+    const update =
+        await supabaseClient
+        .from("rooms")
+        .update({
+
+            status:"playing",
+
+            game_state:gameState
+
+        })
+        .eq("id",roomSekarang.id);
+
+
+    if(update.error){
+
+        console.error(update.error);
+
+        pesan(
+            "Gagal memulai permainan."
+        );
+
+        return;
+    }
+
+
+    tampilkanGame();
+
+}
+
+
+/* =====================================================
+   TAMPILKAN GAME
+   ===================================================== */
+
+function tampilkanGame(){
+
+    document
+        .getElementById("homeScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("lobbyScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("gameScreen")
+        .classList.remove("hidden");
+
+}
+
+
+/* =====================================================
+   SALIN KODE
+   ===================================================== */
+
+async function salinKode(){
+
+    if(!roomSekarang) return;
+
+
+    try{
+
+        await navigator.clipboard.writeText(
+            roomSekarang.room_code
+        );
+
+        pesan(
+            "Kode ruang berhasil disalin."
+        );
+
+    }catch{
+
+        pesan(
+            "Kode ruang: " +
+            roomSekarang.room_code
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+   ===================================================== */
+
+function escapeHTML(teks){
+
+    const div =
+        document.createElement("div");
+
+    div.textContent = teks;
+
+    return div.innerHTML;
+
+}
+
+
+/* =====================================================
+   ENTER KEY
+   ===================================================== */
+
+document
+    .getElementById("roomInput")
+    .addEventListener(
+        "keydown",
+        event => {
+
+            if(event.key === "Enter"){
+
+                gabungRoom();
+
+            }
+
+        }
+    );
+
+
+document
+    .getElementById("playerName")
+    .addEventListener(
+        "keydown",
+        event => {
+
+            if(event.key === "Enter"){
+
+                buatRoom();
+
+            }
+
+        }
+    );
+
+
+/* =====================================================
+   ROOM CODE OTOMATIS HURUF BESAR
+   ===================================================== */
+
+document
+    .getElementById("roomInput")
+    .addEventListener(
+        "input",
+        event => {
+
+            event.target.value =
+                event.target.value
+                .toUpperCase()
+                .replace(/[^A-Z0-9]/g,"")
+                .slice(0,6);
+
+        }
+    );
+
+</script>
+
+</body>
+</html>
