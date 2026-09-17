@@ -1,1540 +1,300 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Hogwarts Monopoly</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Hogwarts Institute Monopoly — The Great Game</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{--bg:#050a08;--panel:#0d1713;--panel2:#13241d;--emerald:#0d4935;--gold:#c9a75b;--cream:#eee5cc;--muted:#aab4ad;--danger:#8e3434}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 50% 0,#214938 0,#0b1611 35%,#030605 100%);color:var(--cream);font-family:"Libre Baskerville",Georgia,"Times New Roman",serif}button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.wrap{max-width:1200px;margin:auto}.screen{min-height:100vh;padding:16px}.card,.panel{background:linear-gradient(145deg,#16261f,#09100d);border:1px solid #776237;border-radius:18px;box-shadow:0 18px 50px #000b,inset 0 1px #fff1}
+.card{padding:28px}.landing{display:grid;place-items:center;text-align:center}.landing .card{width:min(700px,100%);overflow:hidden}
+.castle{height:140px;margin:-28px -28px 25px;background:linear-gradient(#07100ddd,#07100d55),linear-gradient(180deg,#183b2e,#08100c);position:relative;overflow:hidden}.castle:before{content:"";position:absolute;left:7%;right:7%;bottom:-1px;height:105px;background:#263b33;clip-path:polygon(0 100%,0 42%,7% 42%,7% 16%,12% 16%,12% 42%,21% 42%,21% 4%,28% 4%,28% 42%,38% 42%,38% 23%,43% 23%,43% 42%,53% 42%,53% 9%,60% 9%,60% 42%,70% 42%,70% 18%,76% 18%,76% 42%,86% 42%,86% 0,93% 0,93% 42%,100% 42%,100% 100%)}.castle:after{content:"✦   ✧   ✦   ✧   ✦";position:absolute;top:28px;left:0;right:0;color:#eadb9d88;font-size:20px;letter-spacing:8px}
+.logo{width:92px;height:92px;margin:auto;border:3px solid var(--gold);border-radius:50%;display:grid;place-items:center;background:#08130f;box-shadow:0 0 0 7px #c9a75b18,0 10px 30px #000}.logo svg{width:65px}.eyebrow{text-transform:uppercase;letter-spacing:4px;color:var(--gold);font-size:11px}.gold{color:#ead59a}h1{font-size:clamp(27px,6vw,46px);line-height:1.08;margin:10px 0}.muted,.small{color:var(--muted)}.small{font-size:12px}.form{max-width:430px;margin:24px auto 0;display:grid;gap:10px;text-align:left}.input{padding:13px 14px;background:#07100c;border:1px solid #52625a;border-radius:10px;color:white;outline:none}.btn{border:1px solid #9c8044;border-radius:11px;padding:11px 16px;color:#fff;background:linear-gradient(#16533e,#0b3024);box-shadow:0 5px 14px #0008}.btn.gold{background:linear-gradient(#d5b96f,#97753a);color:#151209}.btn.red{background:#612727;border-color:#a65c5c}.btn:disabled{opacity:.4;cursor:not-allowed}.actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.divider{height:1px;background:linear-gradient(90deg,transparent,#80683b,transparent);margin:22px 0}
+.roomcode{font-size:32px;letter-spacing:8px;color:#ecd99b;font-weight:bold}.players{display:grid;gap:8px;margin:18px 0}.player{display:flex;justify-content:space-between;gap:10px;padding:11px 13px;border:1px solid #334b40;background:#09130f;border-radius:10px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}.brand{font-size:21px}.turn{padding:9px 12px;border:1px solid #6e5a31;border-radius:10px;background:#101d17}.layout{display:grid;grid-template-columns:minmax(0,1fr) 315px;gap:12px}
+.boardframe{padding:9px;background:linear-gradient(145deg,#30322b,#0b0f0d 35%,#1b211d);border:2px solid #826d40;border-radius:20px;box-shadow:0 18px 45px #000c}.board{display:grid;grid-template-columns:repeat(11,1fr);grid-template-rows:repeat(11,1fr);aspect-ratio:1;gap:2px;background:#07100c;border:3px solid #c8aa5e}
+.tile{position:relative;overflow:hidden;background:#e8e0cb;color:#18231d;border:1px solid #a09374;padding:3px;display:flex;flex-direction:column;justify-content:space-between;text-align:center;font-family:Arial,sans-serif;font-size:clamp(5px,1.25vw,12px);box-shadow:inset 0 0 8px #0002,2px 2px 0 #756a50}.tile .bar{height:7px;margin:-3px -3px 2px}.tile .name{font-weight:bold;line-height:1.05}.tile:hover{filter:brightness(1.04)}.tile .price{font-size:8px}.tile.special{background:#d8cfb8}.tile.event{background:#e4dcc6}.tile.corner{background:#d2c4a0;font-weight:bold}.tile.center{grid-column:2/11;grid-row:2/11;background:radial-gradient(circle,#174b37,#07100c 72%);color:#e8d59b;border:0;display:grid;place-items:center}.centercrest{width:52%;aspect-ratio:1;border:2px solid #c9a75b;border-radius:50%;display:grid;place-items:center;text-align:center;box-shadow:0 0 35px #c9a75b2a;font-size:clamp(7px,1.7vw,17px);letter-spacing:1px}.tokens{display:flex;justify-content:center;gap:2px;flex-wrap:wrap}.token{width:17px;height:17px;border-radius:50%;display:grid;place-items:center;background:#123f31;border:2px solid #d7bb6c;color:white;font-size:8px;font-weight:bold;box-shadow:0 3px 7px #000b}.token.t2{background:#704b35}.token.t3{background:#35537c}.token.t4{background:#704d78}.owned{box-shadow:inset 0 0 0 3px #a78743,inset 0 0 8px #0002}.owner1{outline-color:#a78743}.owner2{outline-color:#85553b}.owner3{outline-color:#4f709c}.owner4{outline-color:#805a8a}
+.side{display:grid;gap:10px;align-content:start}.panel{padding:14px}.money{font-size:25px;color:#e6cb7c}.dice{display:flex;gap:10px;justify-content:center;margin:8px}.die{width:48px;height:48px;border-radius:10px;background:#eee7d5;color:#142019;display:grid;place-items:center;font:bold 27px Arial;box-shadow:inset 0 -4px #aaa,0 5px 12px #0008}.gameplayers{display:grid;gap:5px}.prow{display:grid;grid-template-columns:1fr auto;gap:4px;padding:8px 0;border-bottom:1px solid #fff1}.log{max-height:170px;overflow:auto;font:12px Arial,sans-serif;color:#cbd2ce}.log div{padding:5px 0;border-bottom:1px solid #fff1}.prop{padding:7px;margin-top:6px;border-radius:8px;background:#09140f;font-size:12px}
+.modal{position:fixed;inset:0;background:#000b;display:grid;place-items:center;padding:18px;z-index:20}.modalbox{width:min(450px,100%);padding:24px;text-align:center;background:linear-gradient(145deg,#182920,#08100c);border:1px solid var(--gold);border-radius:18px;box-shadow:0 20px 70px #000}.modalbox h2{color:#ead59a}.modalicon{font-size:42px;margin-bottom:4px}.cardface{background:linear-gradient(145deg,#f2e8cc,#cbbd9c);color:#18231d;border:2px solid #927540;border-radius:12px;padding:16px;margin:10px 0;box-shadow:inset 0 0 18px #0002}.rules{font:12px/1.7 Arial,sans-serif;text-align:left;color:#cbd2ce}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.logpanel{grid-column:1/-1}}
+@media(max-width:520px){.screen{padding:8px}.card{padding:20px}.castle{margin:-20px -20px 20px;height:110px}.boardframe{padding:4px}.tile{padding:2px}.tile .bar{height:4px}.token{width:12px;height:12px;font-size:6px}.side{grid-template-columns:1fr}.roomcode{font-size:25px}}
 
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
-
-body{
-    min-height:100vh;
-    color:#eee9d8;
-    font-family:Inter,sans-serif;
-    background:
-        radial-gradient(circle at 50% 10%,#263c2b 0%,transparent 32%),
-        radial-gradient(circle at 10% 90%,#17241a 0%,transparent 30%),
-        linear-gradient(145deg,#030504,#0b110d 48%,#020302);
-    overflow-x:hidden;
-}
-
-body:before{
-    content:"";
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    opacity:.055;
-    background-image:
-        linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);
-    background-size:35px 35px;
-}
-
-.container{
-    width:min(900px,94%);
-    margin:auto;
-    padding-bottom:50px;
-}
-
-/* ================= HEADER ================= */
-
-header{
-    text-align:center;
-    padding:32px 10px 18px;
-}
-
-.crest{
-    width:105px;
-    height:120px;
-    margin:auto auto 12px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    filter:drop-shadow(0 14px 15px #000);
-}
-
-.shield{
-    width:76px;
-    height:94px;
-    border:3px solid #c6ad63;
-    background:
-        linear-gradient(145deg,#243b28,#071008);
-    clip-path:polygon(
-        8% 0,
-        92% 0,
-        92% 68%,
-        50% 100%,
-        8% 68%
-    );
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#d4bf72;
-    font:800 38px Cinzel;
-    text-shadow:0 3px 8px #000;
-}
-
-h1{
-    font:800 clamp(27px,7vw,48px) Cinzel;
-    letter-spacing:3px;
-    color:#d7c37a;
-    text-shadow:0 5px 18px #000;
-}
-
-.subtitle{
-    margin-top:8px;
-    color:#999e94;
-    font-size:11px;
-    letter-spacing:3px;
-}
-
-/* ================= CARD ================= */
-
-.card{
-    margin-top:18px;
-    padding:25px;
-    border:1px solid #53604f;
-    border-radius:18px;
-    background:
-        linear-gradient(145deg,
-            rgba(27,41,30,.96),
-            rgba(5,9,7,.98));
-    box-shadow:
-        0 25px 60px rgba(0,0,0,.55),
-        inset 0 1px rgba(255,255,255,.06);
-    transform:perspective(900px) rotateX(.4deg);
-}
-
-.title{
-    margin-bottom:18px;
-    color:#d7c37a;
-    font:700 21px Cinzel;
-}
-
-.description{
-    color:#9da49a;
-    font-size:13px;
-    line-height:1.7;
-    margin-bottom:17px;
-}
-
-/* ================= FORM ================= */
-
-input{
-    display:block;
-    width:100%;
-    padding:15px;
-    margin:8px 0;
-    border-radius:10px;
-    border:1px solid #485648;
-    outline:none;
-    background:#070b08;
-    color:#f0eee5;
-    font-size:15px;
-}
-
-input:focus{
-    border-color:#b8a35f;
-    box-shadow:0 0 0 2px rgba(184,163,95,.12);
-}
-
-button{
-    width:100%;
-    padding:14px 17px;
-    margin-top:9px;
-    border-radius:10px;
-    cursor:pointer;
-    font-size:13px;
-    font-weight:700;
-    letter-spacing:.4px;
-    transition:.2s;
-}
-
-button:hover{
-    transform:translateY(-2px);
-    filter:brightness(1.12);
-}
-
-.primary{
-    color:#111;
-    border:0;
-    background:linear-gradient(135deg,#d9c67d,#a38e4d);
-    box-shadow:0 8px 20px rgba(0,0,0,.35);
-}
-
-.secondary{
-    color:#ddd;
-    border:1px solid #526151;
-    background:linear-gradient(145deg,#26372a,#172119);
-}
-
-button:disabled{
-    opacity:.45;
-    cursor:not-allowed;
-    transform:none;
-}
-
-/* ================= DIVIDER ================= */
-
-.divider{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin:22px 0;
-    color:#6f766e;
-    font-size:11px;
-}
-
-.divider:before,
-.divider:after{
-    content:"";
-    flex:1;
-    height:1px;
-    background:#374137;
-}
-
-/* ================= LOBBY ================= */
-
-.roomTop{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:15px;
-    flex-wrap:wrap;
-}
-
-.roomLabel{
-    color:#899188;
-    font-size:11px;
-    letter-spacing:1px;
-    margin-bottom:7px;
-}
-
-.roomCode{
-    display:inline-block;
-    padding:11px 17px;
-    border-radius:10px;
-    border:1px solid #5b654d;
-    background:#070b08;
-    color:#dcca82;
-    font:700 24px Cinzel;
-    letter-spacing:5px;
-    box-shadow:inset 0 0 20px #000;
-}
-
-.copyButton{
-    width:auto;
-    margin:0;
-    padding:11px 15px;
-}
-
-.status{
-    margin-top:17px;
-    padding:12px;
-    border-radius:9px;
-    border:1px solid #303d32;
-    background:#080d09;
-    color:#9ca49a;
-    font-size:13px;
-    text-align:center;
-}
-
-.players{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:12px;
-    margin-top:16px;
-}
-
-.player{
-    min-height:105px;
-    position:relative;
-    padding:17px;
-    border-radius:13px;
-    border:1px solid #3e4b40;
-    background:linear-gradient(145deg,#1a281d,#080d09);
-    box-shadow:
-        5px 7px 0 rgba(0,0,0,.28),
-        inset 0 1px rgba(255,255,255,.035);
-}
-
-.playerNumber{
-    position:absolute;
-    top:10px;
-    right:12px;
-    color:#676b5b;
-    font:700 14px Cinzel;
-}
-
-.playerName{
-    max-width:80%;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-    color:#ded39e;
-    font:600 16px Cinzel;
-}
-
-.playerInfo{
-    margin-top:8px;
-    color:#7f897f;
-    font-size:11px;
-}
-
-.ready{
-    margin-top:10px;
-    color:#a9d19f;
-    font-size:12px;
-    font-weight:700;
-}
-
-.notReady{
-    margin-top:10px;
-    color:#878d85;
-    font-size:12px;
-}
-
-.empty{
-    min-height:105px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border:1px dashed #394339;
-    border-radius:13px;
-    color:#555d55;
-    font-size:12px;
-}
-
-.hostNotice{
-    margin-top:15px;
-    padding:12px;
-    border-radius:9px;
-    background:#151d17;
-    border:1px solid #3d4a3e;
-    color:#a7aea4;
-    font-size:12px;
-    line-height:1.6;
-}
-
-/* ================= GAME PLACEHOLDER ================= */
-
-.gameScreen{
-    text-align:center;
-}
-
-.gameLogo{
-    font:700 32px Cinzel;
-    color:#d8c57e;
-    margin-bottom:14px;
-}
-
-.gameText{
-    color:#9da49b;
-    line-height:1.8;
-    font-size:14px;
-}
-
-/* ================= TOAST ================= */
-
-#toast{
-    position:fixed;
-    z-index:99;
-    left:50%;
-    bottom:22px;
-    max-width:90%;
-    padding:13px 18px;
-    border:1px solid #b39d5a;
-    border-radius:10px;
-    background:#101711;
-    color:#eee;
-    box-shadow:0 12px 35px #000;
-    transform:translate(-50%,120px);
-    transition:.3s;
-    font-size:13px;
-    text-align:center;
-}
-
-#toast.show{
-    transform:translate(-50%,0);
-}
-
-.hidden{
-    display:none!important;
-}
-
-@media(max-width:600px){
-
-    .card{
-        padding:19px;
-    }
-
-    .players{
-        grid-template-columns:1fr;
-    }
-
-    .roomCode{
-        font-size:20px;
-    }
-
-    .copyButton{
-        width:100%;
-        margin-top:10px;
-    }
-}
+.level{font-size:8px;color:#6b4f18;min-height:9px;letter-spacing:1px}.tile.owned{outline:2px solid #9e8245;outline-offset:-3px}.tile.event .name{font-size:1.05em}
 </style>
 </head>
-
 <body>
+<section id="home" class="screen landing"><div class="card">
+<div class="castle"></div><div class="logo"><svg viewBox="0 0 100 100"><path fill="none" stroke="#d6bb6e" stroke-width="5" d="M50 8 82 20v28c0 23-14 36-32 44C32 84 18 71 18 48V20Z"/><path fill="#d6bb6e" d="M50 25 56 42h18L59 52l6 18-15-11-15 11 6-18-15-10h18z"/></svg></div>
+<div class="eyebrow">Hogwarts Institute presents</div><h1 class="gold">HOGWARTS INSTITUTE<br>MONOPOLY</h1><p class="muted">Permainan papan multiplayer untuk komunitas Hogwarts Institute.</p>
+<div class="form"><input id="name" class="input" maxlength="18" placeholder="Nama pemain"><button class="btn gold" onclick="createRoom()">Buat Room</button><div class="divider"></div><input id="code" class="input" maxlength="6" placeholder="Kode room 6 karakter" style="text-transform:uppercase"><button class="btn" onclick="joinRoom()">Gabung Room</button><button class="btn" onclick="showRules()">Cara Bermain</button><div id="homeMsg" class="small"></div></div>
+</div></section>
 
-<div class="container">
+<section id="lobby" class="screen hidden"><div class="card wrap" style="max-width:650px;text-align:center"><div class="eyebrow">Hogwarts Institute Monopoly</div><h2>Ruang Permainan</h2><p class="small">Kode room</p><div id="roomCode" class="roomcode">------</div><div class="actions"><button class="btn" onclick="copyCode()">Salin Kode</button></div><div class="divider"></div><h3>Pemain</h3><div id="players" class="players"></div><div class="actions"><button id="ready" class="btn gold" onclick="toggleReady()">Saya Siap</button><button id="start" class="btn hidden" onclick="startGame()">Mulai Permainan</button></div><p id="lobbyMsg" class="small"></p></div></section>
 
-<header>
-    <div class="crest">
-        <div class="shield">H</div>
-    </div>
+<section id="game" class="screen hidden"><div class="wrap"><div class="top"><div><div class="eyebrow">Hogwarts Institute</div><div class="brand">MONOPOLY</div></div><div id="turn" class="turn">Menunggu...</div></div><div class="layout"><div class="boardframe"><div id="board" class="board"></div></div><aside class="side">
+<div class="panel"><h3>Giliran</h3><div class="dice"><div id="d1" class="die">?</div><div id="d2" class="die">?</div></div><button id="roll" class="btn gold" style="width:100%" onclick="roll()">Lempar Dadu</button><div id="actions" style="margin-top:8px"></div></div>
+<div class="panel"><h3>Pemain</h3><div id="gamePlayers" class="gameplayers"></div></div>
+<div class="panel"><h3>Properti Saya</h3><div id="myProps" class="small">Belum ada.</div></div>
+<div class="panel logpanel"><h3>Catatan</h3><div id="log" class="log"></div></div>
+</aside></div></div></section>
 
-    <h1>HOGWARTS MONOPOLY</h1>
-
-    <div class="subtitle">
-        PERMAINAN PAPAN MULTIPEMAIN
-    </div>
-</header>
-
-
-<!-- ================= HOME ================= -->
-
-<section id="homeScreen" class="card">
-
-    <div class="title">
-        Mulai Permainan
-    </div>
-
-    <div class="description">
-        Buat sebuah ruang permainan atau masukkan
-        kode ruang milik temanmu.
-    </div>
-
-    <input
-        id="playerName"
-        type="text"
-        maxlength="20"
-        autocomplete="off"
-        placeholder="Nama pemain"
-    >
-
-    <button
-        class="primary"
-        onclick="buatRoom()"
-        id="createButton"
-    >
-        BUAT RUANG
-    </button>
-
-    <div class="divider">
-        ATAU
-    </div>
-
-    <input
-        id="roomInput"
-        type="text"
-        maxlength="6"
-        autocomplete="off"
-        placeholder="Kode ruang"
-        style="text-transform:uppercase"
-    >
-
-    <button
-        class="secondary"
-        onclick="gabungRoom()"
-        id="joinButton"
-    >
-        GABUNG KE RUANG
-    </button>
-
-</section>
-
-
-<!-- ================= LOBBY ================= -->
-
-<section id="lobbyScreen" class="card hidden">
-
-    <div class="roomTop">
-
-        <div>
-            <div class="roomLabel">
-                KODE RUANG
-            </div>
-
-            <div
-                class="roomCode"
-                id="roomCode"
-            >
-                ------
-            </div>
-        </div>
-
-        <button
-            class="secondary copyButton"
-            onclick="salinKode()"
-        >
-            SALIN KODE
-        </button>
-
-    </div>
-
-
-    <div
-        class="status"
-        id="lobbyStatus"
-    >
-        Menunggu pemain...
-    </div>
-
-
-    <div
-        class="players"
-        id="playersList"
-    ></div>
-
-
-    <button
-        id="readyButton"
-        class="secondary"
-        onclick="ubahKesiapan()"
-    >
-        SAYA SIAP
-    </button>
-
-
-    <button
-        id="startButton"
-        class="primary hidden"
-        onclick="mulaiPermainan()"
-    >
-        MULAI PERMAINAN
-    </button>
-
-
-    <div
-        id="hostNotice"
-        class="hostNotice"
-    >
-        Pemain pertama menjadi pemilik ruang.
-        Permainan dapat dimulai setelah minimal
-        dua pemain siap.
-    </div>
-
-</section>
-
-
-<!-- ================= GAME ================= -->
-
-<section
-    id="gameScreen"
-    class="card gameScreen hidden"
->
-
-    <div class="gameLogo">
-        HOGWARTS MONOPOLY
-    </div>
-
-    <div class="gameText">
-        Permainan telah dimulai.
-        <br><br>
-        Papan permainan sedang dipersiapkan...
-    </div>
-
-</section>
-
-</div>
-
-
-<div id="toast"></div>
-
+<div id="modal" class="modal hidden"><div class="modalbox"><div id="modalIcon" class="modalicon">✦</div><div class="eyebrow">Hogwarts Institute</div><h2 id="mtitle">Kartu</h2><div id="mcontent"></div><p id="mtext" class="hidden"></p><div id="mactions" class="actions"></div></div></div>
 
 <script>
+const URL="https://nikpedxjwvrkndivkzql.supabase.co",KEY="sb_publishable_vn-7vdOTA9i64sA7miFISQ_CiwJ4Kz3";
+const supabase=window.supabase.createClient(URL,KEY);
+let me=null,room=null,players=[],state=null,channel=null,animating=false;
 
-/* =====================================================
-   SUPABASE
-   ===================================================== */
+const spaces=[
+["Gerbang Utama","corner",0,0],["Menara Astronomi","prop",60,1],["Kartu Ramalan","event",0,0],["Rumah Kaca","prop",60,1],["Pajak Sihir","tax",200,0],["Peron Ekspres","rail",200,0],["Lorong Terlarang","prop",100,2],["Kartu Kejadian","event",0,0],["Lapangan Quidditch","prop",100,2],["Menara Jam","prop",120,2],["Ruang Hukuman","jail",0,0],["Dungeon Slytherin","prop",140,3],["Lemari Sihir","utility",150,0],["Menara Ravenclaw","prop",140,3],["Hutan Terlarang","prop",160,3],["Stasiun Hogsmeade","rail",200,0],["Aula Besar","prop",180,4],["Kartu Ramalan","event",0,0],["Menara Gryffindor","prop",180,4],["Danau Hitam","prop",200,4],["Dermaga Hogwarts","corner",0,0],["Desa Penyihir","prop",220,5],["Kartu Kejadian","event",0,0],["Toko Ramuan","prop",220,5],["Perpustakaan","prop",240,5],["Stasiun Owl Post","rail",200,0],["Kelas DADA","prop",260,6],["Kamar Rahasia","prop",260,6],["Menara Burung Hantu","utility",150,0],["Observatorium","prop",280,6],["Ruang Kepala Institut","corner",0,0],["Arsip Kuno","prop",300,7],["Kartu Ramalan","event",0,0],["Halaman Batu","prop",300,7],["Menara Utama","prop",320,7],["Stasiun Express Selatan","rail",200,0],["Kelas Transfigurasi","event",0,0],["Aula Ksatria","prop",350,8],["Pintu Rahasia","event",0,0],["Menara Selatan","prop",400,8]];
+const colors=["#705a38","#365f8b","#7e3e3e","#5d3f79","#28705b","#896531","#344f68","#55505a","#173f31"];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money=n=>"£"+Number(n||0).toLocaleString("id-ID");
+const show=id=>["home","lobby","game"].forEach(x=>document.getElementById(x).classList.toggle("hidden",x!==id));
+const notice=t=>document.getElementById("homeMsg").textContent=t;
+const roomCode=()=>Math.random().toString(36).slice(2,8).toUpperCase();
+const fresh=ps=>({turn:ps[0]?.player_number||1,round:1,dice:[1,1],phase:"roll",finished:false,properties:{},houses:{},jail:{},doubles:0,logs:["Permainan dimulai. Selamat datang di Hogwarts Institute Monopoly."]});
 
-const SUPABASE_URL =
-    "https://nikpedxjwvrkndivkzql.supabase.co";
-
-const SUPABASE_KEY =
-    "sb_publishable_vn-7vdOTA9i64sA7miFISQ_CiwJ4Kz3";
-
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
-
-
-/* =====================================================
-   VARIABEL
-   ===================================================== */
-
-let roomSekarang = null;
-let pemainSekarang = null;
-let channelRoom = null;
-
-
-/* =====================================================
-   TOAST
-   ===================================================== */
-
-function pesan(teks){
-
-    const toast =
-        document.getElementById("toast");
-
-    toast.textContent = teks;
-
-    toast.classList.add("show");
-
-    clearTimeout(window.toastTimer);
-
-    window.toastTimer =
-        setTimeout(()=>{
-            toast.classList.remove("show");
-        },2800);
+function persist(){if(me&&room)localStorage.setItem("him_session",JSON.stringify({roomId:room.id,playerId:me.id,code:room.room_code}))}
+async function resume(){
+ try{
+  const x=JSON.parse(localStorage.getItem("him_session")||"null");if(!x)return;
+  const r=await supabase.from("rooms").select("*").eq("id",x.roomId).maybeSingle();
+  const p=await supabase.from("players").select("*").eq("id",x.playerId).maybeSingle();
+  if(r.data&&p.data){room=r.data;me=p.data;persist();if(room.status==="waiting")openLobby();else if(room.status==="playing"){show("game");await refresh();subscribe()} }
+ }catch(e){}
 }
-
-
-/* =====================================================
-   VALIDASI NAMA
-   ===================================================== */
-
-function ambilNama(){
-
-    const input =
-        document.getElementById("playerName");
-
-    const nama =
-        input.value.trim();
-
-    if(!nama){
-
-        pesan("Masukkan nama pemain terlebih dahulu.");
-
-        input.focus();
-
-        return null;
-    }
-
-    return nama;
+async function createRoom(){
+ const n=document.getElementById("name").value.trim();if(!n)return notice("Masukkan nama pemain.");
+ const c=roomCode(),r=await supabase.from("rooms").insert({room_code:c,status:"waiting",game_state:{}}).select().single();
+ if(r.error)return notice(r.error.message);
+ const q=await supabase.from("players").insert({room_id:r.data.id,player_name:n,player_number:1,money:1500,position:0,properties:[],is_ready:false}).select().single();
+ if(q.error)return notice(q.error.message);me=q.data;room=r.data;persist();openLobby();
 }
-
-
-/* =====================================================
-   BUAT KODE ROOM
-   ===================================================== */
-
-function buatKode(){
-
-    const karakter =
-        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-
-    let kode = "";
-
-    for(let i=0;i<6;i++){
-
-        kode += karakter[
-            Math.floor(
-                Math.random()*karakter.length
-            )
-        ];
-
-    }
-
-    return kode;
+async function joinRoom(){
+ const n=document.getElementById("name").value.trim(),c=document.getElementById("code").value.trim().toUpperCase();
+ if(!n||c.length!==6)return notice("Isi nama dan kode room.");
+ const r=await supabase.from("rooms").select("*").eq("room_code",c).maybeSingle();
+ if(r.error||!r.data)return notice("Room tidak ditemukan.");if(r.data.status!=="waiting")return notice("Permainan sudah dimulai.");
+ const q=await supabase.from("players").select("*").eq("room_id",r.data.id).order("player_number"),ps=q.data||[];
+ if(ps.length>=4)return notice("Room sudah penuh.");
+ const num=[1,2,3,4].find(x=>!ps.some(p=>p.player_number===x));
+ const ins=await supabase.from("players").insert({room_id:r.data.id,player_name:n,player_number:num,money:1500,position:0,properties:[],is_ready:false}).select().single();
+ if(ins.error)return notice(ins.error.message);me=ins.data;room=r.data;persist();openLobby();
 }
-
-
-/* =====================================================
-   BUAT ROOM
-   ===================================================== */
-
-async function buatRoom(){
-
-    const nama = ambilNama();
-
-    if(!nama) return;
-
-
-    const createButton =
-        document.getElementById("createButton");
-
-    createButton.disabled = true;
-    createButton.textContent = "MEMBUAT RUANG...";
-
-
-    try{
-
-        let kode;
-        let room = null;
-
-
-        /* Hindari kode room yang sama */
-
-        for(let percobaan=0;percobaan<10;percobaan++){
-
-            kode = buatKode();
-
-            const hasil =
-                await supabaseClient
-                .from("rooms")
-                .insert({
-                    room_code:kode,
-                    status:"waiting",
-                    game_state:{}
-                })
-                .select()
-                .single();
-
-
-            if(!hasil.error){
-
-                room = hasil.data;
-
-                break;
-
-            }
-
-        }
-
-
-        if(!room){
-
-            throw new Error(
-                "Gagal membuat kode ruang."
-            );
-
-        }
-
-
-        /* Masukkan host sebagai pemain pertama */
-
-        const hasilPemain =
-            await supabaseClient
-            .from("players")
-            .insert({
-
-                room_id:room.id,
-
-                player_name:nama,
-
-                player_number:1,
-
-                money:1500,
-
-                position:0,
-
-                properties:[],
-
-                is_ready:false
-
-            })
-            .select()
-            .single();
-
-
-        if(hasilPemain.error){
-
-            await supabaseClient
-                .from("rooms")
-                .delete()
-                .eq("id",room.id);
-
-            throw hasilPemain.error;
-
-        }
-
-
-        roomSekarang = room;
-
-        pemainSekarang =
-            hasilPemain.data;
-
-
-        bukaLobby();
-
-
-    }catch(error){
-
-        console.error(error);
-
-        pesan(
-            "Gagal membuat ruang. Periksa koneksi internet."
-        );
-
-    }finally{
-
-        createButton.disabled = false;
-
-        createButton.textContent =
-            "BUAT RUANG";
-
-    }
-
+async function openLobby(){show("lobby");document.getElementById("roomCode").textContent=room.room_code;await loadPlayers();subscribe()}
+async function loadPlayers(){
+ const q=await supabase.from("players").select("*").eq("room_id",room.id).order("player_number");players=q.data||[];
+ document.getElementById("players").innerHTML=players.map(p=>`<div class="player"><span>${p.player_number===me.player_number?"♟ ":""}${esc(p.player_name)}</span><span>${p.is_ready?"✓ Siap":"Belum siap"}</span></div>`).join("");
+ const mine=players.find(p=>p.id===me.id);if(mine)me=mine;
+ document.getElementById("ready").textContent=me.is_ready?"Batalkan Siap":"Saya Siap";
+ document.getElementById("start").classList.toggle("hidden",!(me.player_number===1&&players.length>=2&&players.every(p=>p.is_ready)));
 }
-
-
-/* =====================================================
-   GABUNG ROOM
-   ===================================================== */
-
-async function gabungRoom(){
-
-    const nama = ambilNama();
-
-    if(!nama) return;
-
-
-    const input =
-        document.getElementById("roomInput");
-
-    const kode =
-        input.value.trim().toUpperCase();
-
-
-    if(kode.length !== 6){
-
-        pesan(
-            "Kode ruang harus terdiri dari 6 karakter."
-        );
-
-        input.focus();
-
-        return;
-    }
-
-
-    const joinButton =
-        document.getElementById("joinButton");
-
-    joinButton.disabled = true;
-
-    joinButton.textContent =
-        "MENCARI RUANG...";
-
-
-    try{
-
-        const hasilRoom =
-            await supabaseClient
-            .from("rooms")
-            .select("*")
-            .eq("room_code",kode)
-            .maybeSingle();
-
-
-        if(hasilRoom.error){
-
-            throw hasilRoom.error;
-
-        }
-
-
-        const room =
-            hasilRoom.data;
-
-
-        if(!room){
-
-            pesan("Ruang tidak ditemukan.");
-
-            return;
-        }
-
-
-        if(room.status !== "waiting"){
-
-            pesan(
-                "Permainan di ruang ini sudah dimulai."
-            );
-
-            return;
-        }
-
-
-        const hasilPemain =
-            await supabaseClient
-            .from("players")
-            .select("*")
-            .eq("room_id",room.id)
-            .order("player_number");
-
-
-        if(hasilPemain.error){
-
-            throw hasilPemain.error;
-
-        }
-
-
-        const daftar =
-            hasilPemain.data || [];
-
-
-        if(daftar.length >= 4){
-
-            pesan("Ruang ini sudah penuh.");
-
-            return;
-        }
-
-
-        const nomor =
-            cariNomorPemain(daftar);
-
-
-        const pemainBaru =
-            await supabaseClient
-            .from("players")
-            .insert({
-
-                room_id:room.id,
-
-                player_name:nama,
-
-                player_number:nomor,
-
-                money:1500,
-
-                position:0,
-
-                properties:[],
-
-                is_ready:false
-
-            })
-            .select()
-            .single();
-
-
-        if(pemainBaru.error){
-
-            throw pemainBaru.error;
-
-        }
-
-
-        roomSekarang = room;
-
-        pemainSekarang =
-            pemainBaru.data;
-
-
-        bukaLobby();
-
-
-    }catch(error){
-
-        console.error(error);
-
-        pesan(
-            "Gagal bergabung ke ruang."
-        );
-
-    }finally{
-
-        joinButton.disabled = false;
-
-        joinButton.textContent =
-            "GABUNG KE RUANG";
-
-    }
-
+async function toggleReady(){const v=!me.is_ready;await supabase.from("players").update({is_ready:v}).eq("id",me.id);me.is_ready=v;loadPlayers()}
+async function startGame(){if(me.player_number!==1||players.length<2)return;const s=fresh(players);await supabase.from("rooms").update({status:"playing",game_state:s}).eq("id",room.id)}
+async function copyCode(){try{await navigator.clipboard.writeText(room.room_code);document.getElementById("lobbyMsg").textContent="Kode disalin."}catch(e){document.getElementById("lobbyMsg").textContent="Kode: "+room.room_code}}
+function subscribe(){
+ if(channel)supabase.removeChannel(channel);
+ channel=supabase.channel("room-"+room.id)
+ .on("postgres_changes",{event:"*",schema:"public",table:"players",filter:"room_id=eq."+room.id},async()=>{await loadPlayers();if(!document.getElementById("game").classList.contains("hidden"))refresh()})
+ .on("postgres_changes",{event:"UPDATE",schema:"public",table:"rooms",filter:"id=eq."+room.id},async p=>{room=p.new;state=room.game_state;if(room.status==="playing"){show("game");refresh()}})
+ .subscribe();
 }
-
-
-/* =====================================================
-   NOMOR PEMAIN
-   ===================================================== */
-
-function cariNomorPemain(daftar){
-
-    for(let i=1;i<=4;i++){
-
-        const sudahAda =
-            daftar.some(
-                pemain =>
-                pemain.player_number === i
-            );
-
-        if(!sudahAda){
-
-            return i;
-
-        }
-
-    }
-
-    return 4;
+async function refresh(){
+ const q=await supabase.from("players").select("*").eq("room_id",room.id).order("player_number");players=q.data||players;
+ const found=players.find(p=>p.id===me.id);if(found)me=found;
+ state=room.game_state||state||fresh(players);draw();
 }
-
-
-/* =====================================================
-   BUKA LOBBY
-   ===================================================== */
-
-function bukaLobby(){
-
-    document
-        .getElementById("homeScreen")
-        .classList.add("hidden");
-
-    document
-        .getElementById("lobbyScreen")
-        .classList.remove("hidden");
-
-    document
-        .getElementById("gameScreen")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("roomCode")
-        .textContent =
-        roomSekarang.room_code;
-
-
-    muatPemain();
-
-    mulaiRealtime();
-
+function drawBoard(){
+ const b=document.getElementById("board");b.innerHTML="";
+ spaces.forEach((s,i)=>{
+  const t=document.createElement("div");t.className="tile";t.dataset.i=i;
+  if(i===0)t.style.gridArea="11/11";else if(i<=10)t.style.gridArea=`11/${11-i}`;else if(i<=20)t.style.gridArea=`${21-i}/1`;else if(i<=30)t.style.gridArea=`1/${i-20}`;else t.style.gridArea=`${i-30}/11`;
+  const owner=Number(state.properties?.[i]||0),level=Number(state.houses?.[i]||0);
+  if(s[1]==="prop"){
+   t.innerHTML=`<div class="bar" style="background:${colors[s[3]]}"></div><div class="name">${esc(s[0])}</div><div class="price">${money(s[2])}</div><div class="level">${level?"◆".repeat(level):"—"}</div><div class="tokens"></div>`;
+  }else{
+   const icon=s[1]==="event"?"✦":s[1]==="tax"?"₤":s[1]==="jail"?"⚑":"";
+   t.innerHTML=`<div class="name">${icon} ${esc(s[0])}</div><div class="price">${s[2]?money(s[2]):""}</div><div class="tokens"></div>`;
+   t.classList.add(s[1]==="event"?"event":"special");
+  }
+  if(owner)t.classList.add("owned");b.appendChild(t);
+  t.addEventListener("click",()=>inspectSpace(i));
+ });
+ players.forEach(p=>{const t=document.querySelector(`.tile[data-i="${p.position}"] .tokens`);if(t)t.insertAdjacentHTML("beforeend",`<span class="token">${p.player_number}</span>`)});
 }
-
-
-/* =====================================================
-   MUAT PEMAIN
-   ===================================================== */
-
-async function muatPemain(){
-
-    if(!roomSekarang) return;
-
-
-    const hasil =
-        await supabaseClient
-        .from("players")
-        .select("*")
-        .eq("room_id",roomSekarang.id)
-        .order("player_number");
-
-
-    if(hasil.error){
-
-        console.error(hasil.error);
-
-        return;
-    }
-
-
-    const daftar =
-        hasil.data || [];
-
-
-    const list =
-        document.getElementById("playersList");
-
-
-    list.innerHTML = "";
-
-
-    for(let nomor=1;nomor<=4;nomor++){
-
-        const pemain =
-            daftar.find(
-                p => p.player_number === nomor
-            );
-
-
-        if(!pemain){
-
-            const kosong =
-                document.createElement("div");
-
-            kosong.className = "empty";
-
-            kosong.textContent =
-                "Menunggu pemain...";
-
-            list.appendChild(kosong);
-
-            continue;
-        }
-
-
-        const div =
-            document.createElement("div");
-
-        div.className = "player";
-
-
-        const nama =
-            escapeHTML(
-                pemain.player_name
-            );
-
-
-        div.innerHTML = `
-
-            <div class="playerNumber">
-                ${pemain.player_number}
-            </div>
-
-            <div class="playerName">
-                ${nama}
-            </div>
-
-            <div class="playerInfo">
-                ${
-                    pemain.player_number === 1
-                    ? "Pemilik Ruang"
-                    : "Pemain"
-                }
-            </div>
-
-            <div class="${
-                pemain.is_ready
-                ? "ready"
-                : "notReady"
-            }">
-
-                ${
-                    pemain.is_ready
-                    ? "✓ SIAP"
-                    : "○ BELUM SIAP"
-                }
-
-            </div>
-        `;
-
-
-        list.appendChild(div);
-
-    }
-
-
-    document
-        .getElementById("lobbyStatus")
-        .textContent =
-        `${daftar.length}/4 pemain berada di ruang.`;
-
-
-    const saya =
-        daftar.find(
-            p => p.id === pemainSekarang.id
-        );
-
-
-    if(saya){
-
-        pemainSekarang = saya;
-
-
-        document
-            .getElementById("readyButton")
-            .textContent =
-            saya.is_ready
-            ? "BATALKAN KESIAPAN"
-            : "SAYA SIAP";
-
-    }
-
-
-    const semuaSiap =
-        daftar.length >= 2 &&
-        daftar.every(
-            pemain => pemain.is_ready
-        );
-
-
-    const sayaHost =
-        pemainSekarang.player_number === 1;
-
-
-    const startButton =
-        document.getElementById("startButton");
-
-
-    if(sayaHost && semuaSiap){
-
-        startButton.classList.remove(
-            "hidden"
-        );
-
-    }else{
-
-        startButton.classList.add(
-            "hidden"
-        );
-
-    }
-
+function draw(){
+ drawBoard();
+ const current=players.find(p=>p.player_number===state.turn);
+ document.getElementById("turn").textContent="Giliran: "+(current?.player_name||"—");
+ document.getElementById("d1").textContent=state.dice?.[0]||"?";document.getElementById("d2").textContent=state.dice?.[1]||"?";
+ document.getElementById("gamePlayers").innerHTML=players.map(p=>`<div class="prow"><span><b>${p.player_number}.</b> ${esc(p.player_name)}${p.player_number===state.turn?" ◀":""}<br><span class="small">Petak ${p.position+1} · ${p.properties?.length||0} properti${state.jail?.[p.player_number]?" · Di Ruang Hukuman":""}</span></span><b>${money(p.money)}</b></div>`).join("");
+ const mine=players.find(p=>p.id===me.id);
+ document.getElementById("myProps").innerHTML=mine?.properties?.length?mine.properties.map(i=>`<div class="prop">${esc(spaces[i][0])} · ${money(spaces[i][2])} · Level ${state.houses?.[i]||0}</div>`).join(""):"Belum ada.";
+ document.getElementById("log").innerHTML=(state.logs||[]).slice().reverse().map(x=>`<div>${esc(x)}</div>`).join("");
+ const myTurn=state.turn===me.player_number;
+ const r=document.getElementById("roll");r.disabled=!(myTurn&&state.phase==="roll"&&!state.finished&&!animating);
+ const a=document.getElementById("actions");a.innerHTML="";
+ const p=players.find(x=>x.id===me.id),s=p&&spaces[p.position];
+ if(myTurn&&state.phase==="buy"&&s?.[1]==="prop"&&!state.properties?.[p.position]){
+  a.innerHTML=`<button class="btn gold" style="width:100%" onclick="buy(${p.position})">Beli ${esc(s[0])} — ${money(s[2])}</button><button class="btn" style="width:100%;margin-top:6px" onclick="skipBuy()">Lewati</button>`;
+ }
+ if(myTurn&&state.phase==="end"){
+  a.innerHTML=`<button class="btn" style="width:100%" onclick="endTurn()">Akhiri Giliran${state.doubles?" (Dadu Kembar — Lempar Lagi)":""}</button>`;
+ }
+ if(myTurn&&state.phase==="jail"){
+  a.innerHTML=`<button class="btn gold" style="width:100%" onclick="jailRoll()">Lempar Dadu untuk Keluar</button><button class="btn" style="width:100%;margin-top:6px" onclick="payJail()">Bayar £50</button>`;
+ }
+ if(myTurn&&state.phase==="upgrade"){
+  a.innerHTML=`<button class="btn gold" style="width:100%" onclick="upgrade(${p.position})">Naikkan Level Properti</button><button class="btn" style="width:100%;margin-top:6px" onclick="skipUpgrade()">Selesai</button>`;
+ }
+ if(state.finished){r.disabled=true;a.innerHTML='<button class="btn gold" style="width:100%" onclick="closeCard()">Permainan Selesai</button>'}
 }
-
-
-/* =====================================================
-   REALTIME
-   ===================================================== */
-
-function mulaiRealtime(){
-
-    if(channelRoom){
-
-        supabaseClient
-            .removeChannel(channelRoom);
-
-    }
-
-
-    channelRoom =
-        supabaseClient
-        .channel(
-            "monopoly-room-" +
-            roomSekarang.id
-        );
-
-
-    channelRoom
-        .on(
-            "postgres_changes",
-            {
-                event:"*",
-                schema:"public",
-                table:"players",
-                filter:
-                    "room_id=eq." +
-                    roomSekarang.id
-            },
-            ()=>{
-                muatPemain();
-            }
-        )
-        .on(
-            "postgres_changes",
-            {
-                event:"UPDATE",
-                schema:"public",
-                table:"rooms",
-                filter:
-                    "id=eq." +
-                    roomSekarang.id
-            },
-            payload=>{
-
-                roomSekarang =
-                    payload.new;
-
-
-                if(
-                    payload.new.status ===
-                    "playing"
-                ){
-
-                    tampilkanGame();
-
-                }
-
-            }
-        )
-        .subscribe(
-            status => {
-
-                console.log(
-                    "Realtime:",
-                    status
-                );
-
-            }
-        );
-
+async function save(){await supabase.from("rooms").update({game_state:state}).eq("id",room.id)}
+function addlog(x){state.logs=[...(state.logs||[]),x].slice(-50)}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+async function animateDice(a,b){
+ animating=true;draw();for(let i=0;i<7;i++){document.getElementById("d1").textContent=1+Math.floor(Math.random()*6);document.getElementById("d2").textContent=1+Math.floor(Math.random()*6);await sleep(70)}
+ state.dice=[a,b];animating=false;draw();
 }
-
-
-/* =====================================================
-   SIAP / TIDAK SIAP
-   ===================================================== */
-
-async function ubahKesiapan(){
-
-    if(!pemainSekarang) return;
-
-
-    const nilaiBaru =
-        !pemainSekarang.is_ready;
-
-
-    const hasil =
-        await supabaseClient
-        .from("players")
-        .update({
-            is_ready:nilaiBaru
-        })
-        .eq("id",pemainSekarang.id);
-
-
-    if(hasil.error){
-
-        console.error(hasil.error);
-
-        pesan(
-            "Gagal mengubah status kesiapan."
-        );
-
-        return;
-    }
-
-
-    pemainSekarang.is_ready =
-        nilaiBaru;
-
-
-    await muatPemain();
-
+async function moveToken(p,steps){
+ const old=p.position;for(let k=1;k<=steps;k++){p.position=(old+k)%40;drawBoard();await sleep(130)}
 }
-
-
-/* =====================================================
-   MULAI PERMAINAN
-   ===================================================== */
-
-async function mulaiPermainan(){
-
-    if(
-        !pemainSekarang ||
-        pemainSekarang.player_number !== 1
-    ){
-
-        return;
-    }
-
-
-    const hasil =
-        await supabaseClient
-        .from("players")
-        .select("*")
-        .eq("room_id",roomSekarang.id);
-
-
-    if(hasil.error){
-
-        pesan("Gagal memeriksa pemain.");
-
-        return;
-    }
-
-
-    const daftar =
-        hasil.data || [];
-
-
-    if(daftar.length < 2){
-
-        pesan(
-            "Minimal dua pemain diperlukan."
-        );
-
-        return;
-    }
-
-
-    if(
-        !daftar.every(
-            pemain => pemain.is_ready
-        )
-    ){
-
-        pesan(
-            "Semua pemain harus siap terlebih dahulu."
-        );
-
-        return;
-    }
-
-
-    const gameState = {
-
-        giliran:1,
-
-        putaran:1,
-
-        dadu:[1,1],
-
-        fase:"lempar_dadu",
-
-        selesai:false
-
-    };
-
-
-    const update =
-        await supabaseClient
-        .from("rooms")
-        .update({
-
-            status:"playing",
-
-            game_state:gameState
-
-        })
-        .eq("id",roomSekarang.id);
-
-
-    if(update.error){
-
-        console.error(update.error);
-
-        pesan(
-            "Gagal memulai permainan."
-        );
-
-        return;
-    }
-
-
-    tampilkanGame();
-
+async function roll(){
+ if(state.turn!==me.player_number||state.phase!=="roll"||animating)return;
+ const p=players.find(x=>x.id===me.id);if(!p)return;
+ const a=1+Math.floor(Math.random()*6),b=1+Math.floor(Math.random()*6),sum=a+b;
+ const jailed=Number(state.jail?.[p.player_number]||0);
+ if(jailed)return jailRoll();
+ await animateDice(a,b);
+ const old=p.position,passed=old+sum>=40;await moveToken(p,sum);
+ if(passed)p.money+=200;
+ state.doubles=(a===b)?(Number(state.doubles||0)+1):0;
+ if(state.doubles>=3){p.position=10;state.jail[p.player_number]=3;state.doubles=0;state.phase="end";addlog(`${p.player_name} mendapat tiga dadu kembar dan masuk Ruang Hukuman.`);await syncPlayer(p);await save();return refresh()}
+ addlog(`${p.player_name} melempar ${a} + ${b} = ${sum}.${passed?" Melewati Gerbang Utama dan menerima £200.":""}`);
+ if(passed)addlog(`${p.player_name} menerima gaji £200.`);
+ await syncPlayer(p);await resolve(p,p.position,sum);
 }
-
-
-/* =====================================================
-   TAMPILKAN GAME
-   ===================================================== */
-
-function tampilkanGame(){
-
-    document
-        .getElementById("homeScreen")
-        .classList.add("hidden");
-
-    document
-        .getElementById("lobbyScreen")
-        .classList.add("hidden");
-
-    document
-        .getElementById("gameScreen")
-        .classList.remove("hidden");
-
+async function syncPlayer(p){await supabase.from("players").update({position:p.position,money:p.money,properties:p.properties||[]}).eq("id",p.id)}
+async function resolve(p,pos,sum){
+ const s=spaces[pos];
+ if(s[1]==="prop"||s[1]==="rail"||s[1]==="utility"){
+  const owner=Number(state.properties?.[pos]||0);
+  if(!owner){state.phase="buy";addlog(`${p.player_name} tiba di ${s[0]}. Properti tersedia untuk dibeli.`)}
+  else if(owner!==p.player_number){
+   const o=players.find(x=>x.player_number===owner);
+   if(o){
+    let rent=rentFor(pos);rent=Math.min(rent,p.money);p.money-=rent;o.money+=rent;
+    await syncPlayer(p);await syncPlayer(o);addlog(`${p.player_name} membayar ${money(rent)} kepada ${o.player_name}.`);
+   }
+   state.phase="end";
+  }else{addlog(`${p.player_name} berada di propertinya sendiri.`);state.phase=state.doubles?"end":"end";if(hasMonopoly(p.player_number,s[3]))state.phase="upgrade"}
+ }else if(s[1]==="tax"){
+  const fee=Math.min(s[2],p.money);p.money-=fee;await syncPlayer(p);addlog(`${p.player_name} membayar ${money(fee)} pajak.`);state.phase="end";
+ }else if(s[1]==="event"){
+  await eventCard(p);
+ }else if(s[1]==="jail"){
+  addlog(`${p.player_name} mengunjungi Ruang Hukuman.`);state.phase="end";
+ }else{addlog(`${p.player_name} tiba di ${s[0]}.`);state.phase="end"}
+ await save();await refresh();if(p.money<=0)await checkBankrupt(p);
 }
-
-
-/* =====================================================
-   SALIN KODE
-   ===================================================== */
-
-async function salinKode(){
-
-    if(!roomSekarang) return;
-
-
-    try{
-
-        await navigator.clipboard.writeText(
-            roomSekarang.room_code
-        );
-
-        pesan(
-            "Kode ruang berhasil disalin."
-        );
-
-    }catch{
-
-        pesan(
-            "Kode ruang: " +
-            roomSekarang.room_code
-        );
-
-    }
-
+function hasMonopoly(num,group){const own=spaces.map((s,i)=>s[1]==="prop"&&s[3]===group?i:null).filter(x=>x!==null);return own.length>0&&own.every(i=>Number(state.properties?.[i])===num)}
+function rentFor(pos){
+ const s=spaces[pos],owner=Number(state.properties?.[pos]||0),level=Number(state.houses?.[pos]||0);
+ if(s[1]==="rail"){const count=spaces.filter((x,i)=>(x[1]==="rail"&&Number(state.properties?.[i])===owner)).length;return 25*Math.max(1,count)}
+ if(s[1]==="utility"){const count=spaces.filter((x,i)=>(x[1]==="utility"&&Number(state.properties?.[i])===owner)).length;const d=(state.dice||[1,1]).reduce((a,b)=>a+b,0);return d*(count>=2?10:4)}
+ const base=Math.max(20,Math.floor(s[2]*.15));return base*Math.pow(2,level)
 }
-
-
-/* =====================================================
-   ESCAPE HTML
-   ===================================================== */
-
-function escapeHTML(teks){
-
-    const div =
-        document.createElement("div");
-
-    div.textContent = teks;
-
-    return div.innerHTML;
-
+async function buy(pos){
+ const p=players.find(x=>x.id===me.id),s=spaces[pos];if(!p||s[1]!=="prop"||p.money<s[2]||state.properties?.[pos])return;
+ p.money-=s[2];p.properties=[...(p.properties||[]),pos];state.properties={...(state.properties||{}),[pos]:p.player_number};state.houses={...(state.houses||{}),[pos]:0};
+ addlog(`${p.player_name} membeli ${s[0]} seharga ${money(s[2])}.`);state.phase="end";await syncPlayer(p);await save();refresh();
 }
-
-
-/* =====================================================
-   ENTER KEY
-   ===================================================== */
-
-document
-    .getElementById("roomInput")
-    .addEventListener(
-        "keydown",
-        event => {
-
-            if(event.key === "Enter"){
-
-                gabungRoom();
-
-            }
-
-        }
-    );
-
-
-document
-    .getElementById("playerName")
-    .addEventListener(
-        "keydown",
-        event => {
-
-            if(event.key === "Enter"){
-
-                buatRoom();
-
-            }
-
-        }
-    );
-
-
-/* =====================================================
-   ROOM CODE OTOMATIS HURUF BESAR
-   ===================================================== */
-
-document
-    .getElementById("roomInput")
-    .addEventListener(
-        "input",
-        event => {
-
-            event.target.value =
-                event.target.value
-                .toUpperCase()
-                .replace(/[^A-Z0-9]/g,"")
-                .slice(0,6);
-
-        }
-    );
-
+async function skipBuy(){addlog(`${me.player_name} melewati kesempatan membeli properti.`);state.phase="end";await save();refresh()}
+async function upgrade(pos){
+ const p=players.find(x=>x.id===me.id),s=spaces[pos],level=Number(state.houses?.[pos]||0),cost=Math.max(50,Math.ceil(s[2]*.25));
+ if(!p||s[1]!=="prop"||Number(state.properties?.[pos])!==p.player_number||level>=4||!hasMonopoly(p.player_number,s[3])||p.money<cost)return;
+ p.money-=cost;state.houses[pos]=level+1;addlog(`${p.player_name} meningkatkan ${s[0]} ke Level ${level+1} dengan biaya ${money(cost)}.`);state.phase="end";await syncPlayer(p);await save();refresh();
+}
+async function skipUpgrade(){state.phase="end";await save();refresh()}
+async function endTurn(){
+ if(state.turn!==me.player_number||state.phase!=="end")return;
+ if(state.doubles){state.doubles=0;state.phase="roll";addlog(`${me.player_name} mendapat dadu kembar dan mendapat giliran tambahan.`);await save();return refresh()}
+ const idx=players.findIndex(p=>p.player_number===state.turn),active=players.filter(p=>p.money>0);
+ if(active.length<=1)return finishGame(active[0]);
+ let nextIndex=(idx+1)%players.length;let next=players[nextIndex];
+ while(!next||next.money<=0){nextIndex=(nextIndex+1)%players.length;next=players[nextIndex]}
+ state.turn=next.player_number;state.phase=state.jail?.[next.player_number]?"jail":"roll";state.round+=(idx===players.length-1?1:0);
+ await save();refresh();
+}
+async function jailRoll(){
+ const p=players.find(x=>x.id===me.id);if(!p||state.turn!==me.player_number)return;
+ const a=1+Math.floor(Math.random()*6),b=1+Math.floor(Math.random()*6);await animateDice(a,b);
+ const left=Number(state.jail?.[p.player_number]||0);
+ if(a===b){delete state.jail[p.player_number];addlog(`${p.player_name} mendapat dadu kembar dan keluar dari Ruang Hukuman.`);state.phase="resolve";await save();return resolve(p,p.position,a+b)}
+ state.jail[p.player_number]=Math.max(0,left-1);
+ if(state.jail[p.player_number]<=0){delete state.jail[p.player_number];p.money=Math.max(0,p.money-50);addlog(`${p.player_name} gagal keluar dan membayar £50.`)}
+ else addlog(`${p.player_name} belum berhasil keluar dari Ruang Hukuman.`);
+ state.phase="end";await syncPlayer(p);await save();refresh();
+}
+async function payJail(){
+ const p=players.find(x=>x.id===me.id);if(!p||p.money<50)return;
+ delete state.jail[p.player_number];p.money-=50;addlog(`${p.player_name} membayar £50 untuk keluar dari Ruang Hukuman.`);state.phase="roll";await syncPlayer(p);await save();refresh();
+}
+const cards=[
+ ["Surat Beasiswa","Kamu menerima beasiswa. +£120",120],
+ ["Buku Langka","Sebuah buku langka terjual dengan harga bagus. +£100",100],
+ ["Denda Perpustakaan","Buku terlambat dikembalikan. -£80",-80],
+ ["Acara Institut","Kamu membantu acara Institut. +£150",150],
+ ["Perbaikan Jubah","Jubahmu perlu diperbaiki. -£60",-60],
+ ["Hadiah Alumni","Seorang alumni memberi hadiah. +£200",200]
+];
+async function eventCard(p){
+ const c=cards[Math.floor(Math.random()*cards.length)];p.money+=c[2];if(p.money<0)p.money=0;await syncPlayer(p);
+ addlog(`${p.player_name} membuka ${c[0]}: ${c[2]>=0?"+":"-"}${money(Math.abs(c[2]))}.`);
+ state.phase="end";showCard(c[0],c[1],c[2]>=0?"✨":"⚠️");
+}
+async function checkBankrupt(p){
+ if(p.money>0)return;
+ addlog(`${p.player_name} bangkrut.`);
+ const owned=p.properties||[];owned.forEach(i=>{delete state.properties[i];delete state.houses[i]});
+ await supabase.from("players").delete().eq("id",p.id);
+ players=players.filter(x=>x.id!==p.id);
+ if(players.length<=1)await finishGame(players[0]);else{if(state.turn===p.player_number){state.turn=players[0].player_number;state.phase="roll"}await save();refresh()}
+}
+async function finishGame(winner){
+ state.finished=true;state.phase="finished";if(winner)addlog(`${winner.player_name} memenangkan permainan!`);
+ await save();refresh();showCard("Permainan Selesai",winner?`${winner.player_name} menjadi pemenang Hogwarts Institute Monopoly.`:"Permainan berakhir.");
+}
+function showCard(title,text,icon="✦"){
+ document.getElementById("modalIcon").textContent=icon;
+ document.getElementById("mtitle").textContent=title;
+ document.getElementById("mcontent").innerHTML=`<div class="cardface">${esc(text)}</div>`;
+ document.getElementById("mactions").innerHTML='<button class="btn gold" onclick="closeCard()">Lanjutkan</button>';
+ document.getElementById("modal").classList.remove("hidden")
+}
+function inspectSpace(i){
+ const s=spaces[i],owner=Number(state?.properties?.[i]||0),level=Number(state?.houses?.[i]||0);
+ let text=`${s[0]}\n\n`;
+ if(s[1]==="prop") text+=`Harga: ${money(s[2])}\nLevel: ${level}/4\nSewa saat ini: ${money(rentFor(i))}${owner?`\nPemilik: ${esc(players.find(p=>p.player_number===owner)?.player_name||"Pemain "+owner)}`:"\nStatus: Tersedia untuk dibeli"}`;
+ else if(s[1]==="rail") text+=`Transportasi\nHarga: ${money(s[2])}\nSewa bergantung pada jumlah stasiun yang dikuasai.`;
+ else if(s[1]==="utility") text+=`Fasilitas Sihir\nHarga: ${money(s[2])}\nSewa berdasarkan hasil dadu.`;
+ else text+=s[1]==="event"?"Ambil kartu ketika mendarat di sini.":s[1]==="tax"?`Pajak: ${money(s[2])}`:"Petak khusus Hogwarts Institute.";
+ showCard(s[0],text,s[1]==="prop"?"🏰":"✦");
+}
+function showRules(){
+ document.getElementById("modalIcon").textContent="📜";document.getElementById("mtitle").textContent="Cara Bermain";
+ document.getElementById("mcontent").innerHTML=`<div class="rules"><b>Tujuan</b><br>Jadilah pemain terakhir yang belum bangkrut.<br><br><b>Giliran</b><br>Lempar dua dadu dan bidak akan bergerak otomatis. Melewati Gerbang Utama memberi £200.<br><br><b>Properti</b><br>Beli properti kosong. Jika mendarat di milik lawan, bayar sewa. Kuasai seluruh kelompok warna untuk membuka upgrade dan menggandakan sewa.<br><br><b>Dadu kembar</b><br>Dadu kembar memberi giliran tambahan. Tiga kali berturut-turut mengirim pemain ke Ruang Hukuman.<br><br><b>Kartu</b><br>Kartu Ramalan dan Kartu Kejadian memberikan bonus atau biaya acak.</div>`;
+ document.getElementById("mactions").innerHTML='<button class="btn gold" onclick="closeCard()">Mengerti</button>';document.getElementById("modal").classList.remove("hidden");
+}
+function closeCard(){document.getElementById("modal").classList.add("hidden")}
+document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeCard()});
+window.addEventListener("load",resume);
 </script>
-
 </body>
 </html>
