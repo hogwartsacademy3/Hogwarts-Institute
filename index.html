@@ -1,953 +1,527 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hogwarts Institute Monopoly Multiplayer</title>
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- FontAwesome 6 Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;600;700&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Hogwarts Institute Monopoly</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0b0f19;
-            color: #f1f5f9;
-            overflow: hidden;
-            user-select: none;
-        }
-
-        .hogwarts-font {
-            font-family: 'Cinzel', serif;
-        }
-
-        /* Layout Utama Responsive */
-        #game-container {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-            flex-direction: row;
-            background: radial-gradient(circle at center, #1e1b4b 0%, #0b0f19 100%);
-        }
-
-        @media (max-width: 1024px) {
-            #game-container {
-                flex-direction: column;
-                overflow-y: auto;
-            }
-        }
-
-        /* Area Papan Game */
-        #board-area {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px;
-            position: relative;
-            height: 100%;
-        }
-
-        #board-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 92vh;
-            aspect-ratio: 1 / 1;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 30px rgba(234, 179, 8, 0.2);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 3px solid #334155;
-            background: #020617;
-        }
-
-        @media (max-width: 1024px) {
-            #board-wrapper {
-                max-width: 100%;
-                width: 96vw;
-            }
-        }
-
-        #board-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-        }
-
-        /* Bidak Pemain Visual */
-        .player-piece {
-            position: absolute;
-            width: 4.2%;
-            height: 4.2%;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            z-index: 20;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1vw;
-            color: white;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.7), inset 0 2px 4px rgba(255,255,255,0.6);
-            border: 2px solid rgba(255,255,255,0.9);
-        }
-
-        @media (max-width: 768px) {
-            .player-piece {
-                font-size: 3vw;
-            }
-        }
-
-        /* Marker Bangunan / Pemilik Properti 2D */
-        .building-marker {
-            position: absolute;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-            font-size: 0.85vw;
-            font-weight: bold;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(4px);
-            padding: 2px 5px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.3);
-            pointer-events: none;
-            transition: all 0.2s ease-in-out;
-        }
-
-        @media (max-width: 768px) {
-            .building-marker {
-                font-size: 2vw;
-            }
-        }
-
-        /* Panel UI Samping */
-        #ui-area {
-            width: 380px;
-            background: rgba(15, 23, 42, 0.95);
-            border-left: 1px solid #334155;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            backdrop-filter: blur(10px);
-        }
-
-        @media (max-width: 1024px) {
-            #ui-area {
-                width: 100%;
-                height: auto;
-                min-height: 50vh;
-                border-left: none;
-                border-top: 2px solid #334155;
-            }
-        }
-
-        /* Desain Dadu 3D dengan Titik (Dots) */
-        .dice-container {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            margin: 16px 0;
-        }
-
-        .dice {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(145deg, #ffffff, #e2e8f0);
-            border-radius: 12px;
-            position: relative;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.1), 0 8px 15px rgba(0,0,0,0.4);
-            border: 2px solid #cbd5e1;
-        }
-
-        .dice.rolling {
-            animation: shake 0.2s infinite;
-        }
-
-        @keyframes shake {
-            0% { transform: translate(2px, 2px) rotate(0deg); }
-            20% { transform: translate(-3px, -2px) rotate(-6deg); }
-            40% { transform: translate(-2px, 2px) rotate(6deg); }
-            60% { transform: translate(3px, 1px) rotate(-3deg); }
-            80% { transform: translate(-1px, -2px) rotate(3deg); }
-            100% { transform: translate(2px, -1px) rotate(0deg); }
-        }
-
-        .dot {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: #0f172a;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: inset 0 2px 2px rgba(0,0,0,0.6);
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
-
-        /* Custom Modal Overlay */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(2, 6, 23, 0.85);
-            backdrop-filter: blur(6px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-    </style>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#090d1b;color:#f5f0df;
+ font-family:Georgia,serif;
+}
+button,input{font:inherit}
+button{
+ border:0;border-radius:10px;padding:12px 16px;
+ background:#d9ad57;color:#15100a;font-weight:bold;
+ cursor:pointer
+}
+button:disabled{opacity:.4;cursor:not-allowed}
+input{
+ width:100%;padding:12px;border-radius:8px;
+ border:1px solid #4b5876;background:#10182b;color:white
+}
+.app{max-width:1500px;margin:auto;padding:16px}
+header{
+ display:flex;justify-content:space-between;align-items:center;
+ padding:15px 0;border-bottom:1px solid #35415c
+}
+.logo{font-size:clamp(20px,4vw,35px);color:#e8bd68;font-weight:bold}
+.muted{color:#aab4cb;font:13px Arial,sans-serif}
+.panel{
+ background:#151e34;border:1px solid #35425e;
+ border-radius:16px;padding:16px
+}
+.layout{
+ display:grid;grid-template-columns:minmax(0,1fr) 340px;
+ gap:18px;margin-top:18px
+}
+.board-wrap{width:100%;overflow:hidden;border-radius:12px}
+.board{
+ position:relative;width:100%;aspect-ratio:1/1;
+ background:url("https://raw.githubusercontent.com/hogwartsacademy3/Hogwarts-Institute/main/file_0000000004a481f491876e005d0f567d.png") center/100% 100% no-repeat;
+}
+.piece{
+ position:absolute;z-index:10;width:clamp(22px,4vw,43px);
+ height:clamp(22px,4vw,43px);border-radius:50%;
+ border:3px solid white;transform:translate(-50%,-50%);
+ display:flex;align-items:center;justify-content:center;
+ font:bold 13px Arial,sans-serif;
+ transition:left .16s linear,top .16s linear
+}
+.p0{background:#d9535b}.p1{background:#4b94e8}
+.p2{background:#52c88d}.p3{background:#b779dc}
+.building{
+ position:absolute;z-index:5;transform:translate(-50%,-50%);
+ font-size:clamp(15px,3vw,30px);
+ filter:drop-shadow(0 2px 2px black)
+}
+.dice{
+ width:85px;height:85px;padding:12px;margin:10px auto;
+ display:grid;grid-template-columns:repeat(3,1fr);
+ grid-template-rows:repeat(3,1fr);gap:5px;
+ background:#f6f1e5;border-radius:14px
+}
+.dice i{display:block}
+.dice .dot{background:#111;border-radius:50%}
+.rolling{animation:shake .1s infinite}
+@keyframes shake{
+ 0%{transform:rotate(0)}50%{transform:rotate(5deg)}
+ 100%{transform:rotate(-5deg)}
+}
+.stack{display:grid;gap:10px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.actions button:first-child{grid-column:span 2}
+.player{
+ display:flex;align-items:center;gap:10px;padding:10px;
+ background:#0d1629;border:1px solid #2d3a56;border-radius:10px
+}
+.player.active{border-color:#e8bd68;background:#28344e}
+.avatar{width:30px;height:30px;border-radius:50%;flex-shrink:0}
+.money{font:13px Arial,sans-serif;color:#6ee2a1}
+.log{
+ max-height:200px;overflow:auto;font:12px/1.6 Arial,sans-serif
+}
+.log div{padding:5px 0;border-bottom:1px solid #293650}
+.hidden{display:none!important}
+.badge{
+ background:#293751;border-radius:30px;padding:5px 10px;
+ color:#e8bd68;font:12px Arial,sans-serif
+}
+h2{margin:0 0 12px;font-size:20px}
+@media(max-width:900px){
+ .layout{grid-template-columns:1fr}
+}
+@media(max-width:500px){
+ .app{padding:9px}.panel{padding:10px}
+}
+</style>
 </head>
+
 <body>
+<div class="app">
 
-    <!-- Screen Login / Join Lobby -->
-    <div id="join-screen" class="fixed inset-0 bg-slate-950 z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl max-w-md w-full text-center relative overflow-hidden">
-            <div class="absolute -top-12 -left-12 w-32 h-32 bg-yellow-500/10 rounded-full blur-2xl"></div>
-            <div class="absolute -bottom-12 -right-12 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl"></div>
+<header>
+ <div>
+  <div class="logo">HOGWARTS INSTITUTE</div>
+  <div class="muted">MAGICAL MONOPOLY</div>
+ </div>
+ <span class="badge" id="status">OFFLINE</span>
+</header>
 
-            <i class="fa-solid fa-hat-wizard text-5xl text-yellow-500 mb-3 animate-bounce"></i>
-            <h1 class="hogwarts-font text-3xl font-bold text-yellow-500 tracking-wide mb-1">Hogwarts Institute</h1>
-            <p class="text-xs uppercase tracking-widest text-slate-400 mb-6 font-semibold">Monopoly Multiplayer Edition</p>
-            
-            <div id="connection-status" class="hidden text-xs mb-5 p-2.5 rounded-lg bg-slate-800 text-blue-400 font-mono border border-slate-700">
-            </div>
+<div id="setup" class="panel" style="max-width:600px;margin:25px auto">
+ <h2>🏰 Masuk Permainan</h2>
+ <label class="muted">Nama pemain</label>
+ <input id="name" maxlength="20" placeholder="Nama penyihir">
 
-            <div class="mb-4 text-left">
-                <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2 flex justify-between items-center">
-                    <span>Kode Ruangan</span>
-                    <span class="text-slate-500 text-[10px] lowercase tracking-normal font-normal">(Kosongkan untuk buat baru)</span>
-                </label>
-                <input type="text" id="room-code" placeholder="Contoh: GRYFFINDOR7" 
-                       class="w-full bg-slate-800 text-white px-4 py-3 rounded-xl border border-slate-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition uppercase font-mono tracking-wider">
-            </div>
+ <label class="muted">Kode room (kosong = buat baru)</label>
+ <input id="room" maxlength="8" placeholder="Contoh: MAGIC7">
 
-            <div class="mb-5 text-left">
-                <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2 block">Nama Pemain</label>
-                <input type="text" id="player-name" placeholder="Contoh: Harry Potter" 
-                       class="w-full bg-slate-800 text-white px-4 py-3 rounded-xl border border-slate-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition">
-            </div>
+ <button id="join" style="width:100%;margin-top:12px">
+  Masuk / Buat Room
+ </button>
+ <p id="setupMsg" class="muted"></p>
+</div>
 
-            <div class="mb-6 text-left">
-                <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2 block">Pilih Warna Bidak</label>
-                <div class="flex gap-3 justify-center bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
-                    <button class="color-pick w-9 h-9 rounded-full bg-red-600 ring-2 ring-white scale-110 transition" data-color="#dc2626"></button>
-                    <button class="color-pick w-9 h-9 rounded-full bg-blue-600 border border-transparent hover:scale-105 transition" data-color="#2563eb"></button>
-                    <button class="color-pick w-9 h-9 rounded-full bg-emerald-600 border border-transparent hover:scale-105 transition" data-color="#059669"></button>
-                    <button class="color-pick w-9 h-9 rounded-full bg-amber-500 border border-transparent hover:scale-105 transition" data-color="#d97706"></button>
-                    <button class="color-pick w-9 h-9 rounded-full bg-purple-600 border border-transparent hover:scale-105 transition" data-color="#9333ea"></button>
-                </div>
-            </div>
+<div id="game" class="hidden">
+<div class="layout">
 
-            <button id="btn-join" class="w-full bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-500 hover:to-amber-500 text-slate-950 font-bold py-3.5 rounded-xl transition shadow-lg shadow-amber-600/20 disabled:opacity-50 disabled:cursor-not-allowed">
-                Masuk ke Ruang Game
-            </button>
-        </div>
-    </div>
+<main class="panel">
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+  <div>
+   <h2>Papan Monopoly</h2>
+   <div class="muted">Room: <b id="roomLabel">-</b></div>
+  </div>
+  <span class="badge" id="turnLabel">Menunggu</span>
+ </div>
 
-    <!-- Main Game Container -->
-    <div id="game-container" style="display: none;">
-        
-        <!-- Papan Game -->
-        <div id="board-area">
-            <div id="board-wrapper">
-                <!-- Papan Gambar Hogwarts (Dengan fallback ke file repo jika image local gagal) -->
-                <img id="board-img" src="1000436650.png" alt="Hogwarts Monopoly Board" 
-                     onerror="if(this.src.indexOf('file_0000000004a481f491876e005d0f567d.png') === -1) { this.src='file_0000000004a481f491876e005d0f567d.png'; } else { this.src='https://placehold.co/1000x1000/0f172a/eab308?text=Hogwarts+Monopoly+Board'; }">
-                
-                <!-- Layer Bidak Pemain -->
-                <div id="pieces-layer" class="absolute inset-0 pointer-events-none"></div>
-                <!-- Layer Marker Bangunan / Kepemilikan 2D -->
-                <div id="buildings-layer" class="absolute inset-0 pointer-events-none"></div>
-            </div>
-        </div>
+ <div class="board-wrap">
+  <div class="board" id="board"></div>
+ </div>
 
-        <!-- Side Control Panel UI -->
-        <div id="ui-area">
-            
-            <!-- Room Info Bar -->
-            <div class="bg-slate-950 p-3 border-b border-slate-800 flex justify-between items-center">
-                <div class="text-xs text-slate-400">Kode Ruangan: <span id="display-room-id" class="font-bold text-yellow-400 tracking-wider">---</span></div>
-                <button id="btn-copy-room" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded text-slate-200 transition shadow">
-                    <i class="fa-solid fa-copy mr-1"></i>Salin
-                </button>
-            </div>
+ <p class="muted">
+  Bidak bergerak satu petak demi satu petak sesuai dadu.
+ </p>
+</main>
 
-            <!-- Turn Indicator & Dadu Section -->
-            <div class="p-5 bg-slate-900/80 border-b border-slate-800 text-center">
-                <div class="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-1">Status Permainan</div>
-                <h3 id="turn-indicator" class="text-xl font-bold text-yellow-400 mb-3 hogwarts-font">Menunggu Pemain...</h3>
-                
-                <!-- Visual Dadu -->
-                <div class="dice-container" id="dice-wrapper">
-                    <div class="dice" id="dice1"></div>
-                    <div class="dice" id="dice2"></div>
-                </div>
+<aside class="stack">
 
-                <!-- Tombol Aksi Player -->
-                <div class="flex gap-2 justify-center mt-3">
-                    <button id="action-roll" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-600/30 hidden transition w-full text-sm">
-                        <i class="fa-solid fa-dice mr-2"></i>Kocok Dadu
-                    </button>
-                    <button id="action-end" class="bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-600 hover:to-slate-700 px-6 py-2.5 rounded-xl font-bold shadow-lg hidden transition w-full text-sm">
-                        <i class="fa-solid fa-forward mr-2"></i>Akhiri Giliran
-                    </button>
-                </div>
-            </div>
+<section class="panel">
+ <h2>🎲 Dadu</h2>
+ <div class="dice" id="dice">
+  <i></i><i></i><i></i><i></i><i></i>
+  <i></i><i></i><i></i><i></i>
+ </div>
+ <div class="muted" style="text-align:center" id="diceText">
+  Belum dilempar
+ </div>
 
-            <!-- Daftar Pemain & Keuangan -->
-            <div class="flex-1 overflow-y-auto p-4">
-                <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center justify-between">
-                    <span>Pemain Online</span>
-                    <i class="fa-solid fa-users"></i>
-                </h4>
-                <div id="players-list" class="flex flex-col gap-2.5">
-                    <!-- Template Pemain diinjeksi via JS -->
-                </div>
-            </div>
+ <div class="actions" style="margin-top:12px">
+  <button id="roll" disabled>🎲 Lempar</button>
+  <button id="buy" disabled>Beli</button>
+  <button id="upgrade" disabled>Upgrade 🏠</button>
+  <button id="end" disabled>Akhiri Giliran</button>
+  <button id="start" disabled>🏰 Mulai Game</button>
+ </div>
+ <p class="muted" id="actionMsg"></p>
+</section>
 
-            <!-- Console Log Game -->
-            <div class="h-44 bg-slate-950 p-3.5 flex flex-col border-t border-slate-800">
-                <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
-                    <span>Game Log</span>
-                    <i class="fa-solid fa-scroll text-yellow-500"></i>
-                </h4>
-                <div id="game-log" class="flex-1 overflow-y-auto text-xs space-y-1.5 text-slate-300 font-mono pr-1">
-                </div>
-            </div>
-        </div>
-    </div>
+<section class="panel">
+ <h2>👥 Pemain</h2>
+ <div id="players" class="stack"></div>
+</section>
 
-    <!-- Modal Beli Properti -->
-    <div id="modal-property" class="modal-overlay">
-        <div class="bg-slate-900 p-6 rounded-2xl border border-slate-700 shadow-2xl max-w-sm w-full text-center relative">
-            <i class="fa-solid fa-building-columns text-4xl text-yellow-500 mb-3"></i>
-            <h2 id="modal-prop-name" class="text-2xl font-bold mb-1 hogwarts-font text-yellow-400">Nama Properti</h2>
-            <p id="modal-prop-price" class="text-lg text-emerald-400 font-semibold mb-6">Harga: £0</p>
-            <div class="flex gap-3 justify-center">
-                <button id="btn-buy" class="flex-1 bg-emerald-600 hover:bg-emerald-500 px-5 py-2.5 rounded-xl font-bold transition shadow-lg shadow-emerald-600/20">Beli</button>
-                <button id="btn-pass" class="flex-1 bg-slate-700 hover:bg-slate-600 px-5 py-2.5 rounded-xl font-bold transition">Lewati</button>
-            </div>
-        </div>
-    </div>
+<section class="panel">
+ <h2>📜 Aktivitas</h2>
+ <div id="log" class="log"></div>
+</section>
 
-    <!-- Modal Pesan Universal -->
-    <div id="modal-message" class="modal-overlay">
-        <div class="bg-slate-900 p-6 rounded-2xl border border-slate-700 shadow-2xl max-w-sm w-full text-center">
-            <h2 id="modal-msg-title" class="text-xl font-bold mb-2 text-yellow-400 hogwarts-font">Pesan</h2>
-            <p id="modal-msg-text" class="text-sm text-slate-300 mb-6 leading-relaxed">Teks pesan disini</p>
-            <button id="btn-msg-ok" class="w-full bg-blue-600 hover:bg-blue-500 px-6 py-2.5 rounded-xl font-bold transition shadow-lg shadow-blue-600/20">OK</button>
-        </div>
-    </div>
+</aside>
+</div>
+</div>
+</div>
 
-    <script>
-        // Konfigurasi Supabase Project
-        const SUPABASE_URL = 'https://wrhxzczvlfmdybuyslcv.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_d-AKVoEiwg_2xMPUCeiaLQ_Gnvn3kIe';
-        let ROOM_ID = '';
+<script>
+const URL="https://wrhxzczvlfmdybuyslcv.supabase.co";
+const KEY="sb_publishable_d-AKVoEiwg_2xMPUCeiaLQ_Gnvn3kIe";
+const db=supabase.createClient(URL,KEY);
 
-        let supabase;
-        let channel;
-        let isAnimating = false;
+const $=id=>document.getElementById(id);
+const COLORS=["#d9535b","#4b94e8","#52c88d","#b779dc"];
+const TOTAL=40;
 
-        // ID Pemain unik tersimpan di localStorage agar aman saat F5 refresh
-        let myId = localStorage.getItem('hogwarts_myId');
-        if (!myId) {
-            myId = 'wizard_' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('hogwarts_myId', myId);
-        }
-        let myColor = '#dc2626';
-        let myName = '';
+let room=null,me=null,players=[],properties=[];
+let rolled=false,moving=false,channel=null;
 
-        // State Utama Game (Tersimpan di PostgreSQL via JSONB)
-        let gameState = {
-            players: {},
-            turnOrder: [],
-            currentTurnIndex: 0,
-            properties: {},
-            phase: 'waiting',
-            logs: []
-        };
+const propertyNames=[
+"Start","Hogsmeade","Chance","Diagon Alley","Pajak","Azkaban",
+"Hogwarts","Chance","Forbidden Forest","Library","Free Parking",
+"Ravenclaw Tower","Chance","Slytherin Dungeon","Gryffindor Tower",
+"Penjara","Hufflepuff Hall","Chance","Potion Class","Great Hall",
+"Pajak","Astronomy Tower","Chance","Charms Class","Defense Class",
+"Azkaban Visit","Herbology","Chance","Quidditch Pitch","Transfiguration",
+"Free Parking","Dueling Club","Chance","Headmaster Office",
+"Care of Creatures","Pajak","Chamber","Chance","Grand Staircase",
+"Final Exam"
+];
 
-        // DOM Elements References
-        const elJoinScreen = document.getElementById('join-screen');
-        const elGameContainer = document.getElementById('game-container');
-        const elBtnJoin = document.getElementById('btn-join');
-        const elPlayerName = document.getElementById('player-name');
-        const elRoomCode = document.getElementById('room-code');
-        const elDisplayRoomId = document.getElementById('display-room-id');
-        const btnCopyRoom = document.getElementById('btn-copy-room');
-        const elConnStatus = document.getElementById('connection-status');
-        const elColorPicks = document.querySelectorAll('.color-pick');
-        
-        const elPiecesLayer = document.getElementById('pieces-layer');
-        const elBuildingsLayer = document.getElementById('buildings-layer');
-        const elPlayersList = document.getElementById('players-list');
-        const elGameLog = document.getElementById('game-log');
-        const elTurnIndicator = document.getElementById('turn-indicator');
-        
-        const btnRoll = document.getElementById('action-roll');
-        const btnEnd = document.getElementById('action-end');
+const special=new Set([0,4,5,10,15,20,25,30,35]);
 
-        const modProp = document.getElementById('modal-property');
-        const modMsg = document.getElementById('modal-message');
+function playerKey(){
+ let k=localStorage.getItem("hogwarts_mono_key");
+ if(!k){
+  k=crypto.randomUUID();
+  localStorage.setItem("hogwarts_mono_key",k);
+ }
+ return k;
+}
+function code(){
+ return Math.random().toString(36).slice(2,8).toUpperCase();
+}
+function wait(ms){
+ return new Promise(resolve=>setTimeout(resolve,ms));
+}
+function message(s){
+ $("actionMsg").textContent=s;
+}
+function log(s){
+ const d=document.createElement("div");
+ d.textContent=s;
+ $("log").prepend(d);
+}
+function coords(index){
+ const n=index%10;
+ if(index<10)return{x:92-n*9.3,y:92};
+ if(index<20)return{x:8,y:92-n*9.3};
+ if(index<30)return{x:8+n*9.3,y:8};
+ return{x:92,y:8+n*9.3};
+}
+function drawDice(value){
+ const places={
+  1:[4],2:[0,8],3:[0,4,8],
+  4:[0,2,6,8],5:[0,2,4,6,8],
+  6:[0,2,3,5,6,8]
+ }[value]||[];
+ $("dice").innerHTML="";
+ for(let i=0;i<9;i++){
+  const el=document.createElement("i");
+  if(places.includes(i))el.className="dot";
+  $("dice").appendChild(el);
+ }
+}
+function render(){
+ if(!room)return;
+ const current=players.find(p=>p.player_index===room.current_player);
+ $("turnLabel").textContent=room.status==="waiting"?"Menunggu":
+ room.status==="finished"?"Selesai":"Giliran: "+(current?.player_name||"-");
 
-        // Mapping Petak Papan Monopoly Hogwarts (39 Petak presisi sesuai gambar 1000436650.png)
-        const BOARD_SPACES = [
-            { id: 0, name: "GO (Collect £200)", type: "go", price: 0 },
-            { id: 1, name: "Divination Classroom", type: "property", price: 50 },
-            { id: 2, name: "Herbology Classroom", type: "property", price: 50 },
-            { id: 3, name: "Care of Magical Creatures", type: "property", price: 60 },
-            { id: 4, name: "The Three Broomsticks", type: "property", price: 60 },
-            { id: 5, name: "Community Chest", type: "chest", price: 0 },
-            { id: 6, name: "Quidditch Pitch", type: "property", price: 80 },
-            { id: 7, name: "Flight Class", type: "property", price: 80 },
-            { id: 8, name: "Prefects' Bathroom", type: "property", price: 100 },
-            { id: 9, name: "DADA Classroom", type: "property", price: 100 },
-            { id: 10, name: "Just Visiting / Azkaban", type: "jail", price: 0 },
-            { id: 11, name: "School Shop", type: "property", price: 50 },
-            { id: 12, name: "St. Mungo's Hospital", type: "property", price: 60 },
-            { id: 13, name: "The Leaky Cauldron", type: "property", price: 80 },
-            { id: 14, name: "Chance", type: "chance", price: 0 },
-            { id: 15, name: "Diagon Alley", type: "property", price: 100 },
-            { id: 16, name: "Knockturn Alley", type: "property", price: 120 },
-            { id: 17, name: "Community Chest", type: "chest", price: 0 },
-            { id: 18, name: "Ministry of Magic", type: "property", price: 140 },
-            { id: 19, name: "Gringotts Bank", type: "property", price: 150 },
-            { id: 20, name: "Free Parking", type: "parking", price: 0 },
-            { id: 21, name: "Hogwarts Express", type: "property", price: 200 },
-            { id: 22, name: "Hogsmeade", type: "property", price: 60 },
-            { id: 23, name: "Hagrid's Hut", type: "property", price: 60 },
-            { id: 24, name: "Forbidden Forest", type: "property", price: 100 },
-            { id: 25, name: "Charms Classroom", type: "property", price: 100 },
-            { id: 26, name: "Community Chest", type: "chest", price: 0 },
-            { id: 27, name: "Transfiguration Classroom", type: "property", price: 120 },
-            { id: 28, name: "Potions Classroom", type: "property", price: 140 },
-            { id: 29, name: "The Great Hall", type: "property", price: 160 },
-            { id: 30, name: "Go to Azkaban", type: "go_jail", price: 0 },
-            { id: 31, name: "Gryffindor Tower", type: "property", price: 180 },
-            { id: 32, name: "Ravenclaw Tower", type: "property", price: 180 },
-            { id: 33, name: "Hufflepuff Tower", type: "property", price: 160 },
-            { id: 34, name: "Slytherin Tower", type: "property", price: 140 },
-            { id: 35, name: "Chance", type: "chance", price: 0 },
-            { id: 36, name: "Library", type: "property", price: 140 },
-            { id: 37, name: "Astronomy Tower", type: "property", price: 120 },
-            { id: 38, name: "Defence Against the Dark Arts", type: "property", price: 100 }
-        ];
-        const TOTAL_SPACES = 39;
+ $("players").innerHTML=players.map((p,i)=>`
+ <div class="player ${p.player_index===room.current_player?"active":""}">
+  <div class="avatar" style="background:${p.color}"></div>
+  <div>
+   <b>${escapeHtml(p.player_name)}</b>
+   <div class="money">$${p.money}</div>
+   <div class="muted">Petak ${p.position+1}</div>
+  </div>
+ </div>`).join("");
 
-        // Kalkulasi Persentase Koordinat Presisi untuk Gambar Papan Monopoly
-        function getBoardCoords(index) {
-            const w_corner = 13.5;
-            const w_edge_x = 8.11;
-            const w_edge_y_left = 8.11;
-            const w_edge_y_right = 9.125;
+ const allowed=room.status==="playing"&&me&&
+ room.current_player===me.player_index&&!moving;
 
-            if (index === 0) return { x: 100 - w_corner/2, y: 100 - w_corner/2 }; 
-            if (index >= 1 && index <= 9) return { x: 100 - w_corner - (index - 0.5) * w_edge_x, y: 100 - w_corner/2 };
-            if (index === 10) return { x: w_corner/2, y: 100 - w_corner/2 };
-            if (index >= 11 && index <= 19) return { x: w_corner/2, y: 100 - w_corner - (index - 10.5) * w_edge_y_left };
-            if (index === 20) return { x: w_corner/2, y: w_corner/2 };
-            if (index >= 21 && index <= 29) return { x: w_corner + (index - 20.5) * w_edge_x, y: w_corner/2 };
-            if (index === 30) return { x: 100 - w_corner/2, y: w_corner/2 };
-            if (index >= 31 && index <= 38) return { x: 100 - w_corner/2, y: w_corner + (index - 30.5) * w_edge_y_right };
-            return { x: 50, y: 50 };
-        }
+ $("roll").disabled=!allowed||rolled;
+ $("buy").disabled=!allowed||!rolled;
+ $("upgrade").disabled=!allowed||!rolled;
+ $("end").disabled=!allowed||!rolled;
+ $("start").disabled=!me||me.player_index!==0||
+ room.status!=="waiting";
+}
+function escapeHtml(s){
+ return String(s).replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",
+  '"':"&quot;","'":"&#39;"
+ }[c]));
+}
+function draw(){
+ document.querySelectorAll(".piece,.building").forEach(x=>x.remove());
 
-        async function initSupabase() {
-            try {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                
-                // Ambil state room terbaru dari SQL Database
-                const { data, error } = await supabase
-                    .from('monopoly_room')
-                    .select('game_state')
-                    .eq('room_id', ROOM_ID)
-                    .single();
+ players.forEach((p,i)=>{
+  const c=coords(p.position);
+  const el=document.createElement("div");
+  el.className="piece p"+i;
+  el.style.left=c.x+"%";
+  el.style.top=c.y+"%";
+  el.textContent=i+1;
+  el.title=p.player_name;
+  $("board").appendChild(el);
+ });
 
-                if (data && data.game_state) {
-                    gameState = data.game_state;
-                } else {
-                    // Jika room baru, reset state ke default
-                    gameState = {
-                        players: {},
-                        turnOrder: [],
-                        currentTurnIndex: 0,
-                        properties: {},
-                        phase: 'waiting',
-                        logs: []
-                    };
-                }
+ properties.forEach(p=>{
+  if(p.owner_index==null)return;
+  const c=coords(p.cell_index);
+  const el=document.createElement("div");
+  el.className="building";
+  el.style.left=(c.x+3)+"%";
+  el.style.top=(c.y-3)+"%";
+  el.textContent=p.level>=4?"🏰":p.level>=2?"🏠":"🏡";
+  $("board").appendChild(el);
+ });
+}
+async function refresh(){
+ const [r,p,pr]=await Promise.all([
+  db.from("monopoly_rooms").select("*").eq("id",room.id).single(),
+  db.from("monopoly_players").select("*")
+   .eq("room_id",room.id).order("player_index"),
+  db.from("monopoly_properties").select("*")
+   .eq("room_id",room.id).order("cell_index")
+ ]);
+ if(r.error)throw r.error;
+ room=r.data;players=p.data||[];properties=pr.data||[];
+ me=players.find(x=>x.player_key===playerKey())||me;
+ render();draw();
+}
+function subscribe(){
+ if(channel)db.removeChannel(channel);
+ channel=db.channel("monopoly-"+room.id)
+ .on("postgres_changes",{
+  event:"*",schema:"public",table:"monopoly_rooms",
+  filter:"id=eq."+room.id
+ },refresh)
+ .on("postgres_changes",{
+  event:"*",schema:"public",table:"monopoly_players",
+  filter:"room_id=eq."+room.id
+ },refresh)
+ .on("postgres_changes",{
+  event:"*",schema:"public",table:"monopoly_properties",
+  filter:"room_id=eq."+room.id
+ },refresh)
+ .subscribe();
+}
+async function createRoom(c){
+ const {data,error}=await db.from("monopoly_rooms")
+ .insert({code:c,status:"waiting"}).select().single();
+ if(error)throw error;
+ room=data;
 
-                // Tambahkan pemain jika belum terdaftar di room
-                if (!gameState.players[myId]) {
-                    gameState.players[myId] = { id: myId, name: myName, color: myColor, pos: 0, money: 1500, inJail: false };
-                    if (!gameState.turnOrder.includes(myId)) {
-                        gameState.turnOrder.push(myId);
-                    }
-                    if (gameState.phase === 'waiting' && gameState.turnOrder.length > 0) {
-                        gameState.phase = 'rolling';
-                    }
-                    pushLog(`${myName} masuk ke dalam Hogwarts Institute.`);
-                    await saveStateToDB();
-                } else {
-                    gameState.players[myId].name = myName;
-                    gameState.players[myId].color = myColor;
-                    await saveStateToDB();
-                    syncState(gameState); 
-                }
+ const rows=Array.from({length:TOTAL},(_,i)=>({
+  room_id:room.id,cell_index:i,
+  price:100+Math.floor(i/4)*20,
+  rent:10+Math.floor(i/4)*5
+ }));
+ const result=await db.from("monopoly_properties").insert(rows);
+ if(result.error)throw result.error;
+}
+async function join(){
+ const name=$("name").value.trim();
+ let c=$("room").value.trim().toUpperCase();
+ if(!name)return $("setupMsg").textContent="Masukkan nama.";
 
-                // Realtime subscription ke tabel SQL `monopoly_room`
-                supabase.channel('db-changes-' + ROOM_ID)
-                    .on('postgres_changes', { event: '*', schema: 'public', table: 'monopoly_room', filter: `room_id=eq.${ROOM_ID}` }, payload => {
-                        if (!isAnimating && payload.new && payload.new.game_state) {
-                            syncState(payload.new.game_state);
-                        }
-                    })
-                    .subscribe();
+ try{
+  $("join").disabled=true;
+  $("setupMsg").textContent="Menghubungkan...";
 
-                // Broadcast Channel untuk Animasi Dadu Realtime bersama
-                channel = supabase.channel('room-events-' + ROOM_ID);
-                channel.on('broadcast', { event: 'DICE_ROLL' }, payload => {
-                    animateDiceAndMove(payload.payload);
-                }).subscribe((status) => {
-                    if (status === 'SUBSCRIBED') {
-                        elJoinScreen.style.display = 'none';
-                        elGameContainer.style.display = 'flex';
-                        renderBoard();
-                    }
-                });
+  if(!c){
+   c=code();await createRoom(c);
+  }else{
+   const {data,error}=await db.from("monopoly_rooms")
+    .select("*").eq("code",c).maybeSingle();
+   if(error)throw error;
+   if(!data)throw new Error("Room tidak ditemukan.");
+   room=data;
+  }
 
-            } catch (err) {
-                elConnStatus.classList.remove('hidden');
-                elConnStatus.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1 text-rose-400"></i> Gagal koneksi DB. Pastikan Script SQL sudah di-RUN!';
-                elConnStatus.className = "text-xs mb-5 p-2.5 rounded-lg bg-rose-950/80 text-rose-400 font-mono border border-rose-700/60";
-                console.error("Supabase Error:", err);
-                
-                elBtnJoin.disabled = false;
-                elBtnJoin.innerHTML = 'Coba Lagi';
-            }
-        }
+  const {count}=await db.from("monopoly_players")
+   .select("*",{count:"exact",head:true}).eq("room_id",room.id);
+  if(count>=4)throw new Error("Room penuh.");
 
-        async function saveStateToDB() {
-            await supabase.from('monopoly_room').upsert({
-                room_id: ROOM_ID,
-                game_state: gameState
-            });
-            syncState(gameState);
-        }
+  const {data:existing}=await db.from("monopoly_players")
+   .select("*").eq("room_id",room.id)
+   .eq("player_key",playerKey()).maybeSingle();
 
-        function pushLog(msg) {
-            gameState.logs.push(msg);
-            if (gameState.logs.length > 60) gameState.logs.shift();
-        }
+  if(existing)me=existing;
+  else{
+   const {data:p,error}=await db.from("monopoly_players").insert({
+    room_id:room.id,player_key:playerKey(),
+    player_name:name,color:COLORS[count||0],
+    player_index:count||0
+   }).select().single();
+   if(error)throw error;
+   me=p;
+  }
 
-        function syncState(newState) {
-            gameState = newState;
-            renderPlayersUI();
-            renderBoard();
-            updateTurnUI();
-            renderLogs();
-        }
+  $("setup").classList.add("hidden");
+  $("game").classList.remove("hidden");
+  $("roomLabel").textContent=room.code;
+  $("status").textContent="ONLINE";
+  await refresh();
+  subscribe();
+  log("Berhasil masuk room "+room.code);
+ }catch(e){
+  $("setupMsg").textContent=e.message||"Gagal masuk.";
+ }finally{
+  $("join").disabled=false;
+ }
+}
+async function start(){
+ if(!me||me.player_index!==0)return;
+ if(players.length<2)return message("Minimal 2 pemain.");
+ await db.from("monopoly_rooms")
+  .update({status:"playing"}).eq("id",room.id);
+ await refresh();
+ log("Permainan dimulai.");
+}
+function canAct(){
+ return !!me&&!!room&&room.status==="playing"&&
+ room.current_player===me.player_index&&!moving;
+}
+async function roll(){
+ if(!canAct()||rolled)return;
+ moving=true;render();
 
-        function renderLogs() {
-            elGameLog.innerHTML = '';
-            gameState.logs.forEach(msg => {
-                const div = document.createElement('div');
-                div.className = "border-l-2 border-yellow-500/50 pl-2 py-0.5 text-slate-300";
-                div.textContent = msg;
-                elGameLog.appendChild(div);
-            });
-            elGameLog.scrollTop = elGameLog.scrollHeight;
-        }
+ const value=Math.floor(Math.random()*6)+1;
+ drawDice(value);
+ $("diceText").textContent="Hasil: "+value;
+ $("dice").classList.add("rolling");
+ await wait(450);
+ $("dice").classList.remove("rolling");
 
-        function renderBoard() {
-            elPiecesLayer.innerHTML = '';
-            elBuildingsLayer.innerHTML = '';
+ const p=players.find(x=>x.id===me.id);
+ if(!p){moving=false;return;}
 
-            // Render Bidak Pemain
-            Object.values(gameState.players).forEach(p => {
-                const coords = getBoardCoords(p.pos);
-                const piece = document.createElement('div');
-                piece.className = 'player-piece';
-                piece.style.backgroundColor = p.color;
-                piece.style.left = coords.x + '%';
-                piece.style.top = coords.y + '%';
-                
-                // Mencegah penumpukan jika multiple player berada di petak yang sama
-                let samePosPlayers = Object.values(gameState.players).filter(op => op.pos === p.pos);
-                let offsetIndex = samePosPlayers.indexOf(p);
-                if (offsetIndex > 0) {
-                    const angle = (offsetIndex / samePosPlayers.length) * 2 * Math.PI;
-                    const radius = 12; // offset pixel
-                    const offsetX = Math.cos(angle) * radius;
-                    const offsetY = Math.sin(angle) * radius;
-                    piece.style.transform = `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px))`;
-                }
+ const start=p.position;
+ for(let i=1;i<=value;i++){
+  const position=(start+i)%TOTAL;
+  p.position=position;
+  draw();
+  await wait(160);
+ }
+ rolled=true;
+ moving=false;
 
-                piece.innerHTML = `<i class="fa-solid fa-hat-wizard"></i>`;
-                elPiecesLayer.appendChild(piece);
-            });
+ const passed=start+value>=TOTAL;
+ let money=p.money+(passed?200:0);
+ if(passed)log(p.player_name+" melewati Start +$200.");
 
-            // Render Marker Kepemilikan & Rumah 2D
-            Object.keys(gameState.properties).forEach(propId => {
-                const prop = gameState.properties[propId];
-                if (prop && prop.owner) {
-                    const ownerData = gameState.players[prop.owner];
-                    if (!ownerData) return;
-                    
-                    const coords = getBoardCoords(parseInt(propId));
-                    const marker = document.createElement('div');
-                    marker.className = 'building-marker';
-                    marker.style.left = coords.x + '%';
-                    marker.style.top = `calc(${coords.y}% - 3.2%)`;
-                    marker.style.color = ownerData.color;
-                    marker.style.borderColor = ownerData.color;
-                    
-                    let housesHTML = `<i class="fa-solid fa-crown text-yellow-400 mr-1"></i>`;
-                    for(let i = 0; i < (prop.houses || 1); i++) {
-                         housesHTML += `<i class="fa-solid fa-house-chimney"></i>`;
-                    }
-                    marker.innerHTML = housesHTML;
-                    elBuildingsLayer.appendChild(marker);
-                }
-            });
-        }
+ await db.from("monopoly_players")
+  .update({position:p.position,money}).eq("id",p.id);
+ await refresh();
 
-        function renderPlayersUI() {
-            elPlayersList.innerHTML = '';
-            gameState.turnOrder.forEach(pId => {
-                const p = gameState.players[pId];
-                if (!p) return;
-                
-                const isMyTurn = (gameState.turnOrder[gameState.currentTurnIndex] === pId);
-                const borderClass = isMyTurn ? 'border-yellow-500 ring-2 ring-yellow-500/40 bg-slate-800' : 'border-slate-800 bg-slate-900/60';
-                
-                elPlayersList.innerHTML += `
-                    <div class="flex items-center gap-3 p-3 rounded-xl border ${borderClass} transition">
-                        <div class="w-9 h-9 rounded-full flex items-center justify-center text-white shadow-md font-bold" style="background:${p.color}">
-                            <i class="fa-solid fa-hat-wizard text-sm"></i>
-                        </div>
-                        <div class="flex-1">
-                            <div class="font-bold text-sm flex items-center gap-1.5 ${pId === myId ? 'text-yellow-400' : 'text-slate-200'}">
-                                <span>${p.name}</span>
-                                ${pId === myId ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">Kamu</span>' : ''}
-                            </div>
-                            <div class="text-xs text-emerald-400 font-mono font-semibold flex items-center gap-1">
-                                <i class="fa-solid fa-coins text-amber-400 text-[10px]"></i> £${p.money}
-                            </div>
-                        </div>
-                        ${isMyTurn ? '<span class="flex h-2.5 w-2.5 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-yellow-500"></span></span>' : ''}
-                    </div>
-                `;
-            });
-        }
+ const prop=properties.find(x=>x.cell_index===p.position);
+ if(prop&&prop.owner_index!=null&&prop.owner_index!==p.player_index){
+  await payRent(p,prop);
+ }
+ message("Mendarat di "+propertyNames[p.position]);
+ log(p.player_name+" melempar "+value+".");
+}
+async function payRent(p,prop){
+ const owner=players.find(x=>x.player_index===prop.owner_index);
+ if(!owner)return;
+ const rent=Math.min(prop.rent,p.money);
+ await db.from("monopoly_players").update({
+  money:p.money-rent
+ }).eq("id",p.id);
+ await db.from("monopoly_players").update({
+  money:owner.money+rent
+ }).eq("id",owner.id);
+ log(p.player_name+" membayar sewa $"+rent+
+ " kepada "+owner.player_name+".");
+ await refresh();
+}
+async function buy(){
+ if(!canAct()||!rolled)return;
+ const p=players.find(x=>x.id===me.id);
+ const prop=properties.find(x=>x.cell_index===p.position);
+ if(!prop||prop.owner_index!=null||special.has(p.position))
+  return message("Petak ini tidak dapat dibeli.");
+ if(p.money<prop.price)return message("Uang tidak cukup.");
 
-        function drawDiceFace(el, value) {
-            el.innerHTML = '';
-            const dotsMap = {
-                1: [[50,50]],
-                2: [[25,25], [75,75]],
-                3: [[25,25], [50,50], [75,75]],
-                4: [[25,25], [25,75], [75,25], [75,75]],
-                5: [[25,25], [25,75], [50,50], [75,25], [75,75]],
-                6: [[25,25], [25,50], [25,75], [75,25], [75,50], [75,75]]
-            };
-            (dotsMap[value] || dotsMap[1]).forEach(pos => {
-                const dot = document.createElement('div');
-                dot.className = 'dot';
-                dot.style.left = pos[0] + '%';
-                dot.style.top = pos[1] + '%';
-                el.appendChild(dot);
-            });
-        }
+ await db.from("monopoly_players").update({
+  money:p.money-prop.price
+ }).eq("id",p.id);
+ await db.from("monopoly_properties").update({
+  owner_index:p.player_index,level:0
+ }).eq("id",prop.id);
+ log(p.player_name+" membeli "+propertyNames[p.position]+".");
+ await refresh();
+}
+async function upgrade(){
+ if(!canAct()||!rolled)return;
+ const p=players.find(x=>x.id===me.id);
+ const prop=properties.find(x=>x.cell_index===p.position);
+ if(!prop||prop.owner_index!==p.player_index)
+  return message("Kamu bukan pemilik properti.");
+ if(prop.level>=4)return message("Bangunan maksimal.");
+ if(p.money<prop.price)return message("Uang tidak cukup.");
 
-        function updateTurnUI() {
-            if(gameState.turnOrder.length === 0) return;
-            const currentTurnId = gameState.turnOrder[gameState.currentTurnIndex];
-            const isMyTurn = (currentTurnId === myId);
-            
-            const activePlayerName = gameState.players[currentTurnId]?.name || 'Pemain';
-            elTurnIndicator.textContent = isMyTurn ? "Giliranmu Bermain!" : `Giliran ${activePlayerName}`;
-            elTurnIndicator.className = isMyTurn ? "text-xl font-bold text-emerald-400 mb-3 hogwarts-font" : "text-xl font-bold text-yellow-400 mb-3 hogwarts-font";
+ await db.from("monopoly_players").update({
+  money:p.money-prop.price
+ }).eq("id",p.id);
+ await db.from("monopoly_properties").update({
+  level:prop.level+1,rent:prop.rent*2
+ }).eq("id",prop.id);
+ log(p.player_name+" meng-upgrade "+propertyNames[p.position]+".");
+ await refresh();
+}
+async function endTurn(){
+ if(!canAct()||!rolled)return;
+ const next=(room.current_player+1)%players.length;
+ await db.from("monopoly_rooms").update({
+  current_player:next,turn_number:room.turn_number+1,dice_value:0
+ }).eq("id",room.id);
+ rolled=false;drawDice(0);
+ $("diceText").textContent="Belum dilempar";
+ await refresh();
+}
 
-            btnRoll.classList.add('hidden');
-            btnEnd.classList.add('hidden');
-
-            if (isMyTurn) {
-                if (gameState.phase === 'rolling') btnRoll.classList.remove('hidden');
-                if (gameState.phase === 'action') btnEnd.classList.remove('hidden');
-            }
-        }
-
-        btnRoll.addEventListener('click', async () => {
-            if (gameState.phase !== 'rolling') return;
-            gameState.phase = 'moving';
-            btnRoll.classList.add('hidden');
-            
-            const d1 = Math.floor(Math.random() * 6) + 1;
-            const d2 = Math.floor(Math.random() * 6) + 1;
-            
-            // Broadcast animasi kocok dadu ke seluruh pemain
-            channel.send({
-                type: 'broadcast',
-                event: 'DICE_ROLL',
-                payload: { playerId: myId, d1: d1, d2: d2 }
-            });
-            
-            // Jalankan animasi di layar sendiri
-            animateDiceAndMove({ playerId: myId, d1, d2 });
-        });
-
-        async function animateDiceAndMove(data) {
-            isAnimating = true;
-            const { playerId, d1, d2 } = data;
-            const player = gameState.players[playerId];
-            if (!player) return;
-
-            const steps = d1 + d2;
-            const diceEl1 = document.getElementById('dice1');
-            const diceEl2 = document.getElementById('dice2');
-            
-            diceEl1.classList.add('rolling');
-            diceEl2.classList.add('rolling');
-            
-            // Animasi visual dadu acak
-            for(let i=0; i<12; i++) {
-                drawDiceFace(diceEl1, Math.floor(Math.random()*6)+1);
-                drawDiceFace(diceEl2, Math.floor(Math.random()*6)+1);
-                await new Promise(r => setTimeout(r, 40));
-            }
-            
-            diceEl1.classList.remove('rolling');
-            diceEl2.classList.remove('rolling');
-            drawDiceFace(diceEl1, d1);
-            drawDiceFace(diceEl2, d2);
-            
-            await new Promise(r => setTimeout(r, 400));
-
-            // Animasi Bidak Berjalan Step-by-Step (Mencegah Bidak Loncat)
-            let currentPos = player.pos;
-            for (let i = 0; i < steps; i++) {
-                currentPos = (currentPos + 1) % TOTAL_SPACES;
-                player.pos = currentPos;
-                renderBoard();
-                
-                // Bonus Lewat GO (£200)
-                if (currentPos === 0 && playerId === myId) {
-                    player.money += 200;
-                    pushLog(`${player.name} melewati GO dan menerima bonus £200.`);
-                }
-                await new Promise(r => setTimeout(r, 320));
-            }
-
-            isAnimating = false;
-
-            // Pemroses Logika Landed Space khusus untuk player aktif
-            if (playerId === myId) {
-                pushLog(`${player.name} melempar dadu [${d1} + ${d2} = ${steps}] & mendarat di ${BOARD_SPACES[player.pos].name}.`);
-                handleSpaceLanding(player);
-            }
-        }
-
-        async function handleSpaceLanding(player) {
-            const space = BOARD_SPACES[player.pos];
-
-            if (space.type === 'property') {
-                const propState = gameState.properties[player.pos];
-                
-                if (!propState || !propState.owner) {
-                    // Properti belum dimiliki -> Tawarkan beli
-                    if (player.money >= space.price) {
-                        showBuyModal(space, player);
-                    } else {
-                        pushLog(`${player.name} mendarat di ${space.name} tetapi uang tidak cukup (£${player.money} / £${space.price}).`);
-                        await endTurnPhase();
-                    }
-                } else if (propState.owner !== player.id) {
-                    // Bayar sewa ke pemilik properti
-                    let rent = Math.floor(space.price * 0.15);
-                    if (propState.houses > 1) rent = rent * (propState.houses * 1.5);
-                    
-                    const owner = gameState.players[propState.owner];
-                    player.money -= rent;
-                    if (owner) owner.money += rent;
-                    
-                    pushLog(`${player.name} membayar sewa £${rent} kepada ${owner ? owner.name : 'Pemilik'}.`);
-                    showMessage("Bayar Sewa", `Anda mendarat di properti milik ${owner ? owner.name : 'Pemain lain'} dan membayar sewa sebesar £${rent}.`, endTurnPhase);
-                } else {
-                    // Properti sendiri -> Upgrade/Tambah Rumah 2D
-                    if (player.money >= Math.floor(space.price * 0.5) && (propState.houses || 1) < 4) {
-                        propState.houses = (propState.houses || 1) + 1;
-                        player.money -= Math.floor(space.price * 0.5);
-                        pushLog(`${player.name} meng-upgrade bangunan di ${space.name}.`);
-                        showMessage("Upgrade Bangunan", `Anda menambahkan bangunan baru di ${space.name}!`, endTurnPhase);
-                    } else {
-                        pushLog(`${player.name} mengunjungi properti milik sendiri.`);
-                        await endTurnPhase();
-                    }
-                }
-            } 
-            else if (space.type === 'chance' || space.type === 'chest') {
-                const cards = [
-                    { title: "Galeon Ditemukan", text: "Menemukan kantong Galeon di Koridor Hogwarts.", amount: 100 },
-                    { title: "Menang Taruhan Quidditch", text: "Tim Gryffindor menang pertandingan!", amount: 150 },
-                    { title: "Denda Kementerian Sihir", text: "Menggunakan sihir di luar sekolah.", amount: -80 },
-                    { title: "Beli Perlengkapan Ramuan", text: "Membeli bahan baku ramuan mahal.", amount: -50 }
-                ];
-                const card = cards[Math.floor(Math.random() * cards.length)];
-                player.money += card.amount;
-                
-                const verb = card.amount > 0 ? "mendapatkan" : "membayar";
-                pushLog(`${player.name} membuka kartu: ${card.title} (${verb} £${Math.abs(card.amount)}).`);
-                showMessage(card.title, `${card.text} Anda ${verb} £${Math.abs(card.amount)}.`, endTurnPhase);
-            }
-            else if (space.type === 'go_jail') {
-                player.pos = 10;
-                player.inJail = true;
-                pushLog(`${player.name} ditangkap dan dikirim ke Azkaban!`);
-                showMessage("Dikirim ke Azkaban!", "Anda melakukan pelanggaran berat dan dikirim ke Azkaban.", endTurnPhase);
-            }
-            else {
-                await endTurnPhase();
-            }
-        }
-
-        function showBuyModal(space, player) {
-            document.getElementById('modal-prop-name').textContent = space.name;
-            document.getElementById('modal-prop-price').textContent = `Harga Beli: £${space.price}`;
-            modProp.classList.add('active');
-
-            document.getElementById('btn-buy').onclick = async () => {
-                player.money -= space.price;
-                gameState.properties[player.pos] = { owner: player.id, houses: 1 };
-                pushLog(`${player.name} berhasil membeli ${space.name} seharga £${space.price}!`);
-                closeModal();
-                await endTurnPhase();
-            };
-
-            document.getElementById('btn-pass').onclick = async () => {
-                pushLog(`${player.name} memutuskan tidak membeli ${space.name}.`);
-                closeModal();
-                await endTurnPhase();
-            };
-        }
-
-        function showMessage(title, text, callback) {
-            document.getElementById('modal-msg-title').textContent = title;
-            document.getElementById('modal-msg-text').textContent = text;
-            modMsg.classList.add('active');
-            document.getElementById('btn-msg-ok').onclick = async () => {
-                modMsg.classList.remove('active');
-                if (callback) await callback();
-            };
-        }
-
-        function closeModal() {
-            modProp.classList.remove('active');
-            modMsg.classList.remove('active');
-        }
-
-        async function endTurnPhase() {
-            gameState.phase = 'action';
-            await saveStateToDB();
-        }
-
-        btnEnd.addEventListener('click', async () => {
-            if (gameState.phase !== 'action') return;
-            
-            gameState.currentTurnIndex = (gameState.currentTurnIndex + 1) % gameState.turnOrder.length;
-            gameState.phase = 'rolling';
-            
-            await saveStateToDB();
-        });
-
-        // Color Picker Event Listeners
-        elColorPicks.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                elColorPicks.forEach(b => {
-                    b.classList.remove('ring-2', 'ring-white', 'scale-110');
-                    b.classList.add('border-transparent');
-                });
-                const target = e.target.closest('button');
-                target.classList.add('ring-2', 'ring-white', 'scale-110');
-                target.classList.remove('border-transparent');
-                myColor = target.dataset.color;
-            });
-        });
-
-        // Join Lobby Button Event Listener
-        elBtnJoin.addEventListener('click', () => {
-            const name = elPlayerName.value.trim();
-            if (!name) {
-                showMessage("Peringatan", "Silakan masukkan nama Anda terlebih dahulu.");
-                return;
-            }
-            myName = name;
-            
-            // Set up Room ID
-            let inputRoom = elRoomCode.value.trim().toUpperCase();
-            if (!inputRoom) {
-                // Generate acak jika dikosongkan
-                inputRoom = 'HW-' + Math.random().toString(36).substr(2, 5).toUpperCase();
-            }
-            ROOM_ID = inputRoom;
-            elDisplayRoomId.textContent = ROOM_ID;
-            
-            // Tampilkan status loading di tombol
-            elBtnJoin.disabled = true;
-            elBtnJoin.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menghubungkan...';
-            
-            initSupabase();
-
-            drawDiceFace(document.getElementById('dice1'), 1);
-            drawDiceFace(document.getElementById('dice2'), 1);
-        });
-
-        // Copy Room ID Button
-        btnCopyRoom.addEventListener('click', () => {
-            try {
-                navigator.clipboard.writeText(ROOM_ID);
-                const originalText = btnCopyRoom.innerHTML;
-                btnCopyRoom.innerHTML = '<i class="fa-solid fa-check text-emerald-400 mr-1"></i>Tersalin';
-                setTimeout(() => btnCopyRoom.innerHTML = originalText, 2000);
-            } catch (err) {
-                // Fallback untuk iframe document restrictions
-                const textArea = document.createElement("textarea");
-                textArea.value = ROOM_ID;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand("Copy");
-                textArea.remove();
-                
-                const originalText = btnCopyRoom.innerHTML;
-                btnCopyRoom.innerHTML = '<i class="fa-solid fa-check text-emerald-400 mr-1"></i>Tersalin';
-                setTimeout(() => btnCopyRoom.innerHTML = originalText, 2000);
-            }
-        });
-
-        window.addEventListener('resize', renderBoard);
-    </script>
+$("join").onclick=join;
+$("start").onclick=start;
+$("roll").onclick=roll;
+$("buy").onclick=buy;
+$("upgrade").onclick=upgrade;
+$("end").onclick=endTurn;
+drawDice(0);
+</script>
 </body>
 </html>
