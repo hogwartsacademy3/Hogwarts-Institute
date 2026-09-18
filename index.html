@@ -1,876 +1,982 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hogwarts Institute Monopoly</title>
-    <!-- Tailwind CSS untuk Styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- FontAwesome untuk Icon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Monopoly Hogwarts Institute</title>
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: white;
-            overflow: hidden; /* Hindari scroll, paskan ke layar */
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-        .hogwarts-font {
-            font-family: 'Cinzel', serif;
-        }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        /* Layout Utama */
-        #game-container {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-            flex-direction: row;
-        }
+<style>
+:root{
+--gold:#d4b06a;
+--bg:#08111d;
+--panel:#101d2d;
+--cream:#efe4c8;
+--red:#a4161a;
+--green:#1ea65a;
+}
 
-        @media (max-width: 768px) {
-            #game-container {
-                flex-direction: column;
-                overflow-y: auto;
-            }
-        }
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
 
-        /* Area Papan */
-        #board-area {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #1e293b;
-            padding: 10px;
-            position: relative;
-        }
+body{
+background:#02060d;
+font-family:Inter,sans-serif;
+overflow:hidden;
+color:white;
+}
 
-        #board-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 90vh; /* Paskan dengan tinggi layar */
-            aspect-ratio: 1 / 1;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
-            border-radius: 10px;
-            overflow: hidden;
-        }
+#app{
+display:flex;
+height:100vh;
+}
 
-        @media (max-width: 768px) {
-            #board-wrapper {
-                max-width: 100%;
-                width: 95vw;
-            }
-        }
+#boardWrap{
+flex:1;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:auto;
+background:
+radial-gradient(circle,#173152,#03070d);
+}
 
-        #board-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+#board{
+position:relative;
+width:min(96vw,96vh);
+aspect-ratio:1;
+background:url("file_00000000004a481f491876e005d0f567d.png") center/cover no-repeat;
+border-radius:18px;
+box-shadow:
+0 0 40px rgba(0,0,0,.6),
+0 0 20px rgba(212,176,106,.3);
+}
 
-        /* Bidak Pemain */
-        .player-piece {
-            position: absolute;
-            width: 4%;
-            height: 4%;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: top 0.3s linear, left 0.3s linear;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5vw;
-            color: white;
-            text-shadow: 1px 1px 2px black;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.4);
-            border: 2px solid rgba(255,255,255,0.8);
-        }
+#pieces,
+#houses{
+position:absolute;
+inset:0;
+pointer-events:none;
+}
 
-        /* Bangunan / Penanda Kepemilikan */
-        .building-marker {
-            position: absolute;
-            transform: translate(-50%, -50%);
-            z-index: 5;
-            font-size: 1.2vw;
-            text-shadow: 0 0 5px black;
-            background: rgba(0,0,0,0.6);
-            padding: 2px;
-            border-radius: 4px;
-        }
+.piece{
+position:absolute;
+width:24px;
+height:24px;
+border-radius:50%;
+border:3px solid white;
+transition:none;
+box-shadow:0 0 12px rgba(255,255,255,.7);
+}
 
-        /* Area UI Kanan */
-        #ui-area {
-            width: 350px;
-            background: #1e293b;
-            border-left: 2px solid #334155;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
+.house{
+position:absolute;
+width:13px;
+height:13px;
+background:#1bbf63;
+border:2px solid white;
+border-radius:3px;
+}
 
-        @media (max-width: 768px) {
-            #ui-area {
-                width: 100%;
-                height: 50vh;
-                border-left: none;
-                border-top: 2px solid #334155;
-            }
-        }
+.hotel{
+position:absolute;
+width:18px;
+height:18px;
+background:#c01717;
+border:2px solid white;
+border-radius:3px;
+}
 
-        /* Animasi Dadu */
-        .dice-container {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin: 20px 0;
-        }
+#side{
+width:340px;
+background:linear-gradient(#0e1a2a,#050c16);
+border-left:2px solid rgba(212,176,106,.3);
+display:flex;
+flex-direction:column;
+}
 
-        .dice {
-            width: 60px;
-            height: 60px;
-            background: white;
-            border-radius: 10px;
-            position: relative;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.1);
-            transition: transform 0.1s;
-        }
+.topTitle{
+font-family:Cinzel;
+text-align:center;
+font-size:26px;
+padding:18px;
+color:var(--gold);
+border-bottom:1px solid rgba(212,176,106,.25);
+}
 
-        .dice.rolling {
-            animation: shake 0.3s infinite;
-        }
+.panel{
+margin:14px;
+padding:14px;
+background:rgba(255,255,255,.05);
+border:1px solid rgba(212,176,106,.2);
+border-radius:16px;
+}
 
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-5deg); }
-            20% { transform: translate(-3px, 0px) rotate(5deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(5deg); }
-            50% { transform: translate(-1px, 2px) rotate(-5deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-5deg); }
-            80% { transform: translate(-1px, -1px) rotate(5deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-5deg); }
-        }
+input{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:none;
+margin-top:8px;
+background:#17283d;
+color:white;
+}
 
-        .dot {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: #1e293b;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-        }
+button{
+width:100%;
+margin-top:10px;
+padding:12px;
+border:none;
+border-radius:12px;
+font-weight:bold;
+background:linear-gradient(#d9b96f,#b98d3c);
+color:#201300;
+cursor:pointer;
+}
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #1e293b; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+button:disabled{
+opacity:.5;
+cursor:not-allowed;
+}
 
-        /* Modal Custom */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-    </style>
+#dice{
+display:flex;
+justify-content:center;
+gap:12px;
+margin-top:12px;
+}
+
+.die{
+width:72px;
+height:72px;
+background:#f8f8f8;
+border-radius:16px;
+position:relative;
+box-shadow:0 8px 20px rgba(0,0,0,.4);
+}
+
+.dot{
+width:11px;
+height:11px;
+background:#111;
+border-radius:50%;
+position:absolute;
+opacity:0;
+}
+
+.log{
+flex:1;
+overflow:auto;
+padding:12px;
+font-size:13px;
+line-height:1.5;
+}
+
+.playerCard{
+display:flex;
+justify-content:space-between;
+padding:8px 0;
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.turnGlow{
+animation:glow 1s infinite alternate;
+}
+
+@keyframes glow{
+from{box-shadow:0 0 6px var(--gold);}
+to{box-shadow:0 0 20px var(--gold);}
+}
+
+@media(max-width:900px){
+#app{
+flex-direction:column;
+}
+
+#side{
+width:100%;
+height:38vh;
+}
+
+#board{
+width:100vw;
+}
+}
+</style>
 </head>
+
 <body>
 
-    <!-- Layar Join / Login -->
-    <div id="join-screen" class="fixed inset-0 bg-slate-900 z-50 flex items-center justify-center">
-        <div class="bg-slate-800 p-8 rounded-xl shadow-2xl max-w-md w-full text-center border border-slate-700">
-            <h1 class="hogwarts-font text-4xl text-yellow-500 mb-2">Hogwarts Institute</h1>
-            <h2 class="text-xl text-slate-300 mb-6">Monopoly Multiplayer</h2>
-            
-            <div id="connection-status" class="text-sm mb-4 text-blue-400">Menghubungkan ke Supabase...</div>
+<div id="app">
 
-            <input type="text" id="player-name" placeholder="Masukkan Nama Anda" 
-                   class="w-full bg-slate-700 text-white px-4 py-3 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-yellow-500">
-            
-            <div class="flex gap-2 mb-6 justify-center">
-                <button class="color-pick w-8 h-8 rounded-full bg-red-600 ring-2 ring-white" data-color="#dc2626"></button>
-                <button class="color-pick w-8 h-8 rounded-full bg-blue-600 border border-transparent" data-color="#2563eb"></button>
-                <button class="color-pick w-8 h-8 rounded-full bg-green-600 border border-transparent" data-color="#16a34a"></button>
-                <button class="color-pick w-8 h-8 rounded-full bg-yellow-500 border border-transparent" data-color="#eab308"></button>
-                <button class="color-pick w-8 h-8 rounded-full bg-purple-600 border border-transparent" data-color="#9333ea"></button>
-            </div>
+<div id="boardWrap">
 
-            <button id="btn-join" class="w-full bg-yellow-600 hover:bg-yellow-500 text-slate-900 font-bold py-3 rounded-lg transition-colors shadow-lg disabled:opacity-50">
-                Masuk ke Ruang Game
-            </button>
-        </div>
-    </div>
+<div id="board">
 
-    <!-- Container Utama Game -->
-    <div id="game-container" style="display: none;">
-        
-        <!-- Papan Game -->
-        <div id="board-area">
-            <div id="board-wrapper">
-                <!-- Gambar Papan yang diinstruksikan -->
-                <img src="1000436650.png" id="board-img" alt="Hogwarts Monopoly Board" onerror="this.src='https://placehold.co/1000x1000/1e293b/yellow?text=Board+Image+Not+Found'; alert('Gambar 1000436650.png tidak ditemukan, menggunakan placeholder.');">
-                
-                <!-- Layer untuk menempatkan bidak -->
-                <div id="pieces-layer" class="absolute inset-0 pointer-events-none"></div>
-                <!-- Layer untuk menempatkan bangunan (rumah/hotel/penanda) -->
-                <div id="buildings-layer" class="absolute inset-0 pointer-events-none"></div>
-            </div>
-        </div>
+<div id="houses"></div>
+<div id="pieces"></div>
 
-        <!-- Panel UI Kanan -->
-        <div id="ui-area">
-            
-            <!-- Info Turn & Dadu -->
-            <div class="p-4 bg-slate-800 border-b border-slate-700 text-center">
-                <h3 id="turn-indicator" class="text-xl font-bold text-yellow-400 mb-2">Menunggu Pemain...</h3>
-                
-                <div class="dice-container" id="dice-wrapper">
-                    <div class="dice" id="dice1"></div>
-                    <div class="dice" id="dice2"></div>
-                </div>
+</div>
 
-                <div class="flex gap-2 justify-center">
-                    <button id="action-roll" class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded font-bold shadow hidden transition">Kocok Dadu</button>
-                    <button id="action-end" class="bg-slate-600 hover:bg-slate-500 px-6 py-2 rounded font-bold shadow hidden transition">Akhiri Giliran</button>
-                </div>
-            </div>
+</div>
 
-            <!-- Daftar Pemain -->
-            <div class="flex-1 overflow-y-auto p-4">
-                <h4 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Pemain</h4>
-                <div id="players-list" class="flex flex-col gap-3">
-                    <!-- Template Pemain akan diinjeksi via JS -->
-                </div>
-            </div>
+<div id="side">
 
-            <!-- Log Game -->
-            <div class="h-48 bg-slate-900 p-3 flex flex-col border-t border-slate-700">
-                <h4 class="text-xs font-semibold text-slate-500 uppercase mb-2">Game Log</h4>
-                <div id="game-log" class="flex-1 overflow-y-auto text-sm space-y-1 text-slate-300 font-mono">
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="topTitle">
+MONOPOLY
+<br>
+HOGWARTS INSTITUTE
+</div>
 
-    <!-- Modal Beli Properti -->
-    <div id="modal-property" class="modal-overlay">
-        <div class="bg-slate-800 p-6 rounded-xl border border-slate-600 shadow-2xl max-w-sm w-full text-center">
-            <h2 id="modal-prop-name" class="text-2xl font-bold mb-1 hogwarts-font text-yellow-400">Nama Properti</h2>
-            <p id="modal-prop-price" class="text-lg mb-6">Harga: £0</p>
-            <div class="flex gap-4 justify-center">
-                <button id="btn-buy" class="bg-green-600 hover:bg-green-500 px-6 py-2 rounded font-bold">Beli</button>
-                <button id="btn-pass" class="bg-slate-600 hover:bg-slate-500 px-6 py-2 rounded font-bold">Lewati</button>
-            </div>
-        </div>
-    </div>
+<div class="panel">
 
-    <!-- Modal Pesan Universal -->
-    <div id="modal-message" class="modal-overlay">
-        <div class="bg-slate-800 p-6 rounded-xl border border-slate-600 shadow-2xl max-w-sm w-full text-center">
-            <h2 id="modal-msg-title" class="text-xl font-bold mb-3 text-yellow-400">Pesan</h2>
-            <p id="modal-msg-text" class="text-md mb-6">Teks pesan disini</p>
-            <button id="btn-msg-ok" class="bg-blue-600 hover:bg-blue-500 px-8 py-2 rounded font-bold">OK</button>
-        </div>
-    </div>
+<div>Nama</div>
+<input id="name" placeholder="Masukkan nama">
 
-    <script>
-        // Konfigurasi Supabase dari User
-        const SUBASE_URL = 'https://wrhxzczvlfmdybuyslcv.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_d-AKVoEiwg_2xMPUCeiaLQ_Gnvn3kIe';
-        const ROOM_NAME = 'hogwarts-mabar';
+<div style="margin-top:10px;">Room</div>
+<input id="room" placeholder="Contoh: HOGWARTS">
 
-        let supabase;
-        let channel;
-        let isConnected = false;
+<button id="joinBtn">Masuk Room</button>
 
-        // Data Pemain Lokal
-        let myId = 'user_' + Math.random().toString(36).substr(2, 9);
-        let myColor = '#dc2626'; // Default Merah
-        let myName = '';
+</div>
 
-        // State Game Global (Disinkronkan via Broadcast)
-        let gameState = {
-            players: {}, // object key: playerId, value: {name, color, pos, money, inJail}
-            turnOrder: [], // array of playerIds
-            currentTurnIndex: 0,
-            properties: {}, // kepemilikan dan level bangunan
-            phase: 'waiting', // waiting, rolling, moving, action
-            logs: []
-        };
+<div class="panel">
 
-        // DOM Elements
-        const elJoinScreen = document.getElementById('join-screen');
-        const elGameContainer = document.getElementById('game-container');
-        const elBtnJoin = document.getElementById('btn-join');
-        const elPlayerName = document.getElementById('player-name');
-        const elConnStatus = document.getElementById('connection-status');
-        const elColorPicks = document.querySelectorAll('.color-pick');
-        
-        const elBoardImg = document.getElementById('board-img');
-        const elPiecesLayer = document.getElementById('pieces-layer');
-        const elBuildingsLayer = document.getElementById('buildings-layer');
-        const elPlayersList = document.getElementById('players-list');
-        const elGameLog = document.getElementById('game-log');
-        const elTurnIndicator = document.getElementById('turn-indicator');
-        
-        const btnRoll = document.getElementById('action-roll');
-        const btnEnd = document.getElementById('action-end');
+<div style="font-weight:bold;">Giliran</div>
 
-        // Modal Elements
-        const modProp = document.getElementById('modal-property');
-        const modMsg = document.getElementById('modal-message');
+<div id="turnText" style="margin-top:8px;">
+Belum bergabung
+</div>
 
-        /* 
-           Berdasarkan gambar, papan ini memiliki 39 petak (bukan 40 standar).
-           Sisi Bawah: 9, Kiri: 9, Atas: 9, Kanan: 8. Total + 4 Sudut = 39.
-        */
-        const BOARD_SPACES = [
-            { id: 0, name: "GO", type: "go", price: 0 },
-            // Bawah (1-9)
-            { id: 1, name: "Divination Classroom", type: "property", price: 50, color: "#8B4513" }, // Brown
-            { id: 2, name: "Herbology Classroom", type: "property", price: 50, color: "#8B4513" },
-            { id: 3, name: "Care of Magical Creatures", type: "property", price: 60, color: "#8B4513" },
-            { id: 4, name: "The Three Broomsticks", type: "property", price: 60, color: "#87CEEB" }, // Light blue
-            { id: 5, name: "Community Chest", type: "chest", price: 0 },
-            { id: 6, name: "Quidditch Pitch", type: "property", price: 80, color: "#87CEEB" },
-            { id: 7, name: "Flight Class", type: "property", price: 80, color: "#87CEEB" },
-            { id: 8, name: "Prefects' Bathroom", type: "property", price: 100, color: "#D8BFD8" }, // Pink
-            { id: 9, name: "DADA Classroom", type: "property", price: 100, color: "#D8BFD8" },
-            // Sudut Kiri Bawah
-            { id: 10, name: "Just Visiting", type: "jail", price: 0 },
-            // Kiri (11-19)
-            { id: 11, name: "School Shop", type: "property", price: 50, color: "#D8BFD8" },
-            { id: 12, name: "St. Mungo's", type: "property", price: 60, color: "#FFA500" }, // Orange
-            { id: 13, name: "The Leaky Cauldron", type: "property", price: 80, color: "#FFA500" },
-            { id: 14, name: "Chance", type: "chance", price: 0 },
-            { id: 15, name: "Diagon Alley", type: "property", price: 100, color: "#FFA500" },
-            { id: 16, name: "Knockturn Alley", type: "property", price: 120, color: "#FF0000" }, // Red
-            { id: 17, name: "Community Chest", type: "chest", price: 0 },
-            { id: 18, name: "Ministry of Magic", type: "property", price: 140, color: "#FF0000" },
-            { id: 19, name: "Gringotts", type: "property", price: 150, color: "#FF0000" },
-            // Sudut Kiri Atas
-            { id: 20, name: "Free Parking", type: "parking", price: 0 },
-            // Atas (21-29)
-            { id: 21, name: "Hogwarts Express", type: "property", price: 200, color: "#FFFF00" }, // Yellow
-            { id: 22, name: "Hogsmeade", type: "property", price: 60, color: "#FFFF00" },
-            { id: 23, name: "Hagrid's Hut", type: "property", price: 60, color: "#FFFF00" },
-            { id: 24, name: "Forbidden Forest", type: "property", price: 100, color: "#008000" }, // Green
-            { id: 25, name: "Charms Classroom", type: "property", price: 100, color: "#008000" },
-            { id: 26, name: "Community Chest", type: "chest", price: 0 },
-            { id: 27, name: "Transfiguration", type: "property", price: 120, color: "#008000" },
-            { id: 28, name: "Potions", type: "property", price: 140, color: "#00008B" }, // Dark Blue
-            { id: 29, name: "The Great Hall", type: "property", price: 160, color: "#00008B" },
-            // Sudut Kanan Atas
-            { id: 30, name: "Go to Azkaban", type: "go_jail", price: 0 },
-            // Kanan (31-38) - Berdasarkan visual gambar
-            { id: 31, name: "Gryffindor Tower", type: "property", price: 180, color: "#FF0000" },
-            { id: 32, name: "Ravenclaw Tower", type: "property", price: 180, color: "#008000" },
-            { id: 33, name: "Hufflepuff Tower", type: "property", price: 160, color: "#008000" },
-            { id: 34, name: "Slytherin Tower", type: "property", price: 140, color: "#008000" },
-            { id: 35, name: "Chance", type: "chance", price: 0 },
-            { id: 36, name: "Library", type: "property", price: 140, color: "#0000FF" },
-            { id: 37, name: "Astronomy Tower", type: "property", price: 120, color: "#0000FF" },
-            { id: 38, name: "Defence Against the Dark Arts", type: "property", price: 100, color: "#0000FF" }
-        ];
-        const TOTAL_SPACES = 39;
+<div id="dice">
 
-        // Menghitung posisi X, Y (persen) untuk penempatan presisi di atas gambar
-        function getBoardCoords(index) {
-            const w_corner = 13.5; // Lebar sudut dalam %
-            const w_edge_x = 8.11; // 9 petak horizontal
-            const w_edge_y_left = 8.11; // 9 petak vertikal kiri
-            const w_edge_y_right = 9.125; // 8 petak vertikal kanan (lebih tinggi sedikit)
+<div class="die" id="die1"></div>
 
-            // GO
-            if (index === 0) return { x: 100 - w_corner/2, y: 100 - w_corner/2 }; 
-            // Bawah
-            if (index >= 1 && index <= 9) {
-                return { x: 100 - w_corner - (index - 0.5) * w_edge_x, y: 100 - w_corner/2 };
-            }
-            // Jail
-            if (index === 10) return { x: w_corner/2, y: 100 - w_corner/2 };
-            // Kiri
-            if (index >= 11 && index <= 19) {
-                return { x: w_corner/2, y: 100 - w_corner - (index - 10.5) * w_edge_y_left };
-            }
-            // Parking
-            if (index === 20) return { x: w_corner/2, y: w_corner/2 };
-            // Atas
-            if (index >= 21 && index <= 29) {
-                return { x: w_corner + (index - 20.5) * w_edge_x, y: w_corner/2 };
-            }
-            // Azkaban
-            if (index === 30) return { x: 100 - w_corner/2, y: w_corner/2 };
-            // Kanan
-            if (index >= 31 && index <= 38) {
-                return { x: 100 - w_corner/2, y: w_corner + (index - 30.5) * w_edge_y_right };
-            }
-            return { x: 50, y: 50 }; // Fallback
-        }
+<div class="die" id="die2"></div>
 
-        async function initSupabase() {
-            try {
-                supabase = window.supabase.createClient(SUBASE_URL, SUPABASE_KEY);
-                
-                channel = supabase.channel(ROOM_NAME, {
-                    config: {
-                        presence: { key: myId },
-                        broadcast: { self: true }
-                    }
-                });
+</div>
 
-                // Listeners
-                channel.on('presence', { event: 'sync' }, handlePresenceSync);
-                channel.on('presence', { event: 'join' }, handlePresenceJoin);
-                channel.on('presence', { event: 'leave' }, handlePresenceLeave);
-                
-                channel.on('broadcast', { event: 'STATE_UPDATE' }, payload => syncState(payload.state));
-                channel.on('broadcast', { event: 'DICE_ROLL' }, payload => animateDiceAndMove(payload));
-                channel.on('broadcast', { event: 'LOG' }, payload => addLog(payload.msg));
+<button id="rollBtn" disabled>Roll Dice</button>
 
-                const status = await channel.subscribe(async (status) => {
-                    if (status === 'SUBSCRIBED') {
-                        isConnected = true;
-                        elConnStatus.textContent = "Terhubung! Siap bermain.";
-                        elConnStatus.className = "text-sm mb-4 text-green-400 font-bold";
-                        elBtnJoin.disabled = false;
-                        await channel.track({ id: myId, name: myName, color: myColor });
-                    }
-                });
-            } catch (err) {
-                elConnStatus.textContent = "Gagal terhubung ke server.";
-                elConnStatus.className = "text-sm mb-4 text-red-500";
-                console.error("Supabase Error:", err);
-            }
-        }
+</div>
 
-        let hostId = null; // Pemain tertua di room yang handle state awal
+<div class="panel">
 
-        function handlePresenceSync() {
-            const state = channel.presenceState();
-            const onlineIds = Object.keys(state);
-            
-            if (onlineIds.length > 0) {
-                // Tentukan host (ID pertama berdasar sort alfabetis agar konsisten)
-                onlineIds.sort();
-                hostId = onlineIds[0];
-                
-                // Jika saya host dan game belum mulai, inisialisasi
-                if (myId === hostId && Object.keys(gameState.players).length === 0) {
-                    gameState.phase = 'rolling';
-                }
-            }
-            renderPlayersUI();
-        }
+<div style="font-weight:bold;">Pemain</div>
 
-        function handlePresenceJoin({ newPresences }) {
-            newPresences.forEach(p => {
-                if (!gameState.players[p.id]) {
-                    gameState.players[p.id] = {
-                        id: p.id,
-                        name: p.name,
-                        color: p.color,
-                        pos: 0,
-                        money: 1500,
-                        inJail: false
-                    };
-                    if (!gameState.turnOrder.includes(p.id)) {
-                        gameState.turnOrder.push(p.id);
-                    }
-                    if (myId === hostId) {
-                        broadcastState();
-                        broadcastLog(`${p.name} bergabung ke permainan.`);
-                    }
-                }
-            });
-            renderPlayersUI();
-        }
+<div id="playersList"></div>
 
-        function handlePresenceLeave({ leftPresences }) {
-            leftPresences.forEach(p => {
-                broadcastLog(`${gameState.players[p.id]?.name || 'Seseorang'} keluar.`);
-                // Jangan hapus data, biarkan saja offline
-            });
-        }
+</div>
 
-        function broadcastState() {
-            if (!isConnected) return;
-            channel.send({
-                type: 'broadcast',
-                event: 'STATE_UPDATE',
-                state: gameState
-            });
-            syncState(gameState); // Update lokal
-        }
+<div class="log" id="log"></div>
 
-        function broadcastLog(msg) {
-            channel.send({ type: 'broadcast', event: 'LOG', msg });
-            addLog(msg);
-        }
+</div>
 
-        function syncState(newState) {
-            gameState = newState;
-            renderPlayersUI();
-            renderBoard();
-            updateTurnUI();
-        }
+</div>
 
-        function renderBoard() {
-            elPiecesLayer.innerHTML = '';
-            elBuildingsLayer.innerHTML = '';
+<script>
 
-            // Render Bidak
-            Object.values(gameState.players).forEach(p => {
-                const coords = getBoardCoords(p.pos);
-                const piece = document.createElement('div');
-                piece.className = 'player-piece';
-                piece.style.backgroundColor = p.color;
-                piece.style.left = coords.x + '%';
-                piece.style.top = coords.y + '%';
-                
-                // Jika ada pemain di kotak yang sama, geser sedikit agar tidak numpuk
-                let offsetCount = Object.values(gameState.players).filter(op => op.pos === p.pos).indexOf(p);
-                if (offsetCount > 0) {
-                    piece.style.transform = `translate(calc(-50% + ${offsetCount * 10}px), calc(-50% + ${offsetCount * 10}px))`;
-                }
+const supabase=window.supabase.createClient(
+"https://wrhxzczvlfmdybuyslcv.supabase.co",
+"sb_publishable_d-AKVoEiwg_2xMPUCeiaLQ_Gnvn3kIe"
+);
 
-                piece.innerHTML = `<i class="fa-solid fa-hat-wizard"></i>`; // Icon wizard
-                elPiecesLayer.appendChild(piece);
-            });
+const board=document.getElementById("board");
+const piecesLayer=document.getElementById("pieces");
+const housesLayer=document.getElementById("houses");
 
-            // Render Bangunan / Kepemilikan (Objek 2D sesuai permintaan)
-            Object.keys(gameState.properties).forEach(propId => {
-                const prop = gameState.properties[propId];
-                if (prop.owner) {
-                    const ownerData = gameState.players[prop.owner];
-                    const coords = getBoardCoords(parseInt(propId));
-                    const marker = document.createElement('div');
-                    marker.className = 'building-marker';
-                    // Posisikan sedikit di atas tengah petak
-                    marker.style.left = coords.x + '%';
-                    marker.style.top = `calc(${coords.y}% - 3%)`;
-                    marker.style.color = ownerData.color;
-                    marker.style.border = `1px solid ${ownerData.color}`;
-                    
-                    let housesHTML = '';
-                    for(let i=0; i < (prop.houses || 1); i++) {
-                         housesHTML += `<i class="fa-solid fa-house-chimney"></i> `;
-                    }
-                    marker.innerHTML = housesHTML;
-                    elBuildingsLayer.appendChild(marker);
-                }
-            });
-        }
+const COLORS=[
+"#e63946",
+"#3a86ff",
+"#ffbe0b",
+"#2ecc71",
+"#9d4edd",
+"#ff7b00",
+"#00c2a8",
+"#ffffff"
+];
 
-        function renderPlayersUI() {
-            elPlayersList.innerHTML = '';
-            gameState.turnOrder.forEach(pId => {
-                const p = gameState.players[pId];
-                if (!p) return;
-                
-                const isMyTurn = (gameState.turnOrder[gameState.currentTurnIndex] === pId);
-                const borderClass = isMyTurn ? 'border-yellow-400 ring-2 ring-yellow-400' : 'border-slate-700';
-                
-                elPlayersList.innerHTML += `
-                    <div class="flex items-center gap-3 bg-slate-800 p-2 rounded border ${borderClass}">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white" style="background:${p.color}">
-                            <i class="fa-solid fa-hat-wizard"></i>
-                        </div>
-                        <div class="flex-1">
-                            <div class="font-bold text-sm ${pId === myId ? 'text-blue-300' : 'text-slate-200'}">
-                                ${p.name} ${pId === myId ? '(Kamu)' : ''}
-                            </div>
-                            <div class="text-xs text-yellow-400 font-mono">£${p.money}</div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
+let state={
+room:"",
+me:"",
+players:[],
+properties:{},
+turn:0
+};
 
-        function drawDiceFace(el, value) {
-            el.innerHTML = '';
-            const dots = {
-                1: [[50,50]],
-                2: [[25,25], [75,75]],
-                3: [[25,25], [50,50], [75,75]],
-                4: [[25,25], [25,75], [75,25], [75,75]],
-                5: [[25,25], [25,75], [50,50], [75,25], [75,75]],
-                6: [[25,25], [25,50], [25,75], [75,25], [75,50], [75,75]]
-            };
-            (dots[value] || dots[1]).forEach(pos => {
-                const dot = document.createElement('div');
-                dot.className = 'dot';
-                dot.style.left = pos[0] + '%';
-                dot.style.top = pos[1] + '%';
-                el.appendChild(dot);
-            });
-        }
+const log=t=>{
+const el=document.getElementById("log");
+el.innerHTML+=t+"<br>";
+el.scrollTop=el.scrollHeight;
+};
 
-        function addLog(msg) {
-            const div = document.createElement('div');
-            div.textContent = `> ${msg}`;
-            elGameLog.appendChild(div);
-            elGameLog.scrollTop = elGameLog.scrollHeight;
-        }
+const CELL=[
+{x:90,y:1140},{x:155,y:1140},{x:220,y:1140},{x:285,y:1140},{x:350,y:1140},
+{x:415,y:1140},{x:480,y:1140},{x:545,y:1140},{x:610,y:1140},{x:675,y:1140},
+{x:742,y:1140},
 
-        function updateTurnUI() {
-            if(gameState.turnOrder.length === 0) return;
-            const currentTurnId = gameState.turnOrder[gameState.currentTurnIndex];
-            const isMyTurn = currentTurnId === myId;
-            
-            elTurnIndicator.textContent = isMyTurn ? "Giliranmu!" : `Giliran ${gameState.players[currentTurnId]?.name}`;
-            elTurnIndicator.className = isMyTurn ? "text-xl font-bold text-green-400 mb-2" : "text-xl font-bold text-yellow-400 mb-2";
+{x:1145,y:1085},{x:1145,y:1000},{x:1145,y:915},{x:1145,y:830},{x:1145,y:745},
+{x:1145,y:660},{x:1145,y:575},{x:1145,y:490},{x:1145,y:405},{x:1145,y:320},
 
-            btnRoll.classList.add('hidden');
-            btnEnd.classList.add('hidden');
+{x:1085,y:90},{x:1000,y:90},{x:915,y:90},{x:830,y:90},{x:745,y:90},
+{x:660,y:90},{x:575,y:90},{x:490,y:90},{x:405,y:90},{x:320,y:90},
 
-            if (isMyTurn) {
-                if (gameState.phase === 'rolling') btnRoll.classList.remove('hidden');
-                if (gameState.phase === 'action') btnEnd.classList.remove('hidden');
-            }
-        }
+{x:90,y:155},{x:90,y:240},{x:90,y:325},{x:90,y:410},{x:90,y:495},
+{x:90,y:580},{x:90,y:665},{x:90,y:750},{x:90,y:835}
+];
 
-        btnRoll.addEventListener('click', () => {
-            if (gameState.phase !== 'rolling') return;
-            gameState.phase = 'moving';
-            btnRoll.classList.add('hidden');
-            
-            // Dadu visual random
-            const d1 = Math.floor(Math.random() * 6) + 1;
-            const d2 = Math.floor(Math.random() * 6) + 1;
-            
-            channel.send({
-                type: 'broadcast',
-                event: 'DICE_ROLL',
-                playerId: myId,
-                d1: d1,
-                d2: d2
-            });
-            
-            animateDiceAndMove({playerId: myId, d1, d2});
-        });
+const BOARD_SIZE=1250;
 
-        // Animasi pergerakan bidak 1 per 1 agar tidak lompat (Tepat di atas petak)
-        async function animateDiceAndMove(data) {
-            const {playerId, d1, d2} = data;
-            const player = gameState.players[playerId];
-            const steps = d1 + d2;
-            
-            // Animasi dadu kocok
-            const diceEl1 = document.getElementById('dice1');
-            const diceEl2 = document.getElementById('dice2');
-            diceEl1.classList.add('rolling');
-            diceEl2.classList.add('rolling');
-            
-            broadcastLog(`${player.name} melempar dadu...`);
+function px(v){
+return(v/BOARD_SIZE)*board.clientWidth;
+}
 
-            // Fake roll effect
-            for(let i=0; i<10; i++) {
-                drawDiceFace(diceEl1, Math.floor(Math.random()*6)+1);
-                drawDiceFace(diceEl2, Math.floor(Math.random()*6)+1);
-                await new Promise(r => setTimeout(r, 50));
-            }
-            
-            diceEl1.classList.remove('rolling');
-            diceEl2.classList.remove('rolling');
-            drawDiceFace(diceEl1, d1);
-            drawDiceFace(diceEl2, d2);
-            
-            broadcastLog(`${player.name} mendapat angka ${steps} (${d1} + ${d2}).`);
+function renderPlayers(){
 
-            await new Promise(r => setTimeout(r, 500)); // Pause sejenak
+piecesLayer.innerHTML="";
 
-            // Animasi jalan step by step
-            let currentPos = player.pos;
-            for (let i = 0; i < steps; i++) {
-                currentPos = (currentPos + 1) % TOTAL_SPACES;
-                player.pos = currentPos;
-                renderBoard(); // Trigger CSS transition posisi baru
-                
-                // Lewat GO
-                if (currentPos === 0 && playerId === myId) {
-                    player.money += 200;
-                    broadcastLog(`${player.name} melewati GO, menerima £200.`);
-                }
-                
-                await new Promise(r => setTimeout(r, 350)); // Tunggu transisi selesai sebelum langkah berikutnya
-            }
+state.players.forEach((p,i)=>{
 
-            if (playerId === myId) {
-                handleSpaceLanding(player);
-            }
-        }
+const d=document.createElement("div");
+d.className="piece";
 
-        function handleSpaceLanding(player) {
-            const space = BOARD_SPACES[player.pos];
-            broadcastLog(`${player.name} mendarat di ${space.name}.`);
+d.style.background=COLORS[i%COLORS.length];
 
-            if (space.type === 'property') {
-                const propState = gameState.properties[player.pos];
-                
-                if (!propState || !propState.owner) {
-                    // Properti kosong, tawarkan beli
-                    if (player.money >= space.price) {
-                        showBuyModal(space, player);
-                    } else {
-                        broadcastLog(`${player.name} tidak cukup uang untuk membeli ${space.name}.`);
-                        endTurnPhase();
-                    }
-                } else if (propState.owner !== player.id) {
-                    // Bayar Sewa (Standar sederhana: 10% dari harga, jika ada rumah x2)
-                    let rent = Math.floor(space.price * 0.1);
-                    if (propState.houses > 1) rent = rent * propState.houses;
-                    
-                    const owner = gameState.players[propState.owner];
-                    player.money -= rent;
-                    owner.money += rent;
-                    
-                    broadcastLog(`${player.name} membayar sewa £${rent} kepada ${owner.name}.`);
-                    showMessage("Bayar Sewa", `Anda mendarat di properti milik ${owner.name} dan harus membayar £${rent}.`, endTurnPhase);
-                } else {
-                    // Milik sendiri, tawarkan upgrade? (Opsional, skip untuk kesederhanaan, langsung end turn)
-                    broadcastLog(`${player.name} mendarat di propertinya sendiri.`);
-                    endTurnPhase();
-                }
-            } 
-            else if (space.type === 'chance' || space.type === 'chest') {
-                // Kartu random sederhana
-                const rewards = [50, 100, -50, -20];
-                const texts = ["Menemukan dompet", "Menang Quidditch", "Denda Kementerian", "Membeli ramuan"];
-                const pick = Math.floor(Math.random() * rewards.length);
-                const amount = rewards[pick];
-                player.money += amount;
-                
-                const verb = amount > 0 ? "mendapat" : "membayar";
-                broadcastLog(`${player.name} mengambil kartu: ${texts[pick]}, ${verb} £${Math.abs(amount)}.`);
-                showMessage("Kartu Magic", `${texts[pick]}. Anda ${verb} £${Math.abs(amount)}.`, endTurnPhase);
-            }
-            else if (space.type === 'go_jail') {
-                player.pos = 10; // Masuk penjara
-                player.inJail = true;
-                broadcastLog(`${player.name} tertangkap dan dikirim ke Azkaban!`);
-                showMessage("Azkaban!", "Anda dikirim ke Azkaban.", endTurnPhase);
-            }
-            else {
-                // Parking, Jail visit, Go
-                endTurnPhase();
-            }
-        }
+const pos=CELL[p.position||0];
 
-        // Fungsi Modals
-        function showBuyModal(space, player) {
-            document.getElementById('modal-prop-name').textContent = space.name;
-            document.getElementById('modal-prop-price').textContent = `Harga: £${space.price}`;
-            modProp.classList.add('active');
+d.style.left=px(pos.x)-12+"px";
+d.style.top=px(pos.y)-12+"px";
 
-            const onBuy = () => {
-                player.money -= space.price;
-                gameState.properties[player.pos] = { owner: player.id, houses: 1 };
-                broadcastLog(`${player.name} membeli ${space.name} seharga £${space.price}!`);
-                closeModal();
-                endTurnPhase();
-            };
-            const onPass = () => {
-                broadcastLog(`${player.name} memutuskan tidak membeli ${space.name}.`);
-                closeModal();
-                endTurnPhase();
-            };
+piecesLayer.appendChild(d);
 
-            document.getElementById('btn-buy').onclick = onBuy;
-            document.getElementById('btn-pass').onclick = onPass;
-        }
+});
 
-        function showMessage(title, text, callback) {
-            document.getElementById('modal-msg-title').textContent = title;
-            document.getElementById('modal-msg-text').textContent = text;
-            modMsg.classList.add('active');
-            document.getElementById('btn-msg-ok').onclick = () => {
-                modMsg.classList.remove('active');
-                if (callback) callback();
-            };
-        }
+renderSidebar();
 
-        function closeModal() {
-            modProp.classList.remove('active');
-            modMsg.classList.remove('active');
-        }
+}
 
-        function endTurnPhase() {
-            gameState.phase = 'action';
-            broadcastState(); // Sync state setelah semua action selesai
-        }
+function renderSidebar(){
 
-        btnEnd.addEventListener('click', () => {
-            if (gameState.phase !== 'action') return;
-            
-            // Pindah giliran
-            gameState.currentTurnIndex = (gameState.currentTurnIndex + 1) % gameState.turnOrder.length;
-            gameState.phase = 'rolling';
-            
-            broadcastState();
-        });
+const wrap=document.getElementById("playersList");
+wrap.innerHTML="";
 
+state.players.forEach((p,i)=>{
 
-        // UI Selection
-        elColorPicks.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                elColorPicks.forEach(b => {
-                    b.classList.remove('ring-2', 'ring-white');
-                    b.classList.add('border-transparent');
-                });
-                e.target.classList.add('ring-2', 'ring-white');
-                e.target.classList.remove('border-transparent');
-                myColor = e.target.dataset.color;
-            });
-        });
+const row=document.createElement("div");
+row.className="playerCard";
 
-        elBtnJoin.addEventListener('click', () => {
-            const name = elPlayerName.value.trim();
-            if (!name) {
-                alert("Silakan masukkan nama Anda!");
-                return;
-            }
-            myName = name;
-            
-            // Hide menu, show game
-            elJoinScreen.style.display = 'none';
-            elGameContainer.style.display = 'flex';
-            
-            // Init Supabase
-            initSupabase();
+if(i===state.turn)
+row.classList.add("turnGlow");
 
-            // Set dadu awal default
-            drawDiceFace(document.getElementById('dice1'), 1);
-            drawDiceFace(document.getElementById('dice2'), 1);
-        });
+row.innerHTML=`
+<div style="display:flex;align-items:center;gap:8px;">
+<div style="
+width:14px;
+height:14px;
+border-radius:50%;
+background:${COLORS[i]};
+"></div>
+${p.name}
+</div>
+<div>£${p.money}</div>
+`;
 
-        // Auto-disable tombol join sampai supabase siap
-        elBtnJoin.disabled = true;
+wrap.appendChild(row);
 
-        // Resize handler untuk memastikan papan tetap proporsional
-        window.addEventListener('resize', renderBoard);
+});
 
-    </script>
+const me=state.players.find(x=>x.id===state.me);
+
+if(me)
+document.getElementById("turnText").innerHTML=
+`${me.name}<br>Saldo £${me.money}`;
+
+}
+
+const DOTMAP={
+1:[[1,1]],
+2:[[0,0],[2,2]],
+3:[[0,0],[1,1],[2,2]],
+4:[[0,0],[2,0],[0,2],[2,2]],
+5:[[0,0],[2,0],[1,1],[0,2],[2,2]],
+6:[[0,0],[2,0],[0,1],[2,1],[0,2],[2,2]]
+};
+
+function drawDie(id,val){
+
+const die=document.getElementById(id);
+die.innerHTML="";
+
+for(let y=0;y<3;y++){
+
+for(let x=0;x<3;x++){
+
+const dot=document.createElement("div");
+dot.className="dot";
+
+dot.style.left=12+x*24+"px";
+dot.style.top=12+y*24+"px";
+
+die.appendChild(dot);
+
+}
+
+}
+
+DOTMAP[val].forEach(([x,y])=>{
+
+const idx=y*3+x;
+
+die.children[idx].style.opacity=1;
+
+});
+
+}
+
+async function rollAnimation(){
+
+for(let i=0;i<12;i++){
+
+drawDie("die1",1+Math.floor(Math.random()*6));
+drawDie("die2",1+Math.floor(Math.random()*6));
+
+await new Promise(r=>setTimeout(r,70));
+
+}
+
+const a=1+Math.floor(Math.random()*6);
+const b=1+Math.floor(Math.random()*6);
+
+drawDie("die1",a);
+drawDie("die2",b);
+
+return[a,b];
+
+}
+
+async function animatePiece(index,steps){
+
+const el=piecesLayer.children[index];
+
+let pos=state.players[index].position;
+
+for(let i=0;i<steps;i++){
+
+pos=(pos+1)%40;
+
+const c=CELL[pos];
+
+el.animate([
+{
+left:el.style.left,
+top:el.style.top
+},
+{
+left:px(c.x)-12+"px",
+top:px(c.y)-12+"px"
+}
+],{
+duration:180,
+fill:"forwards",
+easing:"ease-in-out"
+});
+
+await new Promise(r=>setTimeout(r,180));
+
+el.style.left=px(c.x)-12+"px";
+el.style.top=px(c.y)-12+"px";
+
+}
+
+state.players[index].position=pos;
+
+}
+
+window.addEventListener("resize",renderPlayers);
+
+function createPlayer(name,id){
+
+return{
+id,
+name,
+position:0,
+money:1500,
+jail:false,
+jailTurn:0,
+properties:[]
+};
+
+}
+
+async function updateTurn(){
+
+document.getElementById("rollBtn").disabled=
+state.players[state.turn]?.id!==state.me;
+
+}
+
+async function savePlayers(){
+
+await supabase
+.from("players")
+.upsert(state.players);
+
+}
+
+async function nextTurn(){
+
+state.turn=(state.turn+1)%state.players.length;
+
+await supabase
+.from("rooms")
+.update({turn:state.turn})
+.eq("code",state.room);
+
+await updateTurn();
+
+}
+
+async function moveCurrent(steps){
+
+const idx=state.turn;
+
+await animatePiece(idx,steps);
+
+renderPlayers();
+
+await savePlayers();
+
+}
+
+const PROPERTY={
+1:{name:"Hogsmeade Lane",price:60,rent:[2,10,30,90,160,250],group:"brown"},
+3:{name:"Owl Post",price:60,rent:[4,20,60,180,320,450],group:"brown"},
+6:{name:"Greenhouse",price:100,rent:[6,30,90,270,400,550],group:"lightblue"},
+8:{name:"Library Wing",price:100,rent:[6,30,90,270,400,550],group:"lightblue"},
+9:{name:"Astronomy Tower",price:120,rent:[8,40,100,300,450,600],group:"lightblue"},
+11:{name:"Hufflepuff Common",price:140,rent:[10,50,150,450,625,750],group:"pink"},
+13:{name:"Ravenclaw Common",price:140,rent:[10,50,150,450,625,750],group:"pink"},
+14:{name:"Slytherin Common",price:160,rent:[12,60,180,500,700,900],group:"pink"},
+16:{name:"Great Hall",price:180,rent:[14,70,200,550,750,950],group:"orange"},
+18:{name:"Potions Room",price:180,rent:[14,70,200,550,750,950],group:"orange"},
+19:{name:"Defence Room",price:200,rent:[16,80,220,600,800,1000],group:"orange"},
+21:{name:"Forbidden Forest",price:220,rent:[18,90,250,700,875,1050],group:"red"},
+23:{name:"Whomping Willow",price:220,rent:[18,90,250,700,875,1050],group:"red"},
+24:{name:"Shrieking Shack",price:240,rent:[20,100,300,750,925,1100],group:"red"},
+26:{name:"Diagon Alley",price:260,rent:[22,110,330,800,975,1150],group:"yellow"},
+27:{name:"Gringotts",price:260,rent:[22,110,330,800,975,1150],group:"yellow"},
+29:{name:"Knockturn Alley",price:280,rent:[24,120,360,850,1025,1200],group:"yellow"},
+31:{name:"Ministry",price:300,rent:[26,130,390,900,1100,1275],group:"green"},
+32:{name:"St Mungo",price:300,rent:[26,130,390,900,1100,1275],group:"green"},
+34:{name:"Hogwarts Express",price:320,rent:[28,150,450,1000,1200,1400],group:"green"},
+37:{name:"Room of Requirement",price:350,rent:[35,175,500,1100,1300,1500],group:"darkblue"},
+39:{name:"Headmaster Office",price:400,rent:[50,200,600,1400,1700,2000],group:"darkblue"}
+};
+
+function ownerOf(tile){
+return state.players.find(p=>p.properties?.includes(tile));
+}
+
+async function landAction(player){
+
+const tile=player.position;
+
+if(tile===0){
+player.money+=200;
+log(`${player.name} melewati GO (+£200)`);
+return;
+}
+
+if(tile===30){
+player.position=10;
+player.jail=true;
+log(`${player.name} masuk Jail!`);
+renderPlayers();
+return;
+}
+
+const prop=PROPERTY[tile];
+
+if(!prop) return;
+
+const owner=ownerOf(tile);
+
+if(!owner){
+
+if(player.money>=prop.price){
+
+const buy=confirm(`Beli ${prop.name} seharga £${prop.price}?`);
+
+if(buy){
+
+player.money-=prop.price;
+
+if(!player.properties)
+player.properties=[];
+
+player.properties.push(tile);
+
+state.properties[tile]={owner:player.id,level:0};
+
+renderBuildings();
+
+log(`${player.name} membeli ${prop.name}`);
+
+}
+
+}
+
+}else if(owner.id!==player.id){
+
+const lvl=state.properties[tile]?.level||0;
+
+const rent=prop.rent[lvl];
+
+player.money-=rent;
+owner.money+=rent;
+
+log(`${player.name} membayar £${rent} kepada ${owner.name}`);
+
+}
+
+}
+
+function renderBuildings(){
+
+housesLayer.innerHTML="";
+
+Object.entries(state.properties).forEach(([tile,data])=>{
+
+const c=CELL[tile];
+
+const x=px(c.x);
+const y=px(c.y);
+
+if(data.level<5){
+
+for(let i=0;i<data.level;i++){
+
+const h=document.createElement("div");
+h.className="house";
+
+h.style.left=x-18+i*10+"px";
+h.style.top=y-28+"px";
+
+housesLayer.appendChild(h);
+
+}
+
+}else{
+
+const hotel=document.createElement("div");
+hotel.className="hotel";
+
+hotel.style.left=x-9+"px";
+hotel.style.top=y-30+"px";
+
+housesLayer.appendChild(hotel);
+
+}
+
+});
+
+}
+
+document.getElementById("joinBtn").onclick=async()=>{
+
+const name=document.getElementById("name").value.trim();
+const room=document.getElementById("room").value.trim().toUpperCase();
+
+if(!name||!room) return;
+
+state.room=room;
+state.me=crypto.randomUUID();
+
+const me=createPlayer(name,state.me);
+
+state.players.push(me);
+
+await supabase.from("rooms").upsert({
+code:room,
+turn:0
+});
+
+await supabase.from("players").insert({
+id:me.id,
+room,
+name:me.name,
+position:0,
+money:1500,
+properties:[]
+});
+
+await loadRoom();
+
+document.getElementById("rollBtn").disabled=false;
+
+log(`Masuk room ${room}`);
+
+};
+
+async function loadRoom(){
+
+const {data}=await supabase
+.from("players")
+.select("*")
+.eq("room",state.room);
+
+state.players=data||[];
+
+const {data:r}=await supabase
+.from("rooms")
+.select("*")
+.eq("code",state.room)
+.single();
+
+state.turn=r?.turn||0;
+
+renderPlayers();
+renderBuildings();
+updateTurn();
+
+subscribeRealtime();
+
+}
+
+let channel;
+
+function subscribeRealtime(){
+
+if(channel)
+supabase.removeChannel(channel);
+
+channel=supabase
+.channel(state.room)
+
+.on("postgres_changes",{
+event:"*",
+schema:"public",
+table:"players"
+},async()=>{
+
+const {data}=await supabase
+.from("players")
+.select("*")
+.eq("room",state.room);
+
+state.players=data||[];
+
+renderPlayers();
+
+})
+
+.on("postgres_changes",{
+event:"UPDATE",
+schema:"public",
+table:"rooms"
+},payload=>{
+
+if(payload.new.code===state.room){
+
+state.turn=payload.new.turn;
+
+updateTurn();
+renderSidebar();
+
+}
+
+})
+
+.subscribe();
+
+}
+
+document.getElementById("rollBtn").onclick=async()=>{
+
+if(state.players[state.turn].id!==state.me)
+return;
+
+document.getElementById("rollBtn").disabled=true;
+
+const[d1,d2]=await rollAnimation();
+
+const total=d1+d2;
+
+log(`${state.players[state.turn].name} mendapatkan ${total}`);
+
+await moveCurrent(total);
+
+await landAction(state.players[state.turn]);
+
+await savePlayers();
+
+if(d1!==d2)
+await nextTurn();
+
+updateTurn();
+
+};
+
+const CHANCE=[
+()=>{const p=state.players[state.turn];p.money+=150;log(`${p.name} mendapat hadiah £150.`);},
+()=>{const p=state.players[state.turn];p.money-=50;log(`${p.name} membayar denda £50.`);},
+()=>{const p=state.players[state.turn];p.position=0;p.money+=200;log(`${p.name} maju ke GO (+£200).`);renderPlayers();},
+()=>{const p=state.players[state.turn];p.position=10;p.jail=true;log(`${p.name} masuk Jail.`);renderPlayers();}
+];
+
+const CHEST=[
+()=>{const p=state.players[state.turn];p.money+=100;log(`${p.name} menerima £100.`);},
+()=>{const p=state.players[state.turn];p.money-=100;log(`${p.name} kehilangan £100.`);},
+()=>{const p=state.players[state.turn];p.money+=50;log(`${p.name} menemukan Galleon (+£50).`);},
+()=>{const p=state.players[state.turn];p.money-=25;log(`${p.name} membayar biaya ramuan (£25).`);}
+];
+
+async function specialTiles(player){
+
+const t=player.position;
+
+if(t===2||t===17||t===33){
+CHEST[Math.floor(Math.random()*CHEST.length)]();
+}
+
+if(t===7||t===22||t===36){
+CHANCE[Math.floor(Math.random()*CHANCE.length)]();
+}
+
+if(t===20){
+log("Free Parking.");
+}
+
+}
+
+async function landAction(player){
+
+const tile=player.position;
+
+if(tile===30){
+player.position=10;
+player.jail=true;
+renderPlayers();
+log(`${player.name} dipenjara.`);
+return;
+}
+
+const prop=PROPERTY[tile];
+
+if(prop){
+
+const owner=ownerOf(tile);
+
+if(!owner){
+
+if(player.money>=prop.price){
+
+if(confirm(`Beli ${prop.name} (£${prop.price})?`)){
+
+player.money-=prop.price;
+player.properties.push(tile);
+state.properties[tile]={owner:player.id,level:0};
+renderBuildings();
+log(`${player.name} membeli ${prop.name}.`);
+
+}
+
+}
+
+}else if(owner.id!==player.id){
+
+const lvl=state.properties[tile]?.level||0;
+const rent=prop.rent[lvl];
+
+player.money-=rent;
+owner.money+=rent;
+
+log(`${player.name} membayar sewa £${rent} kepada ${owner.name}.`);
+
+}
+
+}
+
+await specialTiles(player);
+
+if(player.money<0){
+
+log(`${player.name} bangkrut!`);
+
+await supabase.from("players").delete().eq("id",player.id);
+
+state.players=state.players.filter(x=>x.id!==player.id);
+
+renderPlayers();
+
+}
+
+}
+
+async function upgrade(tile){
+
+const prop=PROPERTY[tile];
+const me=state.players.find(x=>x.id===state.me);
+
+if(!prop||!me.properties.includes(tile)) return;
+
+const obj=state.properties[tile];
+const level=obj.level;
+
+if(level>=5) return;
+
+const cost=Math.floor(prop.price/2);
+
+if(me.money<cost) return;
+
+me.money-=cost;
+obj.level++;
+
+renderBuildings();
+renderPlayers();
+await savePlayers();
+
+log(`${me.name} meng-upgrade ${prop.name} menjadi level ${obj.level}.`);
+
+}
+
+document.addEventListener("dblclick",e=>{
+
+const rect=board.getBoundingClientRect();
+
+const x=(e.clientX-rect.left)/rect.width*BOARD_SIZE;
+const y=(e.clientY-rect.top)/rect.height*BOARD_SIZE;
+
+let near=-1;
+let dist=99999;
+
+CELL.forEach((c,i)=>{
+
+const d=Math.hypot(c.x-x,c.y-y);
+
+if(d<dist){
+dist=d;
+near=i;
+}
+
+});
+
+if(dist<45)
+upgrade(near);
+
+});
+
+renderPlayers();
+
+</script>
+
 </body>
 </html>
