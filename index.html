@@ -2,7 +2,9 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1">
+
 <title>Hogwarts Institute - Deal Chaos</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -17,12 +19,12 @@ body{
   margin:0;
   min-height:100vh;
   background:
-    radial-gradient(circle at 50% -10%,#3b2855,#100d16 48%,#07060a);
-  color:#fff;
+    radial-gradient(circle at 50% -10%,#42275b,#15101d 45%,#08070b);
+  color:white;
   font-family:Arial,Helvetica,sans-serif;
 }
 
-button,input,select{
+button,input{
   font:inherit;
 }
 
@@ -31,45 +33,50 @@ button{
 }
 
 #app{
-  max-width:1100px;
+  width:min(1100px,100%);
   margin:auto;
   padding:12px;
 }
 
 .header{
   text-align:center;
-  margin-bottom:12px;
+  padding:8px 0 16px;
 }
 
 .logo{
-  font-size:25px;
-  font-weight:1000;
-  letter-spacing:2px;
   color:#f4cf64;
-  text-shadow:0 3px 15px #000;
+  font-size:24px;
+  font-weight:1000;
+  letter-spacing:3px;
+  text-shadow:0 3px 20px #000;
 }
 
 .subtitle{
-  opacity:.55;
+  color:#aaa;
   font-size:11px;
   margin-top:4px;
 }
 
 .panel{
-  background:rgba(25,19,34,.94);
-  border:1px solid #59416f;
+  background:rgba(25,18,34,.96);
+  border:1px solid #5c426f;
   border-radius:18px;
   padding:15px;
   margin-bottom:12px;
+  box-shadow:0 10px 30px rgba(0,0,0,.18);
 }
 
-input,select{
+h1,h2,h3{
+  margin-top:0;
+}
+
+input{
   width:100%;
-  background:#0e0b13;
-  border:1px solid #5b4570;
-  color:#fff;
-  padding:13px;
+  border:1px solid #5d456d;
+  background:#0c0910;
+  color:white;
   border-radius:11px;
+  padding:13px;
   margin-bottom:9px;
   outline:none;
 }
@@ -79,16 +86,16 @@ input,select{
   border-radius:11px;
   padding:12px 15px;
   margin:3px;
-  color:#fff;
-  background:#70449e;
+  color:white;
   font-weight:900;
+  background:#74469f;
 }
 
-.btn.gold{background:#a77a19}
-.btn.green{background:#277a52}
-.btn.red{background:#a6374d}
-.btn.blue{background:#376da9}
-.btn.gray{background:#45404c}
+.btn.gold{background:#a97918}
+.btn.blue{background:#3676b8}
+.btn.green{background:#298258}
+.btn.red{background:#a6384e}
+.btn.gray{background:#49434f}
 
 .btn:disabled{
   opacity:.35;
@@ -100,31 +107,29 @@ input,select{
 }
 
 .room-code{
-  color:#ffd861;
-  font-size:32px;
+  color:#ffd85f;
+  font-size:31px;
   font-weight:1000;
-  letter-spacing:5px;
-  margin:5px 0 12px;
+  letter-spacing:6px;
+  margin:5px 0 10px;
 }
 
 .players{
-  display:flex;
-  flex-wrap:wrap;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
   gap:8px;
 }
 
 .player{
-  min-width:145px;
-  flex:1;
-  background:#15101c;
-  border:1px solid #453450;
+  background:#120e17;
+  border:1px solid #44344e;
   border-radius:14px;
   padding:10px;
 }
 
 .player.active{
   border-color:#f4cf64;
-  box-shadow:0 0 16px rgba(244,207,100,.18);
+  box-shadow:0 0 18px rgba(244,207,100,.15);
 }
 
 .player.dead{
@@ -133,16 +138,39 @@ input,select{
 
 .player-name{
   font-weight:1000;
+  margin-bottom:5px;
 }
 
-.muted{
-  opacity:.6;
+.small{
+  font-size:11px;
+  color:#aaa;
+}
+
+.green-text{
+  color:#73dda0;
+}
+
+.gold-text{
+  color:#ffd85f;
+}
+
+.turnbar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.stat{
+  flex:1;
+  min-width:120px;
+  background:#0d0a11;
+  padding:10px;
+  border-radius:11px;
   font-size:12px;
 }
 
-.money{
-  color:#72dfa0;
-  font-weight:bold;
+.stat strong{
+  color:#ffd85f;
 }
 
 .game-grid{
@@ -151,43 +179,18 @@ input,select{
   gap:12px;
 }
 
-.section-title{
-  font-size:14px;
-  font-weight:1000;
-  margin-bottom:10px;
-}
-
-.turn{
-  display:flex;
-  justify-content:space-between;
-  gap:8px;
-  flex-wrap:wrap;
-  align-items:center;
-}
-
-.turn strong{
-  color:#ffd861;
-}
-
-.stat{
-  background:#0f0b14;
-  padding:9px 12px;
-  border-radius:11px;
-  font-size:12px;
-}
-
 .hand{
   display:flex;
   gap:9px;
   overflow-x:auto;
-  padding:5px 3px 13px;
-  min-height:190px;
+  padding:6px 3px 14px;
+  min-height:185px;
 }
 
 .card{
+  flex:0 0 115px;
+  height:168px;
   position:relative;
-  flex:0 0 116px;
-  min-height:165px;
   border-radius:16px;
   padding:10px;
   color:#111;
@@ -196,25 +199,25 @@ input,select{
   user-select:none;
 }
 
-.card:hover{
-  transform:translateY(-5px);
+.card:active{
+  transform:scale(.96);
 }
 
 .card.selected{
-  transform:translateY(-12px);
-  outline:4px solid #f4cf64;
+  transform:translateY(-10px);
+  outline:3px solid #f4cf64;
 }
 
-.card-name{
-  font-weight:1000;
+.card-title{
   font-size:14px;
+  font-weight:1000;
   line-height:1.05;
 }
 
 .card-type{
   font-size:9px;
-  opacity:.65;
-  margin:5px 0;
+  opacity:.6;
+  margin:6px 0;
 }
 
 .card-desc{
@@ -224,152 +227,152 @@ input,select{
 
 .card-value{
   position:absolute;
+  right:9px;
   bottom:7px;
-  right:8px;
   font-size:20px;
   font-weight:1000;
 }
 
-.money-card{
+.money{
   background:linear-gradient(135deg,#91edb4,#329b68);
 }
 
-.property-card{
+.property{
   background:linear-gradient(135deg,#8bdcff,#357db4);
 }
 
-.action-card{
-  background:linear-gradient(135deg,#ffd276,#db7138);
+.wild{
+  background:linear-gradient(135deg,#ff93cb,#a63878);
+  color:white;
 }
 
-.wild-card{
-  background:linear-gradient(135deg,#ff8dca,#a83778);
-  color:white;
+.action{
+  background:linear-gradient(135deg,#ffd47c,#d66e36);
 }
 
 .mini-card{
   display:inline-flex;
-  align-items:center;
-  justify-content:center;
   width:55px;
-  height:65px;
+  height:62px;
   border-radius:8px;
   margin:3px;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:4px;
   font-size:8px;
   font-weight:bold;
-  text-align:center;
-  padding:5px;
   color:#111;
 }
 
-.bank{
-  min-height:80px;
-}
-
 .set{
-  background:#0d0911;
-  border:1px solid #44334f;
+  background:#0d0a11;
+  border:1px solid #40304a;
   border-radius:12px;
   padding:9px;
   margin-bottom:8px;
 }
 
 .set-title{
+  color:#ffd85f;
   font-weight:1000;
-  color:#ffd861;
-  margin-bottom:5px;
 }
 
 .progress{
   height:5px;
-  background:#302635;
-  border-radius:20px;
+  background:#302532;
+  border-radius:10px;
+  margin:6px 0;
   overflow:hidden;
-  margin:5px 0;
 }
 
 .progress div{
   height:100%;
-  background:#dcb950;
-}
-
-.actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:4px;
+  background:#d9b84e;
 }
 
 .log{
-  height:160px;
+  height:170px;
   overflow:auto;
-  background:#09070d;
+  background:#09070c;
   border-radius:12px;
-  padding:9px;
+  padding:8px;
   font-size:11px;
 }
 
 .log div{
-  border-bottom:1px solid #201925;
   padding:5px 0;
+  border-bottom:1px solid #211925;
 }
 
 #message{
   position:fixed;
-  top:14px;
+  z-index:1000;
   left:50%;
-  transform:translateX(-50%) translateY(-100px);
-  background:#241a30;
-  border:1px solid #d8b64e;
+  top:15px;
+  transform:translate(-50%,-100px);
+  background:#251a30;
+  border:1px solid #d6b54e;
   border-radius:12px;
   padding:12px 18px;
-  z-index:100;
-  transition:.3s;
   max-width:90%;
   text-align:center;
+  transition:.25s;
 }
 
 #message.show{
-  transform:translateX(-50%) translateY(0);
+  transform:translate(-50%,0);
 }
 
 #effect{
   position:fixed;
   inset:0;
+  z-index:900;
   display:none;
   align-items:center;
   justify-content:center;
   pointer-events:none;
-  z-index:90;
 }
 
 #effect.show{
   display:flex;
-  animation:effect .9s ease;
+  animation:fx .9s ease;
 }
 
-.effect-text{
+#effectText{
   font-size:42px;
   font-weight:1000;
-  text-shadow:0 5px 25px #000;
+  text-shadow:0 5px 30px black;
 }
 
-@keyframes effect{
-  0%{opacity:0;transform:scale:.3}
-  25%{opacity:1;transform:scale(1.25)}
-  70%{opacity:1;transform:scale(1)}
-  100%{opacity:0;transform:scale(1.35)}
+@keyframes fx{
+  0%{
+    opacity:0;
+    transform:scale(.3);
+  }
+  25%{
+    opacity:1;
+    transform:scale(1.25);
+  }
+  70%{
+    opacity:1;
+  }
+  100%{
+    opacity:0;
+    transform:scale(1.35);
+  }
 }
 
 #winner{
+  display:none;
   position:fixed;
   inset:0;
-  z-index:110;
+  z-index:1100;
   background:rgba(0,0,0,.9);
-  display:none;
   align-items:center;
   justify-content:center;
-  text-align:center;
   padding:20px;
+  text-align:center;
 }
 
 #winner.show{
@@ -377,16 +380,16 @@ input,select{
 }
 
 .winner-box{
+  width:min(430px,100%);
   background:#21172c;
   border:2px solid #f4cf64;
   border-radius:22px;
   padding:30px;
-  max-width:430px;
 }
 
 .winner-title{
+  color:#ffd85f;
   font-size:42px;
-  color:#ffd861;
   font-weight:1000;
 }
 
@@ -394,32 +397,31 @@ input,select{
   position:fixed;
   right:7px;
   bottom:5px;
-  opacity:.14;
   font-size:9px;
   letter-spacing:2px;
+  opacity:.13;
   pointer-events:none;
 }
 
 .rules{
-  background:#0d0911;
-  border-radius:12px;
-  padding:12px;
   font-size:11px;
   line-height:1.6;
+  color:#bbb;
 }
 
 @media(max-width:700px){
+
   .game-grid{
     grid-template-columns:1fr;
   }
 
   .card{
     flex-basis:105px;
-    min-height:150px;
+    height:155px;
   }
 
   .logo{
-    font-size:21px;
+    font-size:20px;
   }
 }
 </style>
@@ -430,7 +432,7 @@ input,select{
 <div id="message"></div>
 
 <div id="effect">
-  <div class="effect-text" id="effectText"></div>
+  <div id="effectText"></div>
 </div>
 
 <div id="winner">
@@ -438,7 +440,9 @@ input,select{
     <div class="winner-title">🏆 MENANG!</div>
     <h2 id="winnerName"></h2>
     <p id="winnerReason"></p>
-    <button class="btn gold" onclick="location.reload()">
+
+    <button class="btn gold"
+            onclick="location.reload()">
       MAIN LAGI
     </button>
   </div>
@@ -446,117 +450,120 @@ input,select{
 
 <div id="app">
 
-  <div class="header">
-    <div class="logo">HOGWARTS INSTITUTE</div>
-    <div class="subtitle">
-      DEAL CHAOS • REALTIME MULTIPLAYER
-    </div>
+<div class="header">
+  <div class="logo">HOGWARTS INSTITUTE</div>
+  <div class="subtitle">
+    DEAL CHAOS • REALTIME MULTIPLAYER
+  </div>
+</div>
+
+
+<!-- ================= LOBBY ================= -->
+
+<div id="lobby" class="panel">
+
+  <h2>🎴 Deal Chaos</h2>
+
+  <input id="nameInput"
+         maxlength="18"
+         placeholder="Nama pemain">
+
+  <button class="btn gold"
+          onclick="createRoom()">
+    BUAT RUANG
+  </button>
+
+  <button class="btn blue"
+          onclick="document.getElementById('joinArea').classList.toggle('hidden')">
+    GABUNG RUANG
+  </button>
+
+  <div id="joinArea" class="hidden">
+
+    <input id="roomInput"
+           maxlength="6"
+           placeholder="Kode ruangan">
+
+    <button class="btn blue"
+            onclick="joinRoom()">
+      GABUNG
+    </button>
+
   </div>
 
-  <!-- LOBBY -->
 
-  <div id="lobby" class="panel">
+  <div id="roomArea"
+       class="hidden"
+       style="margin-top:18px">
 
-    <h2>🎴 Deal Chaos</h2>
+    <div class="small">
+      KODE RUANG
+    </div>
 
-    <input
-      id="nameInput"
-      maxlength="18"
-      placeholder="Nama pemain">
+    <div id="roomCode"
+         class="room-code">
+    </div>
 
-    <button
-      class="btn gold"
-      onclick="createRoom()">
-      BUAT RUANG
-    </button>
+    <div class="small">
+      Bagikan kode ini kepada pemain lain.
+    </div>
 
-    <button
-      class="btn blue"
-      onclick="showJoin()">
-      GABUNG RUANG
-    </button>
+    <h3 style="margin-top:18px">
+      Pemain
+    </h3>
 
-    <div id="joinArea" class="hidden">
-      <input
-        id="roomInput"
-        maxlength="6"
-        placeholder="Kode ruangan">
+    <div id="lobbyPlayers"
+         class="players">
+    </div>
 
-      <button
-        class="btn blue"
-        onclick="joinRoom()">
-        GABUNG
+    <div style="margin-top:12px">
+
+      <button id="readyBtn"
+              class="btn green"
+              onclick="toggleReady()">
+        SIAP
       </button>
-    </div>
 
-    <div
-      id="roomArea"
-      class="hidden"
-      style="margin-top:18px">
-
-      <div class="muted">
-        KODE RUANG
-      </div>
-
-      <div
-        id="roomCode"
-        class="room-code">
-      </div>
-
-      <div class="muted">
-        Bagikan kode ini kepada teman.
-      </div>
-
-      <h3>Pemain</h3>
-
-      <div
-        id="lobbyPlayers"
-        class="players">
-      </div>
-
-      <div style="margin-top:12px">
-
-        <button
-          id="readyButton"
-          class="btn green"
-          onclick="toggleReady()">
-          SIAP
-        </button>
-
-        <button
-          id="startButton"
-          class="btn gold hidden"
-          onclick="startGame()">
-          MULAI
-        </button>
-
-      </div>
+      <button id="startBtn"
+              class="btn gold hidden"
+              onclick="startGame()">
+        MULAI
+      </button>
 
     </div>
-
-    <details style="margin-top:15px">
-      <summary>📖 Cara bermain</summary>
-
-      <div class="rules">
-        • 2–5 pemain.<br>
-        • Setiap pemain mulai dengan 5 kartu.<br>
-        • Saat giliran, ambil 2 kartu.<br>
-        • Maksimal 3 aksi per giliran.<br>
-        • Uang masuk ke bank.<br>
-        • Properti dipasang untuk membentuk set.<br>
-        • Kartu aksi dapat menyerang pemain lain.<br>
-        • Buat 3 set properti lengkap untuk menang.
-      </div>
-    </details>
 
   </div>
 
 
-  <!-- GAME -->
+  <details style="margin-top:15px">
 
-  <div id="game" class="hidden">
+    <summary>📖 Cara bermain</summary>
 
-    <div class="panel turn">
+    <div class="rules">
+
+      • 2–5 pemain.<br>
+      • Setiap pemain mendapatkan 5 kartu awal.<br>
+      • Ambil 2 kartu pada awal giliran.<br>
+      • Maksimal 3 kartu dimainkan dalam satu giliran.<br>
+      • Uang dapat dimasukkan ke bank.<br>
+      • Properti digunakan untuk membangun set.<br>
+      • Kartu aksi dapat mengambil/menukar/menagih pemain lain.<br>
+      • Pemain pertama yang memiliki 3 set lengkap menang.
+
+    </div>
+
+  </details>
+
+</div>
+
+
+<!-- ================= GAME ================= -->
+
+<div id="game" class="hidden">
+
+  <div class="panel">
+
+    <div class="turnbar">
 
       <div class="stat">
         🔥 Giliran:
@@ -565,7 +572,7 @@ input,select{
 
       <div class="stat">
         ⚡ Aksi:
-        <strong id="actionsLeft">0</strong>
+        <strong id="actions">0</strong>
       </div>
 
       <div class="stat">
@@ -574,124 +581,103 @@ input,select{
       </div>
 
       <div class="stat">
-        🖐️ Tangan:
+        🖐️ Kartu:
         <strong id="handCount">0</strong>
       </div>
 
     </div>
 
+  </div>
+
+
+  <div class="panel">
+
+    <h3>👥 Pemain</h3>
+
+    <div id="gamePlayers"
+         class="players">
+    </div>
+
+  </div>
+
+
+  <div class="game-grid">
 
     <div class="panel">
 
-      <div class="section-title">
-        👥 Pemain
-      </div>
+      <h3>🏦 Bank Saya</h3>
 
-      <div
-        id="gamePlayers"
-        class="players">
-      </div>
-
-    </div>
-
-
-    <div class="game-grid">
-
-      <div class="panel">
-
-        <div class="section-title">
-          🏦 Bank Saya
-        </div>
-
-        <div
-          id="myBank"
-          class="bank">
-        </div>
-
-      </div>
-
-
-      <div class="panel">
-
-        <div class="section-title">
-          🏰 Properti Saya
-        </div>
-
-        <div
-          id="myProperties">
-        </div>
-
-      </div>
+      <div id="myBank"></div>
 
     </div>
 
 
     <div class="panel">
 
-      <div class="section-title">
-        🎴 Tangan Saya
-      </div>
+      <h3>🏰 Properti Saya</h3>
 
-      <div
-        id="hand"
-        class="hand">
-      </div>
-
-      <div class="actions">
-
-        <button
-          id="drawButton"
-          class="btn blue"
-          onclick="drawCards()">
-          🎴 TARIK 2
-        </button>
-
-        <button
-          id="bankButton"
-          class="btn green"
-          onclick="bankSelected()">
-          💰 BANK
-        </button>
-
-        <button
-          id="propertyButton"
-          class="btn gold"
-          onclick="propertySelected()">
-          🏰 PROPERTI
-        </button>
-
-        <button
-          id="actionButton"
-          class="btn red"
-          onclick="actionSelected()">
-          ⚡ AKSI
-        </button>
-
-        <button
-          class="btn gray"
-          onclick="endTurn()">
-          ⏭️ SELESAI GILIRAN
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <div class="panel">
-
-      <div class="section-title">
-        📜 Aktivitas
-      </div>
-
-      <div
-        id="log"
-        class="log">
-      </div>
+      <div id="myProperties"></div>
 
     </div>
 
   </div>
+
+
+  <div class="panel">
+
+    <h3>🎴 Kartu Saya</h3>
+
+    <div id="hand"
+         class="hand">
+    </div>
+
+    <div>
+
+      <button id="drawBtn"
+              class="btn blue"
+              onclick="drawCards()">
+        🎴 TARIK 2
+      </button>
+
+      <button id="bankBtn"
+              class="btn green"
+              onclick="playBank()">
+        💰 BANK
+      </button>
+
+      <button id="propertyBtn"
+              class="btn gold"
+              onclick="playProperty()">
+        🏰 PROPERTI
+      </button>
+
+      <button id="actionBtn"
+              class="btn red"
+              onclick="playAction()">
+        ⚡ AKSI
+      </button>
+
+      <button class="btn gray"
+              onclick="endTurn()">
+        ⏭️ SELESAI
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="panel">
+
+    <h3>📜 Aktivitas</h3>
+
+    <div id="logs"
+         class="log">
+    </div>
+
+  </div>
+
+</div>
 
 </div>
 
@@ -712,7 +698,7 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_d-AKVoEiwg_2xMPUCeiaLQ_Gnvn3kIe";
 
-const sb =
+const db =
 supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
@@ -720,95 +706,106 @@ supabase.createClient(
 
 
 /* =========================================================
-   PLAYER
+   ID PEMAIN
+   PENTING:
+   sessionStorage = berbeda antar sesi/tab,
+   tidak seperti localStorage yang sebelumnya menyebabkan
+   dua halaman memakai ID yang sama.
 ========================================================= */
 
 let playerId =
-localStorage.getItem("dealChaosPlayerId");
+sessionStorage.getItem(
+  "dealChaosPlayerId"
+);
 
 if(!playerId){
-  playerId=crypto.randomUUID();
-  localStorage.setItem(
+
+  playerId=
+    crypto.randomUUID();
+
+  sessionStorage.setItem(
     "dealChaosPlayerId",
     playerId
   );
 }
 
-let playerName="";
-let roomId="";
-let channel=null;
-
 
 /* =========================================================
-   STATE
+   LOCAL CLIENT STATE
 ========================================================= */
 
-let state={
+let roomId="";
+let playerName="";
+let channel=null;
+
+let publicState={
   status:"lobby",
   host:null,
   players:[],
-  deck:[],
-  discard:[],
-  hands:{},
-  banks:{},
-  properties:{},
   current:0,
   actions:{},
+  deckCount:0,
   logs:[],
-  selected:null,
   winner:null
 };
 
+let myHand=[];
+let myBank=[];
+let myProperties=[];
+let selected=null;
+
 
 /* =========================================================
-   PROPERTY SETS
+   PROPERTY
 ========================================================= */
 
 const SETS=[
+
   {
     name:"Menara",
     need:3,
-    value:2,
-    color:"red"
+    value:2
   },
+
   {
     name:"Hutan",
     need:3,
-    value:2,
-    color:"green"
+    value:2
   },
+
   {
     name:"Danau",
     need:2,
-    value:3,
-    color:"blue"
+    value:3
   },
+
   {
     name:"Kerajaan",
     need:3,
-    value:2,
-    color:"purple"
+    value:2
   },
+
   {
     name:"Pasar",
     need:2,
-    value:3,
-    color:"orange"
+    value:3
   },
+
   {
     name:"Gunung",
     need:3,
-    value:2,
-    color:"gray"
+    value:2
   }
+
 ];
 
 
 /* =========================================================
-   CARD CREATION
+   CARDS
 ========================================================= */
 
-function newCard(type,name,value,extra={}){
+function card(type,name,value,extra={}){
+
   return {
     id:crypto.randomUUID(),
     type,
@@ -818,29 +815,35 @@ function newCard(type,name,value,extra={}){
   };
 }
 
-function money(value){
-  return newCard(
+
+function money(v){
+  return card(
     "money",
     "Uang",
-    value
+    v
   );
 }
 
-function prop(name){
-  const s=SETS.find(
-    x=>x.name===name
-  );
 
-  return newCard(
+function property(name){
+
+  const set=
+    SETS.find(
+      x=>x.name===name
+    );
+
+  return card(
     "property",
     name,
-    s.value,
+    set.value,
     {set:name}
   );
 }
 
+
 function wild(){
-  return newCard(
+
+  return card(
     "wild",
     "Properti Bebas",
     4,
@@ -848,8 +851,10 @@ function wild(){
   );
 }
 
-function act(name,value,effect){
-  return newCard(
+
+function action(name,value,effect){
+
+  return card(
     "action",
     name,
     value,
@@ -859,47 +864,47 @@ function act(name,value,effect){
 
 
 /* =========================================================
-   CREATE DECK
+   DECK
 ========================================================= */
 
-function createDeck(){
+function makeDeck(){
 
-  const deck=[];
+  const d=[];
 
   for(let i=0;i<12;i++)
-    deck.push(money(1));
+    d.push(money(1));
 
   for(let i=0;i<10;i++)
-    deck.push(money(2));
+    d.push(money(2));
 
   for(let i=0;i<7;i++)
-    deck.push(money(3));
+    d.push(money(3));
 
   for(let i=0;i<5;i++)
-    deck.push(money(4));
+    d.push(money(4));
 
   for(let i=0;i<3;i++)
-    deck.push(money(5));
+    d.push(money(5));
 
 
-  SETS.forEach(set=>{
+  SETS.forEach(s=>{
 
-    let amount=
-      set.need===2 ? 5 : 6;
+    const amount=
+      s.need===2 ? 5 : 6;
 
     for(let i=0;i<amount;i++)
-      deck.push(prop(set.name));
+      d.push(property(s.name));
 
   });
 
 
   for(let i=0;i<8;i++)
-    deck.push(wild());
+    d.push(wild());
 
 
   for(let i=0;i<4;i++)
-    deck.push(
-      act(
+    d.push(
+      action(
         "Ambil Set",
         5,
         "stealSet"
@@ -907,8 +912,8 @@ function createDeck(){
     );
 
   for(let i=0;i<6;i++)
-    deck.push(
-      act(
+    d.push(
+      action(
         "Ambil Properti",
         3,
         "stealProperty"
@@ -916,8 +921,8 @@ function createDeck(){
     );
 
   for(let i=0;i<6;i++)
-    deck.push(
-      act(
+    d.push(
+      action(
         "Tukar Paksa",
         3,
         "trade"
@@ -925,8 +930,8 @@ function createDeck(){
     );
 
   for(let i=0;i<6;i++)
-    deck.push(
-      act(
+    d.push(
+      action(
         "Tagih Utang",
         2,
         "debt"
@@ -934,33 +939,24 @@ function createDeck(){
     );
 
   for(let i=0;i<6;i++)
-    deck.push(
-      act(
+    d.push(
+      action(
         "Pajak Semua",
         2,
         "birthday"
       )
     );
 
-  for(let i=0;i<5;i++)
-    deck.push(
-      act(
-        "Aksi Balasan",
-        4,
-        "counter"
-      )
-    );
+  shuffle(d);
 
-  shuffle(deck);
-
-  return deck;
+  return d;
 }
 
 
-function shuffle(arr){
+function shuffle(a){
 
   for(
-    let i=arr.length-1;
+    let i=a.length-1;
     i>0;
     i--
   ){
@@ -971,27 +967,21 @@ function shuffle(arr){
       );
 
     [
-      arr[i],
-      arr[j]
+      a[i],
+      a[j]
     ]=[
-      arr[j],
-      arr[i]
+      a[j],
+      a[i]
     ];
   }
+
+  return a;
 }
 
 
 /* =========================================================
-   LOBBY
+   CREATE ROOM
 ========================================================= */
-
-function showJoin(){
-
-  document
-    .getElementById("joinArea")
-    .classList.remove("hidden");
-}
-
 
 async function createRoom(){
 
@@ -1000,7 +990,8 @@ async function createRoom(){
       .getElementById("nameInput")
       .value.trim();
 
-  if(!validName()) return;
+  if(!checkName())
+    return;
 
   roomId=
     Math.random()
@@ -1008,31 +999,39 @@ async function createRoom(){
       .substring(2,7)
       .toUpperCase();
 
-  state={
+  publicState={
     status:"lobby",
     host:playerId,
-    players:[],
-    deck:[],
-    discard:[],
-    hands:{},
-    banks:{},
-    properties:{},
+    players:[
+      {
+        id:playerId,
+        name:playerName,
+        ready:false,
+        alive:true
+      }
+    ],
     current:0,
     actions:{},
+    deckCount:0,
     logs:[],
-    selected:null,
     winner:null
   };
 
-  addMe();
-
-  await connect();
-
-  publish();
+  await connectRoom();
 
   showRoom();
+
+  sendPublic();
+
+  message(
+    "Room dibuat: "+roomId
+  );
 }
 
+
+/* =========================================================
+   JOIN ROOM
+========================================================= */
 
 async function joinRoom(){
 
@@ -1048,70 +1047,52 @@ async function joinRoom(){
       .trim()
       .toUpperCase();
 
-  if(!validName()) return;
+  if(!checkName())
+    return;
 
   if(!/^[A-Z0-9]{4,6}$/.test(roomId)){
-    message("Kode ruangan tidak valid.");
+
+    message(
+      "Kode room tidak valid."
+    );
+
     return;
   }
 
-  await connect();
 
-  addMe();
+  /*
+    Joiner TIDAK membuat state baru.
+    Dia hanya connect dan meminta state
+    dari host.
+  */
 
-  publish();
+  await connectRoom();
 
-  showRoom();
-}
-
-
-function validName(){
-
-  if(
-    !playerName ||
-    playerName.length<2
-  ){
-
-    message("Nama minimal 2 karakter.");
-    return false;
-  }
-
-  return true;
-}
-
-
-function addMe(){
-
-  if(
-    state.players.some(
-      p=>p.id===playerId
-    )
-  ) return;
-
-  if(state.players.length>=5){
-    message("Ruangan sudah penuh.");
-    return;
-  }
-
-  state.players.push({
-    id:playerId,
-    name:playerName,
-    ready:false,
-    alive:true
+  channel.send({
+    type:"broadcast",
+    event:"request_state",
+    payload:{
+      requester:playerId
+    }
   });
+
+  message(
+    "Mencari room..."
+  );
 }
 
 
 /* =========================================================
-   REALTIME
+   CONNECT
 ========================================================= */
 
-async function connect(){
+async function connectRoom(){
 
-  if(channel) return;
+  if(channel)
+    return;
 
   channel=
-    sb.channel(
+    db.channel(
       "deal-chaos-"+roomId,
       {
         config:{
@@ -1122,52 +1103,1459 @@ async function connect(){
       }
     );
 
+
   channel.on(
     "broadcast",
-    {event:"game"},
+    {event:"request_state"},
     ({payload})=>{
 
       if(
-        payload &&
-        payload.state
+        publicState.host===playerId
       ){
 
-        state=
-          payload.state;
+        sendPublic();
 
-        render();
+        sendPrivate(
+          payload.requester
+        );
+
       }
 
     }
   );
 
+
+  channel.on(
+    "broadcast",
+    {event:"public_state"},
+    ({payload})=>{
+
+      if(!payload?.state)
+        return;
+
+      publicState=
+        payload.state;
+
+      render();
+
+    }
+  );
+
+
+  channel.on(
+    "broadcast",
+    {event:"private_state"},
+    ({payload})=>{
+
+      if(
+        payload?.target!==playerId
+      )
+        return;
+
+      myHand=
+        payload.hand||[];
+
+      myBank=
+        payload.bank||[];
+
+      myProperties=
+        payload.properties||[];
+
+      render();
+
+    }
+  );
+
+
+  channel.on(
+    "broadcast",
+    {event:"command"},
+    ({payload})=>{
+
+      /*
+        Hanya host yang memproses command.
+      */
+
+      if(
+        publicState.host!==playerId
+      )
+        return;
+
+      if(
+        !payload?.command
+      )
+        return;
+
+      processCommand(
+        payload.from,
+        payload.command,
+        payload.data
+      );
+
+    }
+  );
+
+
   const result=
     await channel.subscribe();
 
   if(result!=="SUBSCRIBED"){
+
     message(
-      "Gagal terhubung ke realtime."
+      "Realtime gagal tersambung."
     );
+
   }
-}
 
-
-function publish(){
-
-  if(!channel) return;
-
-  channel.send({
-    type:"broadcast",
-    event:"game",
-    payload:{
-      state:state
-    }
-  });
 }
 
 
 /* =========================================================
-   ROOM UI
+   BROADCAST
+========================================================= */
+
+function sendPublic(){
+
+  if(!channel)
+    return;
+
+  channel.send({
+
+    type:"broadcast",
+
+    event:"public_state",
+
+    payload:{
+      state:publicState
+    }
+
+  });
+
+}
+
+
+function sendPrivate(target){
+
+  if(!channel)
+    return;
+
+  /*
+    Data tangan dikirim sebagai pesan bertarget.
+    Client lain akan mengabaikannya.
+  */
+
+  const isMe=
+    target===playerId;
+
+  if(
+    target!==playerId &&
+    publicState.host!==playerId
+  )
+    return;
+
+
+  let hand=[];
+  let bank=[];
+  let properties=[];
+
+
+  /*
+    Jika host mengirim data player lain,
+    ambil dari hostState.
+  */
+
+  if(
+    publicState.host===playerId
+  ){
+
+    hand=
+      fullHands[target]||[];
+
+    bank=
+      fullBanks[target]||[];
+
+    properties=
+      fullProperties[target]||[];
+
+  }
+
+
+  if(isMe){
+
+    hand=myHand;
+    bank=myBank;
+    properties=myProperties;
+
+  }
+
+
+  channel.send({
+
+    type:"broadcast",
+
+    event:"private_state",
+
+    payload:{
+      target,
+      hand,
+      bank,
+      properties
+    }
+
+  });
+
+}
+
+
+/* =========================================================
+   HOST FULL GAME DATA
+========================================================= */
+
+let fullDeck=[];
+let fullHands={};
+let fullBanks={};
+let fullProperties={};
+let fullDiscard=[];
+
+
+/* =========================================================
+   COMMAND SYSTEM
+========================================================= */
+
+function command(name,data={}){
+
+  channel.send({
+
+    type:"broadcast",
+
+    event:"command",
+
+    payload:{
+      from:playerId,
+      command:name,
+      data
+    }
+
+  });
+
+}
+
+
+/* =========================================================
+   PROCESS COMMAND
+========================================================= */
+
+function processCommand(
+  from,
+  cmd,
+  data
+){
+
+  /*
+    Pastikan pemain benar-benar ada.
+  */
+
+  if(
+    !publicState.players.some(
+      p=>p.id===from
+    )
+  )
+    return;
+
+
+  switch(cmd){
+
+    case "toggleReady":
+      hostToggleReady(from);
+      break;
+
+    case "start":
+      hostStart();
+      break;
+
+    case "draw":
+      hostDraw(from);
+      break;
+
+    case "bank":
+      hostBank(
+        from,
+        data.cardId
+      );
+      break;
+
+    case "property":
+      hostProperty(
+        from,
+        data.cardId
+      );
+      break;
+
+    case "action":
+      hostAction(
+        from,
+        data.cardId,
+        data.targetId,
+        data.extra
+      );
+      break;
+
+    case "end":
+      hostEnd(from);
+      break;
+
+  }
+
+}
+
+
+/* =========================================================
+   READY
+========================================================= */
+
+function toggleReady(){
+
+  command(
+    "toggleReady"
+  );
+}
+
+
+function hostToggleReady(id){
+
+  const p=
+    publicState.players.find(
+      x=>x.id===id
+    );
+
+  if(!p)
+    return;
+
+  if(
+    publicState.status!=="lobby"
+  )
+    return;
+
+  p.ready=!p.ready;
+
+  sendPublic();
+
+  render();
+}
+
+
+/* =========================================================
+   START GAME
+========================================================= */
+
+function startGame(){
+
+  command("start");
+
+}
+
+
+function hostStart(){
+
+  if(
+    publicState.host!==playerId
+  )
+    return;
+
+  if(
+    publicState.players.length<2
+  ){
+
+    message(
+      "Minimal 2 pemain."
+    );
+
+    return;
+  }
+
+
+  if(
+    !publicState.players.every(
+      p=>p.ready
+    )
+  ){
+
+    message(
+      "Semua pemain harus siap."
+    );
+
+    return;
+  }
+
+
+  publicState.status="playing";
+  publicState.current=0;
+  publicState.winner=null;
+  publicState.actions={};
+
+  fullDeck=makeDeck();
+  fullDiscard=[];
+
+  fullHands={};
+  fullBanks={};
+  fullProperties={};
+
+
+  publicState.players.forEach(p=>{
+
+    fullHands[p.id]=[];
+    fullBanks[p.id]=[];
+    fullProperties[p.id]=[];
+
+    publicState.actions[p.id]=3;
+
+    for(let i=0;i<5;i++)
+      drawOneHost(p.id);
+
+  });
+
+
+  addHostLog(
+    "🎮 Permainan dimulai!"
+  );
+
+  syncAll();
+
+}
+
+
+/* =========================================================
+   DRAW
+========================================================= */
+
+function drawOneHost(id){
+
+  if(!fullDeck.length){
+
+    if(fullDiscard.length){
+
+      fullDeck=
+        fullDiscard.splice(0);
+
+      shuffle(fullDeck);
+
+    }else{
+
+      fullDeck=makeDeck();
+
+    }
+
+  }
+
+  const c=
+    fullDeck.pop();
+
+  if(c)
+    fullHands[id].push(c);
+}
+
+
+function drawCards(){
+
+  command(
+    "draw"
+  );
+}
+
+
+function hostDraw(id){
+
+  if(!isHostTurn(id))
+    return;
+
+  /*
+    Hanya boleh tarik sekali.
+  */
+
+  if(
+    publicState.actions[id]!==3
+  ){
+
+    sendPrivate(id);
+    return;
+  }
+
+
+  drawOneHost(id);
+  drawOneHost(id);
+
+  addHostLog(
+    "🎴 "+
+    playerNameOf(id)+
+    " mengambil 2 kartu."
+  );
+
+  syncAll();
+}
+
+
+/* =========================================================
+   BANK
+========================================================= */
+
+function playBank(){
+
+  if(!selected){
+
+    message(
+      "Pilih kartu dulu."
+    );
+
+    return;
+  }
+
+  command(
+    "bank",
+    {
+      cardId:selected
+    }
+  );
+}
+
+
+function hostBank(id,cardId){
+
+  if(!isHostTurn(id))
+    return;
+
+  if(
+    !spendHostAction(id)
+  )
+    return;
+
+  const hand=
+    fullHands[id];
+
+  const index=
+    hand.findIndex(
+      c=>c.id===cardId
+    );
+
+  if(index<0)
+    return;
+
+  const c=
+    hand[index];
+
+  if(
+    c.type!=="money" &&
+    c.type!=="action"
+  ){
+
+    /*
+      Kembalikan action.
+    */
+
+    publicState.actions[id]++;
+    sendPrivate(id);
+
+    return;
+  }
+
+
+  hand.splice(index,1);
+
+  fullBanks[id].push(c);
+
+  addHostLog(
+    "💰 "+
+    playerNameOf(id)+
+    " memasukkan kartu ke bank."
+  );
+
+  syncAll();
+
+}
+
+
+/* =========================================================
+   PROPERTY
+========================================================= */
+
+function playProperty(){
+
+  if(!selected){
+
+    message(
+      "Pilih kartu dulu."
+    );
+
+    return;
+  }
+
+  command(
+    "property",
+    {
+      cardId:selected
+    }
+  );
+
+}
+
+
+function hostProperty(id,cardId){
+
+  if(!isHostTurn(id))
+    return;
+
+  if(
+    !spendHostAction(id)
+  )
+    return;
+
+  const hand=
+    fullHands[id];
+
+  const index=
+    hand.findIndex(
+      c=>c.id===cardId
+    );
+
+  if(index<0)
+    return;
+
+  const c=
+    hand[index];
+
+  if(
+    c.type!=="property" &&
+    c.type!=="wild"
+  ){
+
+    publicState.actions[id]++;
+    sendPrivate(id);
+
+    return;
+  }
+
+
+  hand.splice(index,1);
+
+  fullProperties[id].push(c);
+
+  addHostLog(
+    "🏰 "+
+    playerNameOf(id)+
+    " memasang "+
+    c.name+
+    "."
+  );
+
+  checkHostWinner();
+
+  syncAll();
+
+}
+
+
+/* =========================================================
+   ACTION
+========================================================= */
+
+function playAction(){
+
+  if(!selected){
+
+    message(
+      "Pilih kartu dulu."
+    );
+
+    return;
+  }
+
+
+  const c=
+    myHand.find(
+      x=>x.id===selected
+    );
+
+  if(!c || c.type!=="action"){
+
+    message(
+      "Pilih kartu aksi."
+    );
+
+    return;
+  }
+
+
+  let targetId=null;
+
+
+  if(
+    c.effect!=="birthday"
+  ){
+
+    const targets=
+      publicState.players.filter(
+        p=>
+          p.id!==playerId &&
+          p.alive
+      );
+
+
+    if(!targets.length){
+
+      message(
+        "Tidak ada target."
+      );
+
+      return;
+    }
+
+
+    const list=
+      targets.map(
+        (p,i)=>
+          `${i+1}. ${p.name}`
+      ).join("\n");
+
+
+    const answer=
+      prompt(
+        "Pilih target:\n\n"+
+        list
+      );
+
+
+    const n=
+      Number(answer)-1;
+
+
+    if(
+      !Number.isInteger(n) ||
+      !targets[n]
+    )
+      return;
+
+
+    targetId=
+      targets[n].id;
+
+  }
+
+
+  let extra={};
+
+
+  if(
+    c.effect==="stealProperty"
+  ){
+
+    const target=
+      fullProperties[targetId]||[];
+
+    const list=
+      target.map(
+        (p,i)=>
+          `${i+1}. ${p.name}`
+      ).join("\n");
+
+
+    if(!target.length){
+
+      message(
+        "Target tidak punya properti."
+      );
+
+      return;
+    }
+
+
+    const answer=
+      prompt(
+        "Pilih properti:\n\n"+
+        list
+      );
+
+
+    const n=
+      Number(answer)-1;
+
+
+    if(
+      !Number.isInteger(n) ||
+      !target[n]
+    )
+      return;
+
+
+    extra.cardId=
+      target[n].id;
+
+  }
+
+
+  if(
+    c.effect==="stealSet"
+  ){
+
+    /*
+      Nama set dipilih dari informasi
+      publik yang tersedia di pemain lawan.
+    */
+
+    const props=
+      getPublicPropertyInfo(
+        targetId
+      );
+
+    const complete=
+      SETS.filter(s=>
+        props.filter(
+          p=>p.set===s.name
+        ).length>=s.need
+      );
+
+
+    if(!complete.length){
+
+      message(
+        "Target belum punya set lengkap."
+      );
+
+      return;
+    }
+
+
+    const list=
+      complete.map(
+        (s,i)=>
+          `${i+1}. ${s.name}`
+      ).join("\n");
+
+
+    const answer=
+      prompt(
+        "Pilih set:\n\n"+
+        list
+      );
+
+
+    const n=
+      Number(answer)-1;
+
+
+    if(
+      !Number.isInteger(n) ||
+      !complete[n]
+    )
+      return;
+
+
+    extra.set=
+      complete[n].name;
+
+  }
+
+
+  command(
+    "action",
+    {
+      cardId:selected,
+      targetId,
+      extra
+    }
+  );
+
+}
+
+
+/* =========================================================
+   HOST ACTION
+========================================================= */
+
+function hostAction(
+  id,
+  cardId,
+  targetId,
+  extra={}
+){
+
+  if(!isHostTurn(id))
+    return;
+
+  if(
+    !spendHostAction(id)
+  )
+    return;
+
+
+  const hand=
+    fullHands[id];
+
+  const index=
+    hand.findIndex(
+      c=>c.id===cardId
+    );
+
+  if(index<0)
+    return;
+
+
+  const c=
+    hand[index];
+
+
+  if(c.type!=="action"){
+
+    publicState.actions[id]++;
+    sendPrivate(id);
+
+    return;
+  }
+
+
+  hand.splice(index,1);
+
+
+  if(c.effect==="debt"){
+
+    const paid=
+      collectPaymentHost(
+        targetId,
+        id,
+        5
+      );
+
+    addHostLog(
+      "💸 "+
+      playerNameOf(id)+
+      " menagih "+
+      playerNameOf(targetId)+
+      " sebanyak "+
+      paid+
+      "."
+    );
+
+    broadcastEffect(
+      "💸 TAGIH!"
+    );
+
+  }
+
+
+  else if(
+    c.effect==="birthday"
+  ){
+
+    let total=0;
+
+    publicState.players
+      .filter(
+        p=>
+          p.id!==id &&
+          p.alive
+      )
+      .forEach(p=>{
+
+        total+=
+          collectPaymentHost(
+            p.id,
+            id,
+            2
+          );
+
+      });
+
+
+    addHostLog(
+      "🎂 "+
+      playerNameOf(id)+
+      " menggunakan Pajak Semua."
+    );
+
+    broadcastEffect(
+      "🎂 PAJAK!"
+    );
+
+  }
+
+
+  else if(
+    c.effect==="stealProperty"
+  ){
+
+    const targetProps=
+      fullProperties[targetId]||[];
+
+    const stolenIndex=
+      targetProps.findIndex(
+        p=>
+          p.id===extra.cardId
+      );
+
+
+    if(stolenIndex<0){
+
+      fullHands[id].push(c);
+      publicState.actions[id]++;
+      syncAll();
+      return;
+
+    }
+
+
+    const stolen=
+      targetProps.splice(
+        stolenIndex,
+        1
+      )[0];
+
+
+    fullProperties[id]
+      .push(stolen);
+
+
+    addHostLog(
+      "🦹 "+
+      playerNameOf(id)+
+      " mengambil "+
+      stolen.name+
+      " dari "+
+      playerNameOf(targetId)+
+      "."
+    );
+
+
+    broadcastEffect(
+      "🦹 DIREBUT!"
+    );
+
+  }
+
+
+  else if(
+    c.effect==="stealSet"
+  ){
+
+    const targetProps=
+      fullProperties[targetId]||[];
+
+
+    const set=
+      SETS.find(
+        s=>s.name===extra.set
+      );
+
+
+    if(!set){
+
+      fullHands[id].push(c);
+      publicState.actions[id]++;
+      syncAll();
+      return;
+
+    }
+
+
+    const stolen=
+      targetProps.filter(
+        p=>p.set===set.name
+      );
+
+
+    if(
+      stolen.length<set.need
+    ){
+
+      fullHands[id].push(c);
+      publicState.actions[id]++;
+      syncAll();
+      return;
+
+    }
+
+
+    fullProperties[targetId]=
+      targetProps.filter(
+        p=>p.set!==set.name
+      );
+
+
+    fullProperties[id]
+      .push(...stolen);
+
+
+    addHostLog(
+      "🔥 "+
+      playerNameOf(id)+
+      " mengambil set "+
+      set.name+
+      " dari "+
+      playerNameOf(targetId)+
+      "!"
+    );
+
+
+    broadcastEffect(
+      "🔥 SET DIREBUT!"
+    );
+
+  }
+
+
+  else if(
+    c.effect==="trade"
+  ){
+
+    /*
+      Pertukaran sederhana:
+      pemain memilih satu properti miliknya
+      dan satu properti target.
+    */
+
+    const mine=
+      fullProperties[id]||[];
+
+    const theirs=
+      fullProperties[targetId]||[];
+
+
+    if(
+      !mine.length ||
+      !theirs.length
+    ){
+
+      fullHands[id].push(c);
+      publicState.actions[id]++;
+      syncAll();
+      return;
+
+    }
+
+
+    /*
+      Karena pilihan dilakukan di client,
+      kirim command tambahan tidak diperlukan
+      untuk versi ini.
+
+      Kita pakai properti pertama sebagai
+      pertukaran otomatis.
+    */
+
+    const a=
+      mine.shift();
+
+    const b=
+      theirs.shift();
+
+    mine.push(b);
+    theirs.push(a);
+
+
+    addHostLog(
+      "🔄 "+
+      playerNameOf(id)+
+      " menukar properti dengan "+
+      playerNameOf(targetId)+
+      "."
+    );
+
+
+    broadcastEffect(
+      "🔄 TUKAR!"
+    );
+
+  }
+
+
+  fullDiscard.push(c);
+
+  checkHostWinner();
+
+  syncAll();
+
+}
+
+
+/* =========================================================
+   PAYMENT
+========================================================= */
+
+function collectPaymentHost(
+  from,
+  to,
+  amount
+){
+
+  let remaining=amount;
+  let paid=0;
+
+  const bank=
+    fullBanks[from]||[];
+
+
+  while(
+    remaining>0 &&
+    bank.length
+  ){
+
+    const c=
+      bank.pop();
+
+    fullBanks[to]
+      .push(c);
+
+    const v=
+      Number(c.value)||1;
+
+    remaining-=v;
+    paid+=v;
+
+  }
+
+
+  return paid;
+}
+
+
+/* =========================================================
+   ACTION COUNT
+========================================================= */
+
+function spendHostAction(id){
+
+  if(
+    publicState.actions[id]<=0
+  ){
+
+    sendPrivate(id);
+
+    return false;
+  }
+
+  publicState.actions[id]--;
+
+  return true;
+}
+
+
+function isHostTurn(id){
+
+  if(
+    publicState.status!=="playing"
+  )
+    return false;
+
+  const p=
+    publicState.players[
+      publicState.current
+    ];
+
+  if(
+    !p ||
+    p.id!==id
+  ){
+
+    if(id===playerId)
+      message(
+        "Sekarang bukan giliranmu."
+      );
+
+    return false;
+  }
+
+  return true;
+}
+
+
+/* =========================================================
+   END TURN
+========================================================= */
+
+function endTurn(){
+
+  command("end");
+
+}
+
+
+function hostEnd(id){
+
+  if(!isHostTurn(id))
+    return;
+
+
+  let tries=0;
+
+
+  do{
+
+    publicState.current=
+      (
+        publicState.current+1
+      ) %
+      publicState.players.length;
+
+    tries++;
+
+  }while(
+    !publicState.players[
+      publicState.current
+    ].alive &&
+    tries<=publicState.players.length
+  );
+
+
+  const next=
+    publicState.players[
+      publicState.current
+    ];
+
+
+  publicState.actions[next.id]=3;
+
+
+  /*
+    Awal giliran otomatis menarik 2.
+  */
+
+  drawOneHost(next.id);
+  drawOneHost(next.id);
+
+
+  addHostLog(
+    "➡️ Giliran "+
+    next.name
+  );
+
+
+  syncAll();
+
+}
+
+
+/* =========================================================
+   WINNER
+========================================================= */
+
+function completedSetsHost(id){
+
+  const props=
+    fullProperties[id]||[];
+
+
+  return SETS.filter(
+    s=>
+      props.filter(
+        p=>p.set===s.name
+      ).length>=s.need
+  ).length;
+
+}
+
+
+function checkHostWinner(){
+
+  for(
+    const p of publicState.players
+  ){
+
+    if(!p.alive)
+      continue;
+
+
+    if(
+      completedSetsHost(p.id)>=3
+    ){
+
+      publicState.status=
+        "finished";
+
+      publicState.winner=
+        p.id;
+
+
+      addHostLog(
+        "🏆 "+
+        p.name+
+        " MENANG!"
+      );
+
+
+      syncAll();
+
+      return true;
+    }
+
+  }
+
+  return false;
+}
+
+
+/* =========================================================
+   SYNC
+========================================================= */
+
+function syncAll(){
+
+  publicState.deckCount=
+    fullDeck.length;
+
+
+  sendPublic();
+
+
+  /*
+    Host mengirim data private
+    masing-masing pemain.
+  */
+
+  publicState.players
+    .forEach(p=>{
+
+      sendPrivate(p.id);
+
+    });
+
+
+  render();
+
+}
+
+
+/* =========================================================
+   PUBLIC PROPERTY INFO
+========================================================= */
+
+function getPublicPropertyInfo(id){
+
+  /*
+    Pada versi browser ini host memiliki data lengkap.
+    Client sendiri tidak dapat membaca properti lawan
+    langsung dari state private.
+  */
+
+  if(
+    publicState.host===playerId
+  ){
+
+    return fullProperties[id]||[];
+
+  }
+
+  /*
+    Untuk client non-host, gunakan data ringkas
+    dari pesan public yang kita simpan.
+  */
+
+  return publicPropertyCache[id]||[];
+
+}
+
+
+let publicPropertyCache={};
+
+
+/* =========================================================
+   LOBBY
 ========================================================= */
 
 function showRoom(){
@@ -1181,6 +2569,7 @@ function showRoom(){
     .textContent=roomId;
 
   renderLobby();
+
 }
 
 
@@ -1193,980 +2582,77 @@ function renderLobby(){
 
   box.innerHTML="";
 
-  state.players.forEach(p=>{
 
-    const el=
-      document.createElement("div");
+  publicState.players
+    .forEach(p=>{
 
-    el.className="player";
+      const el=
+        document.createElement("div");
 
-    el.innerHTML=`
-      <div class="player-name">
-        ${esc(p.name)}
-        ${p.id===state.host?" 👑":""}
-      </div>
-      <div class="muted">
-        ${
-          p.ready
-          ?"🟢 SIAP"
-          :"⚪ BELUM SIAP"
-        }
-      </div>
-    `;
+      el.className="player";
 
-    box.appendChild(el);
-  });
+
+      el.innerHTML=`
+        <div class="player-name">
+          ${esc(p.name)}
+          ${p.id===publicState.host?" 👑":""}
+        </div>
+
+        <div class="small">
+          ${
+            p.ready
+              ?"🟢 SIAP"
+              :"⚪ BELUM SIAP"
+          }
+        </div>
+      `;
+
+
+      box.appendChild(el);
+
+    });
+
+
+  const me=
+    publicState.players.find(
+      p=>p.id===playerId
+    );
+
+
+  document
+    .getElementById("readyBtn")
+    .textContent=
+      me?.ready
+        ?"BATAL SIAP"
+        :"SIAP";
 
 
   const start=
     document.getElementById(
-      "startButton"
+      "startBtn"
     );
-
-  const ready=
-    document.getElementById(
-      "readyButton"
-    );
-
-  ready.textContent=
-    state.players.find(
-      p=>p.id===playerId
-    )?.ready
-      ?"BATAL SIAP"
-      :"SIAP";
 
 
   if(
-    playerId===state.host &&
-    state.players.length>=2 &&
-    state.players.every(
+    publicState.host===playerId &&
+    publicState.players.length>=2 &&
+    publicState.players.every(
       p=>p.ready
     )
   ){
+
     start.classList.remove(
       "hidden"
     );
+
   }else{
+
     start.classList.add(
       "hidden"
     );
-  }
-}
-
-
-function toggleReady(){
-
-  const me=
-    state.players.find(
-      p=>p.id===playerId
-    );
-
-  if(!me) return;
-
-  me.ready=!me.ready;
-
-  publish();
-  renderLobby();
-}
-
-
-/* =========================================================
-   START
-========================================================= */
-
-function startGame(){
-
-  if(playerId!==state.host){
-    message("Hanya host yang bisa mulai.");
-    return;
-  }
-
-  if(state.players.length<2){
-    message("Minimal 2 pemain.");
-    return;
-  }
-
-  if(
-    !state.players.every(
-      p=>p.ready
-    )
-  ){
-
-    message(
-      "Semua pemain harus siap."
-    );
-
-    return;
-  }
-
-  state.status="playing";
-  state.deck=createDeck();
-  state.discard=[];
-  state.current=0;
-  state.actions={};
-
-  state.players.forEach(p=>{
-
-    state.hands[p.id]=[];
-    state.banks[p.id]=[];
-    state.properties[p.id]=[];
-
-    state.actions[p.id]=3;
-
-    for(let i=0;i<5;i++){
-      drawOne(p.id);
-    }
-
-  });
-
-  addLog(
-    "🎮 Permainan dimulai!"
-  );
-
-  publish();
-  render();
-}
-
-
-/* =========================================================
-   DECK
-========================================================= */
-
-function drawOne(id){
-
-  if(state.deck.length===0){
-
-    if(state.discard.length>0){
-
-      state.deck=
-        state.discard.splice(0);
-
-      shuffle(state.deck);
-
-    }else{
-
-      state.deck=createDeck();
-
-    }
-  }
-
-  const card=
-    state.deck.pop();
-
-  if(card)
-    state.hands[id].push(card);
-}
-
-
-/* =========================================================
-   TURN
-========================================================= */
-
-function currentPlayer(){
-
-  return state.players[
-    state.current
-  ];
-}
-
-
-function myTurn(){
-
-  return (
-    state.status==="playing" &&
-    currentPlayer()?.id===playerId
-  );
-}
-
-
-function drawCards(){
-
-  if(!myTurn()){
-    message("Sekarang bukan giliranmu.");
-    return;
-  }
-
-  if(
-    state.actions[playerId]!==3
-  ){
-    message(
-      "Kartu sudah diambil pada giliran ini."
-    );
-    return;
-  }
-
-  drawOne(playerId);
-  drawOne(playerId);
-
-  addLog(
-    `🎴 ${nameOf(playerId)} mengambil 2 kartu.`
-  );
-
-  state.actions[playerId]=3;
-
-  publish();
-  render();
-}
-
-
-/* =========================================================
-   ACTION LIMIT
-========================================================= */
-
-function spendAction(){
-
-  if(
-    state.actions[playerId]<=0
-  ){
-    message(
-      "Maksimal 3 aksi per giliran."
-    );
-
-    return false;
-  }
-
-  state.actions[playerId]--;
-
-  return true;
-}
-
-
-function endTurn(){
-
-  if(!myTurn()){
-    message("Bukan giliranmu.");
-    return;
-  }
-
-  nextTurn();
-
-  publish();
-  render();
-}
-
-
-function nextTurn(){
-
-  let count=0;
-
-  do{
-
-    state.current=
-      (
-        state.current+1
-      ) %
-      state.players.length;
-
-    count++;
-
-  }while(
-    !state.players[
-      state.current
-    ].alive &&
-    count<=state.players.length
-  );
-
-  state.actions[
-    currentPlayer().id
-  ]=3;
-
-  addLog(
-    `➡️ Giliran ${currentPlayer().name}`
-  );
-}
-
-
-/* =========================================================
-   SELECT CARD
-========================================================= */
-
-function selectCard(id){
-
-  state.selected=
-    state.selected===id
-      ?null
-      :id;
-
-  renderHand();
-}
-
-
-function selectedCard(){
-
-  return (
-    state.hands[playerId]||[]
-  ).find(
-    c=>c.id===state.selected
-  );
-}
-
-
-function removeCard(id){
-
-  const hand=
-    state.hands[playerId];
-
-  const index=
-    hand.findIndex(
-      c=>c.id===id
-    );
-
-  if(index<0) return null;
-
-  return hand.splice(index,1)[0];
-}
-
-
-/* =========================================================
-   BANK
-========================================================= */
-
-function bankSelected(){
-
-  if(!myTurn()){
-    message("Bukan giliranmu.");
-    return;
-  }
-
-  const card=selectedCard();
-
-  if(!card){
-    message("Pilih kartu.");
-    return;
-  }
-
-  if(
-    !["money","action"].includes(
-      card.type
-    )
-  ){
-    message(
-      "Kartu ini tidak bisa dimasukkan ke bank."
-    );
-    return;
-  }
-
-  if(!spendAction()) return;
-
-  const c=
-    removeCard(card.id);
-
-  state.banks[playerId].push(c);
-
-  state.selected=null;
-
-  addLog(
-    `💰 ${nameOf(playerId)} memasukkan kartu ke bank.`
-  );
-
-  effect("💰 BANK!");
-
-  publish();
-  render();
-}
-
-
-/* =========================================================
-   PROPERTY
-========================================================= */
-
-function propertySelected(){
-
-  if(!myTurn()){
-    message("Bukan giliranmu.");
-    return;
-  }
-
-  const card=selectedCard();
-
-  if(!card){
-    message("Pilih kartu.");
-    return;
-  }
-
-  if(
-    card.type!=="property" &&
-    card.type!=="wild"
-  ){
-    message("Pilih kartu properti.");
-    return;
-  }
-
-  if(!spendAction()) return;
-
-  const c=
-    removeCard(card.id);
-
-  state.properties[playerId].push(c);
-
-  state.selected=null;
-
-  addLog(
-    `🏰 ${nameOf(playerId)} memasang ${c.name}.`
-  );
-
-  effect("🏰 PROPERTI!");
-
-  checkWinner();
-
-  publish();
-  render();
-}
-
-
-/* =========================================================
-   ACTION MENU
-========================================================= */
-
-function actionSelected(){
-
-  if(!myTurn()){
-    message("Bukan giliranmu.");
-    return;
-  }
-
-  const card=selectedCard();
-
-  if(
-    !card ||
-    card.type!=="action"
-  ){
-
-    message(
-      "Pilih kartu aksi."
-    );
-
-    return;
-  }
-
-  if(
-    !spendAction()
-  ) return;
-
-  const c=
-    removeCard(card.id);
-
-  executeAction(c);
-}
-
-
-/* =========================================================
-   ACTION EXECUTION
-========================================================= */
-
-function executeAction(card){
-
-  if(card.effect==="counter"){
-
-    message(
-      "Aksi Balasan adalah kartu respons. " +
-      "Simpan di bank atau gunakan saat ada aksi."
-    );
-
-    state.discard.push(card);
-    publish();
-    render();
-
-    return;
-  }
-
-
-  if(card.effect==="birthday"){
-
-    const targets=
-      alivePlayers().filter(
-        p=>p.id!==playerId
-      );
-
-    let total=0;
-
-    targets.forEach(
-      target=>{
-
-        total+=
-          collectPayment(
-            target.id,
-            playerId,
-            2
-          );
-
-      }
-    );
-
-    addLog(
-      `🎂 ${nameOf(playerId)} menggunakan Pajak Semua dan menerima ${total}.`
-    );
-
-    effect("🎂 PAJAK!");
-
-    finishCard(card);
-    return;
-  }
-
-
-  const target=
-    chooseTarget();
-
-  if(!target){
-
-    state.hands[playerId].push(card);
-    state.actions[playerId]++;
-
-    return;
-  }
-
-
-  if(card.effect==="debt"){
-
-    const total=
-      collectPayment(
-        target.id,
-        playerId,
-        5
-      );
-
-    addLog(
-      `💸 ${nameOf(playerId)} menagih ${target.name}: ${total} nilai pembayaran.`
-    );
-
-    effect("💸 TAGIH!");
 
   }
 
-
-  else if(
-    card.effect==="stealProperty"
-  ){
-
-    stealOne(
-      target.id
-    );
-
-  }
-
-
-  else if(
-    card.effect==="stealSet"
-  ){
-
-    stealSet(
-      target.id
-    );
-
-  }
-
-
-  else if(
-    card.effect==="trade"
-  ){
-
-    tradeProperty(
-      target.id
-    );
-
-  }
-
-  finishCard(card);
-}
-
-
-/* =========================================================
-   TARGET
-========================================================= */
-
-function chooseTarget(){
-
-  const targets=
-    alivePlayers()
-      .filter(
-        p=>p.id!==playerId
-      );
-
-  if(!targets.length){
-
-    message(
-      "Tidak ada target."
-    );
-
-    return null;
-  }
-
-  const list=
-    targets
-      .map(
-        (p,i)=>
-          `${i+1}. ${p.name}`
-      )
-      .join("\n");
-
-  const answer=
-    prompt(
-      "Pilih target:\n\n"+list
-    );
-
-  const index=
-    Number(answer)-1;
-
-  if(
-    !Number.isInteger(index) ||
-    !targets[index]
-  ){
-    message("Target tidak valid.");
-    return null;
-  }
-
-  return targets[index];
-}
-
-
-/* =========================================================
-   PAYMENT
-========================================================= */
-
-function collectPayment(
-  fromId,
-  toId,
-  amount
-){
-
-  let remaining=amount;
-  let paid=0;
-
-  const bank=
-    state.banks[fromId];
-
-  while(
-    remaining>0 &&
-    bank.length
-  ){
-
-    const card=
-      bank.pop();
-
-    state.banks[toId].push(card);
-
-    const value=
-      Number(card.value)||1;
-
-    remaining-=value;
-    paid+=value;
-  }
-
-  return paid;
-}
-
-
-/* =========================================================
-   STEAL ONE
-========================================================= */
-
-function stealOne(targetId){
-
-  const props=
-    state.properties[targetId];
-
-  if(!props.length){
-
-    message(
-      "Target tidak punya properti."
-    );
-
-    return;
-  }
-
-  const options=
-    props
-      .map(
-        (p,i)=>
-          `${i+1}. ${p.name}`
-      )
-      .join("\n");
-
-  const answer=
-    prompt(
-      "Pilih properti:\n\n"+
-      options
-    );
-
-  const index=
-    Number(answer)-1;
-
-  if(
-    !Number.isInteger(index) ||
-    !props[index]
-  ){
-    message("Pilihan tidak valid.");
-    return;
-  }
-
-  const stolen=
-    props.splice(index,1)[0];
-
-  state.properties[playerId]
-    .push(stolen);
-
-  addLog(
-    `🦹 ${nameOf(playerId)} mengambil ${stolen.name} dari ${nameOf(targetId)}.`
-  );
-
-  effect("🦹 DIREBUT!");
-
-  checkWinner();
-}
-
-
-/* =========================================================
-   STEAL SET
-========================================================= */
-
-function stealSet(targetId){
-
-  const props=
-    state.properties[targetId];
-
-  const complete=
-    SETS.filter(set=>{
-
-      return props.filter(
-        p=>p.set===set.name
-      ).length>=set.need;
-
-    });
-
-
-  if(!complete.length){
-
-    message(
-      "Target belum memiliki set lengkap."
-    );
-
-    return;
-  }
-
-
-  const list=
-    complete
-      .map(
-        (s,i)=>
-          `${i+1}. ${s.name}`
-      )
-      .join("\n");
-
-
-  const answer=
-    prompt(
-      "Pilih set yang ingin diambil:\n\n"+
-      list
-    );
-
-  const index=
-    Number(answer)-1;
-
-  if(
-    !Number.isInteger(index) ||
-    !complete[index]
-  ) return;
-
-
-  const set=
-    complete[index];
-
-  const stolen=
-    props.filter(
-      p=>p.set===set.name
-    );
-
-  state.properties[targetId]=
-    props.filter(
-      p=>p.set!==set.name
-    );
-
-  state.properties[playerId]
-    .push(...stolen);
-
-  addLog(
-    `🔥 ${nameOf(playerId)} mengambil set ${set.name} dari ${nameOf(targetId)}!`
-  );
-
-  effect("🔥 SET DIREBUT!");
-
-  checkWinner();
-}
-
-
-/* =========================================================
-   TRADE
-========================================================= */
-
-function tradeProperty(targetId){
-
-  const mine=
-    state.properties[playerId];
-
-  const theirs=
-    state.properties[targetId];
-
-  if(
-    !mine.length ||
-    !theirs.length
-  ){
-
-    message(
-      "Kedua pemain harus punya properti."
-    );
-
-    return;
-  }
-
-
-  const mineList=
-    mine
-      .map(
-        (p,i)=>
-          `${i+1}. ${p.name}`
-      )
-      .join("\n");
-
-
-  const theirList=
-    theirs
-      .map(
-        (p,i)=>
-          `${i+1}. ${p.name}`
-      )
-      .join("\n");
-
-
-  const a=
-    Number(
-      prompt(
-        "Properti kamu:\n\n"+
-        mineList
-      )
-    )-1;
-
-
-  const b=
-    Number(
-      prompt(
-        "Properti lawan:\n\n"+
-        theirList
-      )
-    )-1;
-
-
-  if(
-    !mine[a] ||
-    !theirs[b]
-  ){
-
-    message(
-      "Pilihan tidak valid."
-    );
-
-    return;
-  }
-
-
-  const temp=
-    mine[a];
-
-  mine[a]=theirs[b];
-  theirs[b]=temp;
-
-
-  addLog(
-    `🔄 ${nameOf(playerId)} menukar properti dengan ${nameOf(targetId)}.`
-  );
-
-  effect("🔄 TUKAR!");
-
-  checkWinner();
-}
-
-
-/* =========================================================
-   FINISH CARD
-========================================================= */
-
-function finishCard(card){
-
-  state.discard.push(card);
-
-  state.selected=null;
-
-  checkWinner();
-
-  publish();
-  render();
-}
-
-
-/* =========================================================
-   WIN
-========================================================= */
-
-function checkWinner(){
-
-  for(const player of state.players){
-
-    if(!player.alive)
-      continue;
-
-    const props=
-      state.properties[player.id]||[];
-
-    let complete=0;
-
-    SETS.forEach(set=>{
-
-      const count=
-        props.filter(
-          p=>p.set===set.name
-        ).length;
-
-      if(count>=set.need)
-        complete++;
-
-    });
-
-
-    if(complete>=3){
-
-      state.status="finished";
-
-      state.winner=player.id;
-
-      showWinner(
-        player.name,
-        "Berhasil menyelesaikan 3 set properti!"
-      );
-
-      addLog(
-        `🏆 ${player.name} MENANG!`
-      );
-
-      return true;
-    }
-  }
-
-  return false;
-}
-
-
-function showWinner(name,reason){
-
-  document
-    .getElementById("winnerName")
-    .textContent=name;
-
-  document
-    .getElementById("winnerReason")
-    .textContent=reason;
-
-  document
-    .getElementById("winner")
-    .classList.add("show");
 }
 
 
@@ -2176,7 +2662,9 @@ function showWinner(name,reason){
 
 function render(){
 
-  if(state.status==="lobby"){
+  if(
+    publicState.status==="lobby"
+  ){
 
     document
       .getElementById("lobby")
@@ -2186,7 +2674,8 @@ function render(){
       .getElementById("game")
       .classList.add("hidden");
 
-    renderLobby();
+    if(roomId)
+      renderLobby();
 
     return;
   }
@@ -2207,6 +2696,28 @@ function render(){
   renderBank();
   renderProperties();
   renderLogs();
+
+
+  if(
+    publicState.status==="finished"
+  ){
+
+    const winner=
+      publicState.players.find(
+        p=>p.id===publicState.winner
+      );
+
+    if(winner){
+
+      showWinner(
+        winner.name,
+        "Berhasil membuat 3 set properti lengkap."
+      );
+
+    }
+
+  }
+
 }
 
 
@@ -2223,69 +2734,82 @@ function renderPlayers(){
 
   box.innerHTML="";
 
-  state.players.forEach(p=>{
 
-    const el=
-      document.createElement("div");
+  publicState.players
+    .forEach(p=>{
 
-    el.className="player";
+      const el=
+        document.createElement("div");
 
-    if(
-      currentPlayer()?.id===p.id
-    )
-      el.classList.add("active");
-
-    if(!p.alive)
-      el.classList.add("dead");
+      el.className="player";
 
 
-    const hand=
-      state.hands[p.id]?.length||0;
-
-    const bank=
-      (state.banks[p.id]||[])
-        .reduce(
-          (a,c)=>
-            a+(Number(c.value)||1),
-          0
-        );
+      if(
+        publicState.players[
+          publicState.current
+        ]?.id===p.id
+      )
+        el.classList.add("active");
 
 
-    const sets=
-      completedSets(p.id);
+      if(!p.alive)
+        el.classList.add("dead");
 
 
-    el.innerHTML=`
-      <div class="player-name">
-        ${esc(p.name)}
-        ${p.id===state.host?" 👑":""}
-      </div>
+      const handCount=
+        p.id===playerId
+          ?myHand.length
+          :(
+            p.handCount??0
+          );
 
-      <div>
-        🎴 ${hand} kartu
-      </div>
 
-      <div class="money">
-        💰 ${bank}
-      </div>
+      const bankValue=
+        p.id===playerId
+          ?valueOf(myBank)
+          :(p.bankValue??0);
 
-      <div class="muted">
-        🏰 ${sets}/3 set
-      </div>
 
-      <div class="muted">
-        ${
-          p.id===currentPlayer()?.id
-          ?"🔥 GILIRAN"
-          :p.alive
-            ?"Menunggu"
-            :"Eliminasi"
-        }
-      </div>
-    `;
+      const sets=
+        p.id===playerId
+          ?completedSetsLocal()
+          :(p.completedSets??0);
 
-    box.appendChild(el);
-  });
+
+      el.innerHTML=`
+        <div class="player-name">
+          ${esc(p.name)}
+          ${p.id===publicState.host?" 👑":""}
+        </div>
+
+        <div class="small">
+          🎴 ${handCount} kartu
+        </div>
+
+        <div class="green-text">
+          💰 ${bankValue}
+        </div>
+
+        <div class="small">
+          🏰 ${sets}/3 set
+        </div>
+
+        <div class="small">
+          ${
+            publicState.players[
+              publicState.current
+            ]?.id===p.id
+              ?"🔥 GILIRAN"
+              :""
+          }
+        </div>
+      `;
+
+
+      box.appendChild(el);
+
+    });
+
 }
 
 
@@ -2295,35 +2819,42 @@ function renderPlayers(){
 
 function renderInfo(){
 
+  const current=
+    publicState.players[
+      publicState.current
+    ];
+
+
   document
     .getElementById("turnName")
     .textContent=
-      currentPlayer()?.name||"-";
+      current?.name||"-";
+
 
   document
-    .getElementById("actionsLeft")
+    .getElementById("actions")
     .textContent=
-      state.actions[playerId]??0;
+      publicState.actions[playerId]??0;
+
 
   document
     .getElementById("deckCount")
     .textContent=
-      state.deck.length;
+      publicState.deckCount;
+
 
   document
     .getElementById("handCount")
     .textContent=
-      state.hands[playerId]?.length||0;
+      myHand.length;
 
 
-  const draw=
-    document.getElementById(
-      "drawButton"
-    );
+  document
+    .getElementById("drawBtn")
+    .disabled=
+      !myTurnLocal() ||
+      publicState.actions[playerId]!==3;
 
-  draw.disabled=
-    !myTurn() ||
-    state.actions[playerId]!==3;
 }
 
 
@@ -2340,47 +2871,56 @@ function renderHand(){
 
   box.innerHTML="";
 
-  const hand=
-    state.hands[playerId]||[];
 
-  hand.forEach(card=>{
+  myHand.forEach(c=>{
 
     const el=
       document.createElement("div");
 
     el.className=
-      "card "+cardClass(card);
+      "card "+
+      cardClass(c);
 
-    if(
-      state.selected===card.id
-    )
+
+    if(selected===c.id)
       el.classList.add("selected");
 
+
     el.onclick=()=>{
-      selectCard(card.id);
+
+      selected=
+        selected===c.id
+          ?null
+          :c.id;
+
+      renderHand();
+
     };
 
 
     el.innerHTML=`
-      <div class="card-name">
-        ${esc(card.name)}
+      <div class="card-title">
+        ${esc(c.name)}
       </div>
 
       <div class="card-type">
-        ${cardType(card)}
+        ${typeName(c)}
       </div>
 
       <div class="card-desc">
-        ${description(card)}
+        ${desc(c)}
       </div>
 
       <div class="card-value">
-        ${card.value}
+        ${c.value}
       </div>
     `;
 
+
     box.appendChild(el);
+
   });
+
 }
 
 
@@ -2397,13 +2937,11 @@ function renderBank(){
 
   box.innerHTML="";
 
-  const bank=
-    state.banks[playerId]||[];
 
-  if(!bank.length){
+  if(!myBank.length){
 
     box.innerHTML=
-      `<span class="muted">
+      `<span class="small">
         Bank masih kosong.
       </span>`;
 
@@ -2411,19 +2949,22 @@ function renderBank(){
   }
 
 
-  bank.forEach(card=>{
+  myBank.forEach(c=>{
 
     const el=
-      document.createElement("div");
+      document.createElement("span");
 
     el.className=
-      "mini-card "+cardClass(card);
+      "mini-card "+
+      cardClass(c);
 
     el.textContent=
-      `${card.name} ${card.value}`;
+      c.name+" "+c.value;
 
     box.appendChild(el);
+
   });
+
 }
 
 
@@ -2440,18 +2981,16 @@ function renderProperties(){
 
   box.innerHTML="";
 
-  const props=
-    state.properties[playerId]||[];
+
+  SETS.forEach(s=>{
+
+    const arr=
+      myProperties.filter(
+        p=>p.set===s.name
+      );
 
 
-  SETS.forEach(set=>{
-
-    const count=
-      props.filter(
-        p=>p.set===set.name
-      ).length;
-
-    if(!count)
+    if(!arr.length)
       return;
 
 
@@ -2460,63 +2999,55 @@ function renderProperties(){
 
     el.className="set";
 
+
     const percent=
       Math.min(
         100,
-        count/set.need*100
+        arr.length/s.need*100
       );
 
 
     el.innerHTML=`
       <div class="set-title">
-        ${set.name}
-        (${count}/${set.need})
+        ${s.name}
+        (${arr.length}/${s.need})
       </div>
 
       <div class="progress">
         <div style="width:${percent}%"></div>
       </div>
-
-      <div></div>
     `;
 
 
-    const cards=
-      el.querySelector(
-        "div:last-child"
-      );
+    arr.forEach(c=>{
 
+      const mini=
+        document.createElement("span");
 
-    props
-      .filter(
-        p=>p.set===set.name
-      )
-      .forEach(card=>{
+      mini.className=
+        "mini-card "+
+        cardClass(c);
 
-        const mini=
-          document.createElement("span");
+      mini.textContent=
+        c.name;
 
-        mini.className=
-          "mini-card "+cardClass(card);
+      el.appendChild(mini);
 
-        mini.textContent=
-          card.name;
-
-        cards.appendChild(mini);
-      });
+    });
 
 
     box.appendChild(el);
+
   });
 
 
-  const wild=
-    props.filter(
+  const wilds=
+    myProperties.filter(
       p=>p.type==="wild"
-    ).length;
+    );
 
 
-  if(wild){
+  if(wilds.length){
 
     const el=
       document.createElement("div");
@@ -2527,169 +3058,492 @@ function renderProperties(){
       <div class="set-title">
         🌈 Properti Bebas
       </div>
-      <div class="muted">
-        ${wild} kartu fleksibel
+
+      <div class="small">
+        ${wilds.length} kartu
       </div>
     `;
 
     box.appendChild(el);
+
   }
 
 
   if(!box.innerHTML){
 
     box.innerHTML=
-      `<span class="muted">
+      `<span class="small">
         Belum ada properti.
       </span>`;
+
   }
+
 }
 
 
 /* =========================================================
-   LOGS
+   LOG
 ========================================================= */
 
 function renderLogs(){
 
   const box=
     document.getElementById(
-      "log"
+      "logs"
     );
 
   box.innerHTML="";
 
-  [...state.logs]
+
+  [...publicState.logs]
     .reverse()
-    .forEach(text=>{
+    .forEach(x=>{
 
       const el=
         document.createElement("div");
 
-      el.textContent=text;
+      el.textContent=x;
 
       box.appendChild(el);
+
     });
+
 }
 
 
 /* =========================================================
-   HELPERS
+   LOCAL HELPERS
 ========================================================= */
 
-function alivePlayers(){
+function myTurnLocal(){
 
-  return state.players.filter(
-    p=>p.alive
+  return(
+    publicState.status==="playing" &&
+    publicState.players[
+      publicState.current
+    ]?.id===playerId
   );
+
 }
 
 
-function completedSets(id){
-
-  const props=
-    state.properties[id]||[];
+function completedSetsLocal(){
 
   return SETS.filter(
-    set=>
-      props.filter(
-        p=>p.set===set.name
-      ).length>=set.need
+    s=>
+      myProperties.filter(
+        p=>p.set===s.name
+      ).length>=s.need
   ).length;
+
 }
 
 
-function nameOf(id){
+function valueOf(arr){
 
-  return state.players
+  return arr.reduce(
+    (sum,c)=>
+      sum+(Number(c.value)||0),
+    0
+  );
+
+}
+
+
+function playerNameOf(id){
+
+  return publicState.players
     .find(
       p=>p.id===id
     )?.name||"Pemain";
+
 }
 
 
-function cardClass(card){
+function addHostLog(text){
 
-  if(card.type==="money")
-    return "money-card";
-
-  if(card.type==="property")
-    return "property-card";
-
-  if(card.type==="wild")
-    return "wild-card";
-
-  return "action-card";
-}
-
-
-function cardType(card){
-
-  if(card.type==="money")
-    return "UANG";
-
-  if(card.type==="property")
-    return "PROPERTI";
-
-  if(card.type==="wild")
-    return "PROPERTI BEBAS";
-
-  return "AKSI";
-}
-
-
-function description(card){
-
-  if(card.type==="money")
-    return "Masukkan ke bank sebagai uang.";
-
-  if(card.type==="property")
-    return "Pasang untuk membangun set.";
-
-  if(card.type==="wild")
-    return "Bisa menjadi properti fleksibel.";
-
-  switch(card.effect){
-
-    case "stealSet":
-      return "Ambil satu set lengkap milik lawan.";
-
-    case "stealProperty":
-      return "Ambil satu properti milik lawan.";
-
-    case "trade":
-      return "Tukar properti kamu dengan properti lawan.";
-
-    case "debt":
-      return "Ambil pembayaran dari bank lawan.";
-
-    case "birthday":
-      return "Semua lawan membayar kepadamu.";
-
-    case "counter":
-      return "Kartu respons untuk membatalkan aksi.";
-
-    default:
-      return "Kartu aksi.";
-  }
-}
-
-
-function addLog(text){
-
-  if(!state.logs)
-    state.logs=[];
-
-  state.logs.push(
-    new Date().toLocaleTimeString()+
+  publicState.logs.push(
+    new Date()
+      .toLocaleTimeString()+
     " — "+
     text
   );
 
-  if(state.logs.length>100)
-    state.logs.shift();
+
+  if(
+    publicState.logs.length>100
+  )
+    publicState.logs.shift();
+
 }
 
+
+/* =========================================================
+   PUBLIC STATS
+========================================================= */
+
+function updatePublicStats(){
+
+  if(
+    publicState.host!==playerId
+  )
+    return;
+
+
+  publicState.players
+    .forEach(p=>{
+
+      p.handCount=
+        fullHands[p.id]?.length||0;
+
+      p.bankValue=
+        valueOf(
+          fullBanks[p.id]||[]
+        );
+
+      p.completedSets=
+        completedSetsHost(p.id);
+
+    });
+
+}
+
+
+/* =========================================================
+   OVERRIDE SYNC WITH PUBLIC STATS
+========================================================= */
+
+const oldSyncAll=syncAll;
+
+syncAll=function(){
+
+  updatePublicStats();
+
+  publicState.deckCount=
+    fullDeck.length;
+
+  sendPublic();
+
+
+  publicState.players
+    .forEach(p=>{
+
+      sendPrivate(p.id);
+
+    });
+
+
+  render();
+
+};
+
+
+/* =========================================================
+   EFFECT
+========================================================= */
+
+function broadcastEffect(text){
+
+  channel.send({
+
+    type:"broadcast",
+
+    event:"effect",
+
+    payload:{
+      text
+    }
+
+  });
+
+}
+
+
+channelEffectSetup();
+
+
+function channelEffectSetup(){
+
+  /*
+    Listener dipasang setelah channel tersedia.
+    Karena connectRoom membuat channel terlebih dahulu,
+    kita pasang listener di connectRoom juga lewat
+    event global berikut.
+  */
+
+}
+
+
+/*
+  Patch connectRoom listener dengan wrapper sederhana.
+*/
+
+const originalConnectRoom=
+  connectRoom;
+
+
+/* =========================================================
+   REDEFINE CONNECT UNTUK EFFECT
+========================================================= */
+
+connectRoom=async function(){
+
+  if(channel)
+    return;
+
+  channel=
+    db.channel(
+      "deal-chaos-"+roomId,
+      {
+        config:{
+          broadcast:{
+            self:true
+          }
+        }
+      }
+    );
+
+
+  channel.on(
+    "broadcast",
+    {event:"request_state"},
+    ({payload})=>{
+
+      if(
+        publicState.host===playerId
+      ){
+
+        sendPublic();
+
+        sendPrivate(
+          payload.requester
+        );
+
+      }
+
+    }
+  );
+
+
+  channel.on(
+    "broadcast",
+    {event:"public_state"},
+    ({payload})=>{
+
+      if(!payload?.state)
+        return;
+
+      publicState=
+        payload.state;
+
+      render();
+
+    }
+  );
+
+
+  channel.on(
+    "broadcast",
+    {event:"private_state"},
+    ({payload})=>{
+
+      if(
+        payload?.target!==playerId
+      )
+        return;
+
+      myHand=
+        payload.hand||[];
+
+      myBank=
+        payload.bank||[];
+
+      myProperties=
+        payload.properties||[];
+
+      selected=null;
+
+      render();
+
+    }
+  );
+
+
+  channel.on(
+    "broadcast",
+    {event:"command"},
+    ({payload})=>{
+
+      if(
+        publicState.host!==playerId
+      )
+        return;
+
+      processCommand(
+        payload.from,
+        payload.command,
+        payload.data||{}
+      );
+
+    }
+  );
+
+
+  channel.on(
+    "broadcast",
+    {event:"effect"},
+    ({payload})=>{
+
+      if(payload?.text)
+        showEffect(
+          payload.text
+        );
+
+    }
+  );
+
+
+  const result=
+    await channel.subscribe();
+
+
+  if(result!=="SUBSCRIBED"){
+
+    message(
+      "Gagal tersambung ke room."
+    );
+
+  }
+
+};
+
+
+/* =========================================================
+   EFFECT UI
+========================================================= */
+
+function showEffect(text){
+
+  const box=
+    document.getElementById(
+      "effect"
+    );
+
+  const label=
+    document.getElementById(
+      "effectText"
+    );
+
+  label.textContent=text;
+
+  box.classList.remove("show");
+
+  void box.offsetWidth;
+
+  box.classList.add("show");
+
+}
+
+
+/* =========================================================
+   WINNER UI
+========================================================= */
+
+function showWinner(
+  name,
+  reason
+){
+
+  document
+    .getElementById("winnerName")
+    .textContent=name;
+
+  document
+    .getElementById("winnerReason")
+    .textContent=reason;
+
+  document
+    .getElementById("winner")
+    .classList.add("show");
+
+}
+
+
+/* =========================================================
+   CARD HELPERS
+========================================================= */
+
+function cardClass(c){
+
+  if(c.type==="money")
+    return "money";
+
+  if(c.type==="property")
+    return "property";
+
+  if(c.type==="wild")
+    return "wild";
+
+  return "action";
+
+}
+
+
+function typeName(c){
+
+  if(c.type==="money")
+    return "UANG";
+
+  if(c.type==="property")
+    return "PROPERTI";
+
+  if(c.type==="wild")
+    return "PROPERTI BEBAS";
+
+  return "AKSI";
+
+}
+
+
+function desc(c){
+
+  if(c.type==="money")
+    return "Masukkan ke bank sebagai uang.";
+
+  if(c.type==="property")
+    return "Pasang untuk membangun set.";
+
+  if(c.type==="wild")
+    return "Properti fleksibel.";
+
+  switch(c.effect){
+
+    case "stealSet":
+      return "Ambil satu set lengkap lawan.";
+
+    case "stealProperty":
+      return "Ambil satu properti lawan.";
+
+    case "trade":
+      return "Tukar properti dengan lawan.";
+
+    case "debt":
+      return "Tagih pembayaran dari lawan.";
+
+    case "birthday":
+      return "Semua lawan membayar.";
+
+    default:
+      return "Kartu aksi.";
+
+  }
+
+}
+
+
+/* =========================================================
+   MESSAGES
+========================================================= */
 
 function message(text){
 
@@ -2707,47 +3561,57 @@ function message(text){
   );
 
   message.timer=
-    setTimeout(()=>{
-      el.classList.remove("show");
-    },2200);
+    setTimeout(
+      ()=>{
+        el.classList.remove("show");
+      },
+      2300
+    );
+
 }
 
 
-function effect(text){
+/* =========================================================
+   VALIDATION
+========================================================= */
 
-  const box=
-    document.getElementById(
-      "effect"
+function checkName(){
+
+  if(
+    !playerName ||
+    playerName.length<2
+  ){
+
+    message(
+      "Nama minimal 2 karakter."
     );
 
-  const el=
-    document.getElementById(
-      "effectText"
-    );
+    return false;
+  }
 
-  el.textContent=text;
+  return true;
 
-  box.classList.remove("show");
-
-  void box.offsetWidth;
-
-  box.classList.add("show");
 }
 
 
-function esc(value){
+/* =========================================================
+   ESCAPE
+========================================================= */
 
-  return String(value)
+function esc(v){
+
+  return String(v)
     .replaceAll("&","&amp;")
     .replaceAll("<","&lt;")
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
+
 }
 
 
 /* =========================================================
-   START
+   INITIAL
 ========================================================= */
 
 render();
