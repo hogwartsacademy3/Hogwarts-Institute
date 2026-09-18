@@ -162,70 +162,112 @@
         /* --- TILE SYSTEM --- */
         .tile {
             background-color: var(--tile-bg); /* Solid high contrast color */
-            border: 1px solid rgba(0,0,0,0.3);
+            border: 1px solid rgba(0,0,0,0.4);
             position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             box-sizing: border-box;
-            text-align: center;
             overflow: hidden;
-            /* Container Queries untuk teks yang sangat rapi & seragam */
+            /* Container Queries untuk rotasi ukuran responsif */
             container-type: size;
         }
-        
-        .tile-color-bar {
+
+        .tile-content-wrapper {
             position: absolute;
-            z-index: 1;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
-        }
-        
-        .tile-content {
+            top: 50%; left: 50%;
             display: flex;
             flex-direction: column;
-            justify-content: space-evenly;
             align-items: center;
-            height: 100%;
+            justify-content: flex-start; /* Memastikan color bar selalu di "Atas" secara logis */
+        }
+
+        /* Mengatur Arah Rotasi Berdasarkan Posisi Grid */
+        .row-bottom .tile-content-wrapper {
+            width: 100%; height: 100%;
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+        .col-left .tile-content-wrapper {
+            /* Menukar width dan height logic karena wadah fisik berbeda rasio */
+            width: 100cqh; height: 100cqw;
+            transform: translate(-50%, -50%) rotate(90deg);
+        }
+        .row-top .tile-content-wrapper {
+            width: 100%; height: 100%;
+            transform: translate(-50%, -50%) rotate(180deg);
+        }
+        .col-right .tile-content-wrapper {
+            width: 100cqh; height: 100cqw;
+            transform: translate(-50%, -50%) rotate(-90deg);
+        }
+
+        /* Sudut Papan */
+        .tile-corner .tile-content-wrapper {
+            width: 100%; height: 100%;
+            justify-content: center;
+        }
+        #tile-0 .tile-content-wrapper { transform: translate(-50%, -50%) rotate(-45deg); }
+        #tile-10 .tile-content-wrapper { transform: translate(-50%, -50%) rotate(45deg); }
+        #tile-20 .tile-content-wrapper { transform: translate(-50%, -50%) rotate(135deg); }
+        #tile-30 .tile-content-wrapper { transform: translate(-50%, -50%) rotate(-135deg); }
+
+        .tile-color-bar {
             width: 100%;
+            height: 25%;
+            border-bottom: 2px solid rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2px;
             padding: 2px;
             box-sizing: border-box;
+            box-shadow: inset 0 -2px 4px rgba(0,0,0,0.2);
             z-index: 2;
         }
 
+        .tile-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+            height: 75%;
+            width: 100%;
+            padding: 2px;
+            box-sizing: border-box;
+        }
+
+        .no-color-bar .tile-content {
+            height: 100%;
+        }
+
         .tile-emoji {
-            font-size: clamp(12px, 20cqmin, 28px);
+            font-size: clamp(16px, 20cqmin, 30px);
             line-height: 1;
-            margin: 2px 0;
-            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.2));
+            filter: drop-shadow(0px 1px 1px rgba(0,0,0,0.2));
+            margin-bottom: 2px;
+        }
+        
+        .tile-corner .tile-emoji {
+            font-size: clamp(24px, 45cqmin, 50px);
         }
 
         .tile-name {
             font-family: 'Inter', sans-serif;
-            font-weight: 750;
-            line-height: 1.05;
+            font-weight: 800;
+            line-height: 1.1;
             color: #111;
-            font-size: clamp(5px, 11cqmin, 12px);
-            width: 100%;
-            padding: 1px;
-            word-break: keep-all;
-            overflow-wrap: break-word;
+            font-size: clamp(7px, 12cqmin, 12px);
             text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-grow: 1;
-            margin: auto 0;
+            width: 95%;
+            word-break: keep-all;
+            text-transform: uppercase;
         }
-        
+
         .tile-price {
             font-family: 'Inter', sans-serif;
             font-weight: 800;
             color: #333;
-            font-size: clamp(5.5px, 10cqmin, 11px);
-            margin-top: auto;
-            margin-bottom: 2px;
+            font-size: clamp(7px, 10cqmin, 11px);
+            margin-top: 2px;
         }
-        
+
         /* Indikator Pemilik (Bentuk Bingkai Dalam) */
         .tile-owner-indicator {
             position: absolute;
@@ -238,31 +280,20 @@
         }
         
         /* Bangunan / Landmark Properti */
-        .tile-color-bar {
-            position: absolute;
-            z-index: 1;
-            box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-            padding: 1px;
-            gap: 1px;
-        }
-        
         .building-house {
-            width: 20%; height: 60%;
+            width: 18%; height: 70%;
             border-radius: 2px;
-            border: 1px solid rgba(255,255,255,0.8);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.8);
-            background-image: linear-gradient(rgba(255,255,255,0.2), rgba(0,0,0,0.2));
+            border: 1px solid rgba(255,255,255,0.9);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            background-image: linear-gradient(rgba(255,255,255,0.3), rgba(0,0,0,0.3));
         }
         
         .building-hotel {
-            width: 60%; height: 75%;
+            width: 50%; height: 80%;
             border-radius: 4px;
             border: 1.5px solid rgba(255,255,255,0.9);
             box-shadow: 0 2px 4px rgba(0,0,0,0.9);
-            background-image: linear-gradient(rgba(255,255,255,0.3), rgba(0,0,0,0.3));
+            background-image: linear-gradient(rgba(255,255,255,0.4), rgba(0,0,0,0.4));
             position: relative;
         }
         .building-hotel::after {
@@ -270,36 +301,6 @@
             top: 2px; left: 2px; right: 2px; bottom: 2px;
             border: 1px solid rgba(255,255,255,0.5); border-radius: 2px;
         }
-
-        /* --- TATA LETAK KHUSUS ORIENTASI TILE (Teks Selalu Tegak) --- */
-        
-        /* Baris Bawah (Normal) */
-        .row-bottom { grid-row: 11; }
-        .row-bottom .tile-color-bar { top: 0; left: 0; right: 0; height: 26%; border-bottom: 1px solid rgba(0,0,0,0.4); flex-direction: row; }
-        .row-bottom .tile-content { padding-top: 26%; }
-
-        /* Baris Atas */
-        .row-top { grid-row: 1; }
-        .row-top .tile-color-bar { bottom: 0; left: 0; right: 0; height: 26%; border-top: 1px solid rgba(0,0,0,0.4); flex-direction: row; }
-        .row-top .tile-content { padding-bottom: 26%; }
-
-        /* Kolom Kiri */
-        .col-left { grid-column: 1; }
-        .col-left .tile-color-bar { top: 0; right: 0; bottom: 0; width: 26%; border-left: 1px solid rgba(0,0,0,0.4); flex-direction: column; }
-        .col-left .tile-content { padding-right: 26%; }
-        .col-left .building-house { width: 60%; height: 20%; }
-        .col-left .building-hotel { width: 75%; height: 60%; }
-
-        /* Kolom Kanan */
-        .col-right { grid-column: 11; }
-        .col-right .tile-color-bar { top: 0; left: 0; bottom: 0; width: 26%; border-right: 1px solid rgba(0,0,0,0.4); flex-direction: column; }
-        .col-right .tile-content { padding-left: 26%; }
-        .col-right .building-house { width: 60%; height: 20%; }
-        .col-right .building-hotel { width: 75%; height: 60%; }
-
-        /* Sudut Papan */
-        .tile-corner .tile-content { padding: 5%; justify-content: center; }
-        .tile-corner .tile-emoji { font-size: clamp(20px, 40cqmin, 45px); }
 
         /* --- PIECES & DICE --- */
         #pieces-layer {
@@ -1000,7 +1001,7 @@
                 el.className = 'tile';
                 el.id = `tile-${tile.id}`;
                 
-                // Menata baris & kolom Grid (Orientation Layouts)
+                // Set Posisi Grid
                 if(tile.id === 0) { el.classList.add('row-bottom', 'col-right', 'tile-corner'); }
                 else if(tile.id < 10) { el.classList.add('row-bottom'); el.style.gridColumn = 11 - tile.id; }
                 else if(tile.id === 10) { el.classList.add('row-bottom', 'col-left', 'tile-corner'); }
@@ -1010,15 +1011,23 @@
                 else if(tile.id === 30) { el.classList.add('row-top', 'col-right', 'tile-corner'); }
                 else { el.classList.add('col-right'); el.style.gridRow = tile.id - 29; }
 
-                let html = '';
-                if(tile.group) html += `<div class="tile-color-bar" id="color-bar-${tile.id}" style="background-color: var(--prop-${tile.group})"></div>`;
+                let wrapperClasses = 'tile-content-wrapper';
+                if (!tile.group) wrapperClasses += ' no-color-bar';
+
+                let html = `<div class="${wrapperClasses}">`;
+                
+                if(tile.group) {
+                    html += `<div class="tile-color-bar" style="background-color: var(--prop-${tile.group})">
+                                <div id="buildings-${tile.id}" class="w-full h-full flex justify-center items-center gap-[2px]"></div>
+                             </div>`;
+                }
                 
                 html += `<div class="tile-content">`;
                 if(tile.emoji) html += `<div class="tile-emoji">${tile.emoji}</div>`;
                 html += `<div class="tile-name">${tile.name}</div>`;
                 if(tile.price) html += `<div class="tile-price">₲${tile.price}</div>`;
-                else if(tile.desc && !tile.emoji) html += `<div class="text-[clamp(6px,10cqmin,10px)] text-gray-700 font-bold">${tile.desc}</div>`;
-                html += `</div>`;
+                else if(tile.desc && !tile.emoji) html += `<div class="text-[clamp(6px,9cqmin,9px)] text-gray-700 font-bold leading-tight">${tile.desc}</div>`;
+                html += `</div></div>`;
                 
                 html += `<div class="tile-owner-indicator" id="owner-bar-${tile.id}"></div>`;
 
@@ -1035,21 +1044,23 @@
                     const bar = $(`owner-bar-${prop.tile_id}`);
                     if(bar) bar.style.borderColor = `var(--${owner.house.toLowerCase()})`;
                     
-                    const colorBar = $(`color-bar-${prop.tile_id}`);
-                    if(colorBar) {
-                        colorBar.innerHTML = '';
-                        if(prop.level > 0 && prop.level < 5) {
+                    const buildingContainer = $(`buildings-${prop.tile_id}`);
+                    if(buildingContainer) {
+                        buildingContainer.innerHTML = '';
+                        if (prop.mortgaged) {
+                            buildingContainer.innerHTML = '<div class="text-white bg-red-600 font-bold text-[8px] px-1 rounded shadow-sm leading-tight text-center transform -rotate-6">GADAI</div>';
+                        } else if(prop.level > 0 && prop.level < 5) {
                             for(let i=0; i<prop.level; i++) {
                                 const b = document.createElement('div');
                                 b.className = 'building-house';
                                 b.style.backgroundColor = `var(--${owner.house.toLowerCase()})`;
-                                colorBar.appendChild(b);
+                                buildingContainer.appendChild(b);
                             }
                         } else if (prop.level === 5) {
                             const h = document.createElement('div');
                             h.className = 'building-hotel';
                             h.style.backgroundColor = `var(--${owner.house.toLowerCase()})`;
-                            colorBar.appendChild(h);
+                            buildingContainer.appendChild(h);
                         }
                     }
                 }
@@ -1283,6 +1294,24 @@
             }
         });
 
+        function resetActionModal() {
+            $('btn-action-primary').disabled = false;
+            $('btn-action-secondary').classList.remove('hidden');
+            $('btn-action-primary').innerText = "Beli";
+            $('btn-action-secondary').innerText = "Lewati";
+            
+            $('action-details').innerHTML = `
+                <div class="flex justify-between mb-2 pb-2 border-b border-gray-400">
+                    <span class="font-semibold text-gray-800">Harga Beli:</span>
+                    <span id="action-price" class="font-bold text-lg text-gray-900">₲0</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-semibold text-gray-800">Sewa Dasar:</span>
+                    <span id="action-rent" class="font-bold text-red-700">₲0</span>
+                </div>
+            `;
+        }
+
         async function evaluateTile(posId, isDouble) {
             const tile = BOARD_DATA[posId];
             const myPlayer = gameState.players.find(p => p.id === me.id);
@@ -1307,6 +1336,7 @@
             
             if ([TILE_TYPES.PROP, TILE_TYPES.RR, TILE_TYPES.UTIL].includes(tile.type)) {
                 const propState = gameState.properties.find(p => p.tile_id === posId);
+                resetActionModal(); // Reset bentuk UI Modal
                 
                 if (!propState || !propState.owner_player_id) {
                     $('action-title').innerText = tile.name;
@@ -1324,13 +1354,34 @@
                     $('modal-action').classList.remove('hidden');
                 } else if (propState.owner_player_id !== me.id) {
                     const owner = gameState.players.find(p => p.id === propState.owner_player_id);
-                    if(!owner.is_bankrupt && owner.detention_turns === 0) {
+                    if(!owner.is_bankrupt && owner.detention_turns === 0 && !propState.mortgaged) {
                         let rentAmount = calculateRent(tile, propState);
-                        addLogEvent('RENT', `${myPlayer.player_name} membayar ₲${rentAmount} kepada ${owner.player_name}.`);
-                        const { data: success } = await supabase.rpc('pay_rent', {
-                            p_payer_id: me.id, p_payee_id: owner.id, p_amount: rentAmount
-                        });
-                        if (!success) handleBankruptcy();
+                        $('action-title').innerText = "Bayar Sewa";
+                        $('action-desc').innerText = `${tile.name} adalah milik ${owner.player_name}.`;
+                        
+                        $('action-details').innerHTML = `
+                            <div class="flex justify-between items-center mb-2 pb-2 border-b border-gray-400">
+                                <span class="font-semibold text-gray-800">Biaya Sewa:</span>
+                                <span class="font-bold text-2xl text-red-700">₲${rentAmount}</span>
+                            </div>
+                        `;
+                        
+                        $('btn-action-primary').innerText = "Bayar";
+                        $('btn-action-secondary').classList.add('hidden');
+                        
+                        $('btn-action-primary').onclick = async () => {
+                            $('btn-action-primary').disabled = true;
+                            addLogEvent('RENT', `${myPlayer.player_name} membayar ₲${rentAmount} kepada ${owner.player_name}.`);
+                            const { data: success } = await supabase.rpc('pay_rent', {
+                                p_payer_id: me.id, p_payee_id: owner.id, p_amount: rentAmount
+                            });
+                            if (!success) handleBankruptcy();
+                            $('modal-action').classList.add('hidden');
+                            setPhase(isDouble ? 'roll' : 'end');
+                        };
+                        
+                        $('modal-action').classList.remove('hidden');
+                        return; // Blokir flow setPhase otomatis hingga modal di klik
                     }
                     setPhase(isDouble ? 'roll' : 'end');
                 } else {
@@ -1342,7 +1393,19 @@
         }
 
         function calculateRent(tile, propState) {
-            if(tile.type === TILE_TYPES.PROP) return tile.rent[propState.level];
+            if (propState.mortgaged) return 0;
+            if (tile.type === TILE_TYPES.PROP) {
+                if (propState.level === 0) {
+                    const ownerProps = gameState.properties.filter(p => p.owner_player_id === propState.owner_player_id);
+                    const ownerGroups = ownerProps.filter(p => BOARD_DATA[p.tile_id].group === tile.group).length;
+                    const totalInGroup = BOARD_DATA.filter(t => t.group === tile.group).length;
+                    if (ownerGroups === totalInGroup) {
+                        return tile.rent[0] * 2; // Aturan Monopoly: Sewa x2 untuk grup komplit yang kosong
+                    }
+                    return tile.rent[0];
+                }
+                return tile.rent[propState.level];
+            }
             if (tile.type === TILE_TYPES.RR) {
                 const ownerRRs = gameState.properties.filter(p => p.owner_player_id === propState.owner_player_id && [5,15,25,35].includes(p.tile_id)).length;
                 return tile.rent[ownerRRs - 1] || 25;
@@ -1450,6 +1513,17 @@
             const list = $('manage-list'); list.innerHTML = '';
             const myProps = gameState.properties.filter(p => p.owner_player_id === me.id);
             
+            const myGroups = {};
+            myProps.forEach(p => {
+                const tile = BOARD_DATA[p.tile_id];
+                if (tile.group) myGroups[tile.group] = (myGroups[tile.group] || 0) + 1;
+            });
+            
+            const groupTotals = {};
+            BOARD_DATA.forEach(t => {
+                if(t.group) groupTotals[t.group] = (groupTotals[t.group] || 0) + 1;
+            });
+
             if (myProps.length === 0) {
                 list.innerHTML = '<p class="text-sm italic text-gray-700 font-medium text-center mt-4">Anda belum memiliki aset apapun.</p>';
             } else {
@@ -1457,21 +1531,43 @@
                     const tile = BOARD_DATA[prop.tile_id];
                     const div = document.createElement('div');
                     div.className = 'border-l-4 p-3 rounded bg-white flex justify-between items-center shadow-sm border border-gray-300';
-                    div.style.borderLeftColor = `var(--prop-${tile.group || 'brown'})`;
+                    div.style.borderLeftColor = tile.group ? `var(--prop-${tile.group})` : '#666';
+                    if (prop.mortgaged) div.classList.add('opacity-75', 'bg-gray-100');
                     
-                    let upgradeBtn = '';
-                    if (tile.type === TILE_TYPES.PROP && prop.level < 5) {
-                        upgradeBtn = `<button onclick="upgradeProp('${prop.id}', ${tile.housePrice})" class="text-xs font-bold bg-green-700 text-white px-3 py-1.5 rounded hover:bg-green-600 transition">Tingkatkan (₲${tile.housePrice})</button>`;
-                    } else if (prop.level === 5) {
-                        upgradeBtn = `<span class="text-xs text-yellow-700 font-bold">Maksimal (Hotel)</span>`;
+                    let actionBtn = '';
+                    if (prop.mortgaged) {
+                        const unmortgageCost = Math.floor((tile.price / 2) * 1.1);
+                        actionBtn = `<button onclick="toggleMortgage('${prop.id}', false, ${unmortgageCost})" class="text-xs font-bold bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-500 transition shadow-md">Tebus (₲${unmortgageCost})</button>`;
+                    } else {
+                        let buildBtn = '';
+                        let gadaiBtn = `<button onclick="toggleMortgage('${prop.id}', true, ${tile.price / 2})" class="text-[10px] font-bold bg-red-800 text-white px-2 py-1 rounded hover:bg-red-700 shadow-md mt-1">Gadaikan (+₲${tile.price / 2})</button>`;
+                        
+                        if (tile.type === TILE_TYPES.PROP) {
+                            const hasMonopoly = myGroups[tile.group] === groupTotals[tile.group];
+                            if (prop.level > 0) {
+                                gadaiBtn = `<span class="text-[9px] text-gray-500 block mt-1">Jual bangunan dulu<br>untuk gadai</span>`;
+                            }
+                            
+                            if (!hasMonopoly) {
+                                buildBtn = `<span class="text-[10px] text-red-600 font-bold leading-tight block mb-1">Perlu 1 Set Warna</span>`;
+                            } else if (prop.level < 5) {
+                                buildBtn = `<button onclick="upgradeProp('${prop.id}', ${tile.housePrice})" class="text-xs font-bold bg-green-700 text-white px-3 py-1.5 rounded hover:bg-green-600 shadow-md mb-1">Bangun (₲${tile.housePrice})</button>`;
+                            } else {
+                                buildBtn = `<span class="text-xs text-yellow-700 font-bold block mb-1">Landmark Maksimal</span>`;
+                            }
+                        }
+                        
+                        actionBtn = `<div class="flex flex-col items-end text-right">${buildBtn}${gadaiBtn}</div>`;
                     }
                     
                     div.innerHTML = `
                         <div>
-                            <div class="font-bold text-gray-900">${tile.emoji} ${tile.name}</div>
-                            <div class="text-xs text-gray-700 font-semibold mt-1">Aset: ${prop.level === 5 ? 'Landmark (Hotel)' : (prop.level > 0 ? prop.level + ' Bangunan' : 'Tanah Kosong')}</div>
+                            <div class="font-bold text-gray-900 flex items-center gap-1">${tile.emoji} <span class="${prop.mortgaged ? 'line-through text-gray-500' : ''}">${tile.name}</span></div>
+                            <div class="text-xs font-semibold mt-1 ${prop.mortgaged ? 'text-red-600' : 'text-gray-700'}">
+                                ${prop.mortgaged ? 'SEDANG DIGADAIKAN' : (prop.level === 5 ? 'Landmark (Hotel)' : (prop.level > 0 ? prop.level + ' Bangunan' : 'Tanah Kosong'))}
+                            </div>
                         </div>
-                        <div>${upgradeBtn}</div>
+                        <div>${actionBtn}</div>
                     `;
                     list.appendChild(div);
                 });
@@ -1491,6 +1587,25 @@
                 await supabase.from('properties').update({ level: prop.level + 1 }).eq('id', propId);
                 addLogEvent('UPGRADE', `Meningkatkan level properti ${BOARD_DATA[prop.tile_id].name}.`);
                 $('btn-manage').click();
+            }
+        };
+
+        window.toggleMortgage = async (propId, isMortgaging, amount) => {
+            const prop = gameState.properties.find(p => p.id === propId);
+            const myPlayer = gameState.players.find(p => p.id === me.id);
+            
+            if (!isMortgaging && myPlayer.balance < amount) {
+                return showToast("Saldo tidak cukup untuk menebus.");
+            }
+            
+            const amtToAdjust = isMortgaging ? amount : -amount;
+            const {data: success} = await supabase.rpc('adjust_balance', { p_player_id: me.id, p_amount: amtToAdjust });
+            
+            if (success) {
+                await supabase.from('properties').update({ mortgaged: isMortgaging }).eq('id', propId);
+                const tileName = BOARD_DATA[prop.tile_id].name;
+                addLogEvent('MORTGAGE', `${isMortgaging ? 'Menggadaikan' : 'Menebus'} ${tileName}.`);
+                $('btn-manage').click(); 
             }
         };
 
