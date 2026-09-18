@@ -44,7 +44,7 @@
 
         body {
             background-color: var(--bg-space);
-            background-image: radial-gradient(circle at 50% 50%, #1f232b 0%, #0b0c10 100%);
+            background-image: radial-gradient(circle at 50% 50%, #1a2421 0%, #080d0b 100%);
             color: var(--text-dark);
             font-family: 'Inter', sans-serif;
             margin: 0;
@@ -119,10 +119,10 @@
             aspect-ratio: 1 / 1;
             max-height: 100%;
             max-width: 100%;
-            border: 12px solid var(--wood-dark);
-            border-radius: 16px;
+            border: 14px solid var(--wood-dark);
+            border-radius: 20px;
             background-color: var(--parchment-dark); /* Solid background to prevent bleed */
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.4);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.6), 0 0 0 2px var(--gold);
             box-sizing: border-box;
         }
 
@@ -399,25 +399,32 @@
             padding: 15px;
             display: flex;
             flex-direction: column;
+            background: rgba(20, 25, 30, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
         }
         
         .player-card {
-            border: 1px solid rgba(0,0,0,0.15);
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 8px;
+            background: linear-gradient(145deg, #2a2d35 0%, #1c1e24 100%);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(255,255,255,0.7);
             border-left: 6px solid transparent;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
         .player-card.active {
-            background: rgba(212, 175, 55, 0.2);
+            background: linear-gradient(145deg, #3a3220 0%, #2a2515 100%);
             border-color: var(--gold);
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
-            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2), 0 4px 10px rgba(0,0,0,0.4);
+            transform: scale(1.02) translateX(-4px);
         }
         
         .house-Gryffindor { border-left-color: var(--gryffindor); }
@@ -425,11 +432,56 @@
         .house-Ravenclaw { border-left-color: var(--ravenclaw); }
         .house-Hufflepuff { border-left-color: var(--hufflepuff); }
 
+        .player-avatar {
+            width: 42px;
+            height: 42px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .player-name {
+            font-weight: 700;
+            font-size: 1.05rem;
+            line-height: 1.1;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .player-balance {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: 1.15rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .btn-dark {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #ccc;
+            padding: 0.75rem 1.5rem;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 2px black;
+        }
+        .btn-dark:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border-color: var(--gold);
+        }
+
         #log-container {
             flex-grow: 1;
             overflow-y: auto;
             font-size: 0.85rem;
-            border-top: 2px solid rgba(0,0,0,0.1);
             padding-top: 10px;
             margin-top: 10px;
             height: 150px;
@@ -437,7 +489,7 @@
         .log-entry { 
             margin-bottom: 6px; 
             padding-bottom: 6px;
-            border-bottom: 1px dashed rgba(0,0,0,0.15); 
+            border-bottom: 1px dashed rgba(255,255,255,0.15); 
         }
 
         /* --- MODALS --- */
@@ -608,8 +660,8 @@
             <!-- Area HUD (Samping) -->
             <div id="side-panel">
                 <!-- Info Giliran & Dadu -->
-                <div class="panel-parchment hud-box text-center">
-                    <h3 class="font-cinzel font-bold text-xl mb-2 pb-2 border-b border-gray-400" id="turn-indicator">Giliran: -</h3>
+                <div class="hud-box text-center">
+                    <h3 class="font-cinzel font-bold text-xl mb-2 pb-2 border-b border-gray-600" id="turn-indicator" style="color: var(--gold-light);">Giliran: -</h3>
                     
                     <!-- 3D Dice Area -->
                     <div class="dice-area" id="dice-container">
@@ -630,21 +682,21 @@
                     <div class="grid grid-cols-2 gap-3 mt-4">
                         <button id="btn-roll" class="btn-magic py-2" disabled>Lempar Dadu</button>
                         <button id="btn-end-turn" class="btn-magic py-2" disabled>Akhiri Giliran</button>
-                        <button id="btn-manage" class="btn-magic col-span-2 py-2 bg-transparent border-gray-600 text-gray-900 hover:text-white">Kelola Properti</button>
+                        <button id="btn-manage" class="btn-dark col-span-2 py-2">Kelola Properti</button>
                     </div>
                 </div>
                 
                 <!-- Daftar Pemain & Log -->
-                <div class="panel-parchment hud-box flex-grow flex flex-col overflow-hidden">
-                    <h3 class="font-bold mb-3 border-b-2 border-gray-400 pb-2">Para Penyihir</h3>
+                <div class="hud-box flex-grow flex flex-col overflow-hidden">
+                    <h3 class="font-bold mb-3 border-b border-gray-600 pb-2 text-white">Para Penyihir</h3>
                     <div id="game-players-list" class="overflow-y-auto pr-2 mb-2 flex-grow">
                         <!-- Populated by JS -->
                     </div>
                     
-                    <div class="mt-auto border-t-2 border-gray-400 pt-2 flex flex-col h-1/3">
-                        <h4 class="font-bold text-sm mb-1">Riwayat Peristiwa:</h4>
-                        <div id="log-container" class="pr-2">
-                            <div class="log-entry text-gray-600 italic">Menunggu permainan dimulai...</div>
+                    <div class="mt-auto border-t border-gray-600 pt-2 flex flex-col h-1/3">
+                        <h4 class="font-bold text-sm mb-1 text-gray-300">Riwayat Peristiwa:</h4>
+                        <div id="log-container" class="pr-2 text-gray-300">
+                            <div class="log-entry text-gray-400 italic">Menunggu permainan dimulai...</div>
                         </div>
                     </div>
                 </div>
@@ -1183,7 +1235,7 @@
             const isMyTurn = currentPlayer && currentPlayer.id === me.id;
             
             $('turn-indicator').innerText = `Giliran: ${currentPlayer ? currentPlayer.player_name : '...'}`;
-            $('turn-indicator').style.color = isMyTurn ? 'var(--gold)' : 'var(--text-dark)';
+            $('turn-indicator').style.color = isMyTurn ? 'var(--gold)' : 'var(--gold-light)';
             
             if(!$('dice1').classList.contains('is-rolling')) {
                 setDiceFace('dice1', gameState.game.dice_1 || 1);
@@ -1201,17 +1253,17 @@
                 const div = document.createElement('div');
                 div.className = `player-card house-${p.house} ${isActive ? 'active' : ''} ${p.is_bankrupt ? 'opacity-40 grayscale' : ''}`;
                 div.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <div class="text-xl">${symbols[p.piece]}</div>
-                        <div>
-                            <div class="font-bold text-gray-900">${p.player_name}</div>
-                            <div class="text-[0.65rem] text-gray-700 uppercase font-bold">${p.house}</div>
+                    <div class="flex items-center gap-3">
+                        <div class="player-avatar">${symbols[p.piece]}</div>
+                        <div class="flex flex-col text-left">
+                            <div class="player-name font-cinzel text-white">${p.player_name}</div>
+                            <div class="text-[10px] text-gray-400 uppercase tracking-wider">${p.house}</div>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <div class="font-bold text-yellow-700 text-lg">₲${p.balance}</div>
-                        ${p.is_bankrupt ? '<span class="text-red-600 text-xs font-bold">BANGKRUT</span>' : ''}
-                        ${p.detention_turns > 0 ? `<span class="text-gray-700 text-xs font-bold border border-gray-500 rounded px-1 bg-gray-200">Detensi: ${p.detention_turns}</span>` : ''}
+                    <div class="text-right flex flex-col justify-center items-end">
+                        <div class="player-balance text-green-400">₲${p.balance}</div>
+                        ${p.is_bankrupt ? '<span class="text-red-500 text-[10px] font-bold mt-1">BANGKRUT</span>' : ''}
+                        ${p.detention_turns > 0 ? `<span class="text-gray-300 text-[10px] font-bold border border-gray-500 rounded px-1 bg-gray-700 mt-1">Detensi: ${p.detention_turns}</span>` : ''}
                     </div>
                 `;
                 list.appendChild(div);
