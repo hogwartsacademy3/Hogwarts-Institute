@@ -1,527 +1,2602 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Hogwarts Institute Monopoly</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>Kartu Kekacauan — Hogwarts Institute</title>
 
 <style>
-*{box-sizing:border-box}
+:root{
+  --bg:#090b12;
+  --panel:#151925;
+  --panel2:#1d2230;
+  --line:#303749;
+  --text:#f5f7fb;
+  --muted:#aab2c3;
+  --gold:#e8c66a;
+  --red:#e75b68;
+  --green:#57d59b;
+}
+
+*{
+  box-sizing:border-box;
+}
+
 body{
- margin:0;background:#090d1b;color:#f5f0df;
- font-family:Georgia,serif;
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(
+      circle at 50% -20%,
+      #30364d 0,
+      #090b12 50%
+    );
+  color:var(--text);
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
-button,input{font:inherit}
-button{
- border:0;border-radius:10px;padding:12px 16px;
- background:#d9ad57;color:#15100a;font-weight:bold;
- cursor:pointer
+
+.watermark{
+  position:fixed;
+  z-index:100;
+  right:10px;
+  bottom:8px;
+  font-size:10px;
+  letter-spacing:2px;
+  color:#ffffff35;
+  pointer-events:none;
 }
-button:disabled{opacity:.4;cursor:not-allowed}
-input{
- width:100%;padding:12px;border-radius:8px;
- border:1px solid #4b5876;background:#10182b;color:white
+
+.app{
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:920px;
+  margin:auto;
+  padding:14px;
 }
-.app{max-width:1500px;margin:auto;padding:16px}
-header{
- display:flex;justify-content:space-between;align-items:center;
- padding:15px 0;border-bottom:1px solid #35415c
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
 }
-.logo{font-size:clamp(20px,4vw,35px);color:#e8bd68;font-weight:bold}
-.muted{color:#aab4cb;font:13px Arial,sans-serif}
+
+.brand{
+  font-size:23px;
+  font-weight:1000;
+}
+
+.sub{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.status{
+  padding:6px 10px;
+  border-radius:20px;
+  background:#7b2530;
+  font-size:11px;
+  font-weight:900;
+}
+
+.status.on{
+  background:#176344;
+}
+
 .panel{
- background:#151e34;border:1px solid #35425e;
- border-radius:16px;padding:16px
+  background:
+    linear-gradient(
+      145deg,
+      #171b28,
+      #11141e
+    );
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  margin:10px 0;
+  box-shadow:0 12px 35px #0005;
 }
-.layout{
- display:grid;grid-template-columns:minmax(0,1fr) 340px;
- gap:18px;margin-top:18px
+
+.hidden{
+  display:none!important;
 }
-.board-wrap{width:100%;overflow:hidden;border-radius:12px}
-.board{
- position:relative;width:100%;aspect-ratio:1/1;
- background:url("https://raw.githubusercontent.com/hogwartsacademy3/Hogwarts-Institute/main/file_0000000004a481f491876e005d0f567d.png") center/100% 100% no-repeat;
+
+h2,
+h3{
+  margin:0 0 12px;
 }
-.piece{
- position:absolute;z-index:10;width:clamp(22px,4vw,43px);
- height:clamp(22px,4vw,43px);border-radius:50%;
- border:3px solid white;transform:translate(-50%,-50%);
- display:flex;align-items:center;justify-content:center;
- font:bold 13px Arial,sans-serif;
- transition:left .16s linear,top .16s linear
+
+input{
+  width:100%;
+  padding:13px 14px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#0d1018;
+  color:white;
+  font-size:15px;
+  outline:none;
 }
-.p0{background:#d9535b}.p1{background:#4b94e8}
-.p2{background:#52c88d}.p3{background:#b779dc}
-.building{
- position:absolute;z-index:5;transform:translate(-50%,-50%);
- font-size:clamp(15px,3vw,30px);
- filter:drop-shadow(0 2px 2px black)
+
+input:focus{
+  border-color:var(--gold);
 }
-.dice{
- width:85px;height:85px;padding:12px;margin:10px auto;
- display:grid;grid-template-columns:repeat(3,1fr);
- grid-template-rows:repeat(3,1fr);gap:5px;
- background:#f6f1e5;border-radius:14px
+
+.row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+  margin-top:8px;
 }
-.dice i{display:block}
-.dice .dot{background:#111;border-radius:50%}
-.rolling{animation:shake .1s infinite}
-@keyframes shake{
- 0%{transform:rotate(0)}50%{transform:rotate(5deg)}
- 100%{transform:rotate(-5deg)}
+
+button{
+  border:0;
+  border-radius:12px;
+  padding:12px 15px;
+  font-weight:900;
+  background:var(--gold);
+  color:#17130a;
+  cursor:pointer;
 }
-.stack{display:grid;gap:10px}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.actions button:first-child{grid-column:span 2}
+
+button.dark{
+  background:#303646;
+  color:white;
+}
+
+button.red{
+  background:#8f2632;
+  color:white;
+}
+
+button:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+
+.code{
+  font-size:28px;
+  letter-spacing:5px;
+  font-weight:1000;
+  color:var(--gold);
+  margin:5px 0 14px;
+}
+
+.room-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.players{
+  display:grid;
+  gap:8px;
+}
+
 .player{
- display:flex;align-items:center;gap:10px;padding:10px;
- background:#0d1629;border:1px solid #2d3a56;border-radius:10px
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#0d1018;
+  border:1px solid #272c39;
+  border-radius:12px;
+  padding:11px;
 }
-.player.active{border-color:#e8bd68;background:#28344e}
-.avatar{width:30px;height:30px;border-radius:50%;flex-shrink:0}
-.money{font:13px Arial,sans-serif;color:#6ee2a1}
-.log{
- max-height:200px;overflow:auto;font:12px/1.6 Arial,sans-serif
-}
-.log div{padding:5px 0;border-bottom:1px solid #293650}
-.hidden{display:none!important}
+
 .badge{
- background:#293751;border-radius:30px;padding:5px 10px;
- color:#e8bd68;font:12px Arial,sans-serif
+  font-size:11px;
+  color:var(--muted);
 }
-h2{margin:0 0 12px;font-size:20px}
-@media(max-width:900px){
- .layout{grid-template-columns:1fr}
+
+.ready{
+  color:var(--green);
+  font-weight:900;
 }
-@media(max-width:500px){
- .app{padding:9px}.panel{padding:10px}
+
+.boardHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+}
+
+.turn{
+  color:var(--gold);
+  font-weight:900;
+}
+
+.opponents{
+  display:grid;
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(135px,1fr)
+    );
+  gap:8px;
+}
+
+.opp{
+  background:#10131d;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:10px;
+}
+
+.oppName{
+  font-weight:900;
+}
+
+.hp{
+  color:#ff7883;
+}
+
+.hand{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+  margin:12px 0;
+}
+
+.card{
+  width:118px;
+  height:164px;
+  border-radius:17px;
+  padding:12px;
+  color:white;
+  position:relative;
+  overflow:hidden;
+  border:1px solid #ffffff28;
+  box-shadow:0 8px 20px #0006;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  transition:.15s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+}
+
+.card:before{
+  content:"";
+  position:absolute;
+  inset:-40px;
+  background:
+    radial-gradient(
+      circle,
+      #fff4,
+      transparent 45%
+    );
+  transform:rotate(25deg);
+  pointer-events:none;
+}
+
+.card>*{
+  position:relative;
+}
+
+.card .icon{
+  font-size:36px;
+}
+
+.card .name{
+  font-weight:1000;
+  font-size:15px;
+}
+
+.card .desc{
+  font-size:10px;
+  color:#ffffffc9;
+  line-height:1.3;
+  min-height:30px;
+}
+
+.card button{
+  padding:7px;
+  margin-top:7px;
+  font-size:11px;
+  background:#fff;
+  color:#111;
+  width:100%;
+}
+
+.c-pelindung{
+  background:
+    linear-gradient(
+      145deg,
+      #225d50,
+      #132d2a
+    );
+}
+
+.c-serang{
+  background:
+    linear-gradient(
+      145deg,
+      #9d2e3a,
+      #3d1118
+    );
+}
+
+.c-lewati{
+  background:
+    linear-gradient(
+      145deg,
+      #305ca0,
+      #14243f
+    );
+}
+
+.c-acak{
+  background:
+    linear-gradient(
+      145deg,
+      #7050a8,
+      #27173f
+    );
+}
+
+.c-intip{
+  background:
+    linear-gradient(
+      145deg,
+      #9c7a2e,
+      #3d2e0e
+    );
+}
+
+.c-meledak{
+  background:
+    linear-gradient(
+      145deg,
+      #333,
+      #090909
+    );
+}
+
+.event{
+  text-align:center;
+  min-height:44px;
+  font-size:16px;
+  font-weight:900;
+  padding:10px;
+}
+
+.draw{
+  width:100%;
+  font-size:16px;
+  padding:15px;
+  background:
+    linear-gradient(
+      135deg,
+      #f2d16c,
+      #b98528
+    );
+}
+
+.log{
+  max-height:170px;
+  overflow:auto;
+  font-size:12px;
+  color:#c4cad6;
+}
+
+.log div{
+  padding:5px 0;
+  border-bottom:1px solid #222735;
+}
+
+.winner{
+  text-align:center;
+  font-size:25px;
+  font-weight:1000;
+  color:var(--gold);
+  padding:20px 5px;
+}
+
+.small{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:28px;
+  transform:translateX(-50%);
+  background:#f4f4f4;
+  color:#111;
+  padding:10px 15px;
+  border-radius:30px;
+  font-weight:800;
+  z-index:200;
+  display:none;
+}
+
+@media(max-width:600px){
+
+  .app{
+    padding:10px;
+  }
+
+  .brand{
+    font-size:20px;
+  }
+
+  .row{
+    grid-template-columns:1fr;
+  }
+
+  .card{
+    width:106px;
+    height:150px;
+  }
+
+  .code{
+    font-size:24px;
+  }
 }
 </style>
 </head>
 
 <body>
+
+<div class="watermark">
+HOGWARTS INSTITUTE
+</div>
+
 <div class="app">
 
-<header>
- <div>
-  <div class="logo">HOGWARTS INSTITUTE</div>
-  <div class="muted">MAGICAL MONOPOLY</div>
- </div>
- <span class="badge" id="status">OFFLINE</span>
+<header class="top">
+
+<div>
+
+<div class="brand">
+🐱 Kartu Kekacauan
+</div>
+
+<div class="sub">
+Permainan kartu daring • 2–5 pemain
+</div>
+
+</div>
+
+<div
+id="status"
+class="status"
+>
+TERPUTUS
+</div>
+
 </header>
 
-<div id="setup" class="panel" style="max-width:600px;margin:25px auto">
- <h2>🏰 Masuk Permainan</h2>
- <label class="muted">Nama pemain</label>
- <input id="name" maxlength="20" placeholder="Nama penyihir">
 
- <label class="muted">Kode room (kosong = buat baru)</label>
- <input id="room" maxlength="8" placeholder="Contoh: MAGIC7">
+<!-- HALAMAN AWAL -->
 
- <button id="join" style="width:100%;margin-top:12px">
-  Masuk / Buat Room
- </button>
- <p id="setupMsg" class="muted"></p>
+<section
+id="home"
+class="panel"
+>
+
+<h2>
+🎮 Masuk Permainan
+</h2>
+
+<input
+id="name"
+maxlength="16"
+placeholder="Masukkan nama kamu"
+>
+
+<div class="row">
+
+<button id="create">
+🏠 BUAT RUANG
+</button>
+
+<div></div>
+
 </div>
 
-<div id="game" class="hidden">
-<div class="layout">
+<div class="row">
 
-<main class="panel">
- <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-  <div>
-   <h2>Papan Monopoly</h2>
-   <div class="muted">Room: <b id="roomLabel">-</b></div>
-  </div>
-  <span class="badge" id="turnLabel">Menunggu</span>
- </div>
+<input
+id="room"
+maxlength="6"
+placeholder="Masukkan kode ruang"
+>
 
- <div class="board-wrap">
-  <div class="board" id="board"></div>
- </div>
+<button
+id="join"
+class="dark"
+>
+🚪 GABUNG
+</button>
 
- <p class="muted">
-  Bidak bergerak satu petak demi satu petak sesuai dadu.
- </p>
-</main>
+</div>
 
-<aside class="stack">
+<p class="small">
+Setiap pemain bermain dari HP masing-masing.
+Bagikan kode ruang kepada temanmu untuk bermain bersama.
+</p>
 
-<section class="panel">
- <h2>🎲 Dadu</h2>
- <div class="dice" id="dice">
-  <i></i><i></i><i></i><i></i><i></i>
-  <i></i><i></i><i></i><i></i>
- </div>
- <div class="muted" style="text-align:center" id="diceText">
-  Belum dilempar
- </div>
-
- <div class="actions" style="margin-top:12px">
-  <button id="roll" disabled>🎲 Lempar</button>
-  <button id="buy" disabled>Beli</button>
-  <button id="upgrade" disabled>Upgrade 🏠</button>
-  <button id="end" disabled>Akhiri Giliran</button>
-  <button id="start" disabled>🏰 Mulai Game</button>
- </div>
- <p class="muted" id="actionMsg"></p>
 </section>
 
-<section class="panel">
- <h2>👥 Pemain</h2>
- <div id="players" class="stack"></div>
+
+<!-- LOBI -->
+
+<section
+id="lobby"
+class="panel hidden"
+>
+
+<div class="small">
+KODE RUANG
+</div>
+
+<div
+id="code"
+class="code"
+>
+------
+</div>
+
+<div class="room-actions">
+
+<button id="copy">
+📋 SALIN KODE
+</button>
+
+<button
+id="ready"
+class="dark"
+>
+✅ SIAP
+</button>
+
+<button
+id="start"
+class="hidden"
+>
+▶️ MULAI PERMAINAN
+</button>
+
+</div>
+
+<h3 style="margin-top:18px">
+👥 Pemain
+</h3>
+
+<div
+id="players"
+class="players"
+>
+</div>
+
+<p
+id="lobbyMsg"
+class="small"
+>
+Tunggu pemain lain masuk.
+</p>
+
 </section>
 
-<section class="panel">
- <h2>📜 Aktivitas</h2>
- <div id="log" class="log"></div>
+
+<!-- PERMAINAN -->
+
+<section
+id="game"
+class="hidden"
+>
+
+<div
+class="panel boardHead"
+>
+
+<div>
+
+Giliran:
+
+<span
+id="turn"
+class="turn"
+>
+-
+</span>
+
+</div>
+
+<div>
+
+Kartu:
+<b id="deck">
+0
+</b>
+
+</div>
+
+<button
+id="exit"
+class="red"
+>
+🚪 KELUAR
+</button>
+
+</div>
+
+
+<!-- PEMENANG -->
+
+<div
+id="winner"
+class="panel winner hidden"
+>
+</div>
+
+
+<!-- PEMAIN LAIN -->
+
+<div
+id="opponents"
+class="opponents"
+>
+</div>
+
+
+<!-- KARTU SENDIRI -->
+
+<div class="panel">
+
+<div
+id="event"
+class="event"
+>
+Menunggu permainan...
+</div>
+
+<div
+id="hand"
+class="hand"
+>
+</div>
+
+<button
+id="draw"
+class="draw"
+>
+🎴 AMBIL KARTU
+</button>
+
+</div>
+
+
+<!-- LOG -->
+
+<div class="panel">
+
+<h3>
+📜 Riwayat Permainan
+</h3>
+
+<div
+id="log"
+class="log"
+>
+</div>
+
+</div>
+
 </section>
 
-</aside>
 </div>
+
+
+<div
+id="toast"
+class="toast"
+>
 </div>
-</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-const URL="https://wrhxzczvlfmdybuyslcv.supabase.co";
-const KEY="sb_publishable_d-AKVoEiwg_2xMPUCeiaLQ_Gnvn3kIe";
-const db=supabase.createClient(URL,KEY);
 
-const $=id=>document.getElementById(id);
-const COLORS=["#d9535b","#4b94e8","#52c88d","#b779dc"];
-const TOTAL=40;
+/* =====================================================
+   PENGATURAN SUPABASE
+===================================================== */
 
-let room=null,me=null,players=[],properties=[];
-let rolled=false,moving=false,channel=null;
+const SUPABASE_URL =
+"https://wrhxzczvlfmdybuyslcv.supabase.co";
 
-const propertyNames=[
-"Start","Hogsmeade","Chance","Diagon Alley","Pajak","Azkaban",
-"Hogwarts","Chance","Forbidden Forest","Library","Free Parking",
-"Ravenclaw Tower","Chance","Slytherin Dungeon","Gryffindor Tower",
-"Penjara","Hufflepuff Hall","Chance","Potion Class","Great Hall",
-"Pajak","Astronomy Tower","Chance","Charms Class","Defense Class",
-"Azkaban Visit","Herbology","Chance","Quidditch Pitch","Transfiguration",
-"Free Parking","Dueling Club","Chance","Headmaster Office",
-"Care of Creatures","Pajak","Chamber","Chance","Grand Staircase",
-"Final Exam"
+const SUPABASE_KEY =
+"sb_publishable_d-AKVoEiwg_2xMPUCeiaLQ_Gnvn3kIe";
+
+const sb =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+/* =====================================================
+   DATA PEMAIN
+===================================================== */
+
+const $ = id =>
+document.getElementById(id);
+
+const me = {
+
+id:crypto.randomUUID(),
+
+name:""
+
+};
+
+let roomCode="";
+
+let channel=null;
+
+let isHost=false;
+
+let state=null;
+
+let players={};
+
+
+/* =====================================================
+   KARTU
+===================================================== */
+
+const CARD={
+
+
+/* KARTU PELINDUNG */
+
+defuse:{
+
+type:"defuse",
+
+name:"PELINDUNG",
+
+icon:"🛡️",
+
+desc:
+"Melindungimu ketika mendapat kartu Meledak.",
+
+cls:"c-pelindung"
+
+},
+
+
+/* KARTU SERANG */
+
+attack:{
+
+type:"attack",
+
+name:"SERANG",
+
+icon:"⚔️",
+
+desc:
+"Pemain berikutnya harus menjalani 2 giliran.",
+
+cls:"c-serang"
+
+},
+
+
+/* KARTU LEWATI */
+
+skip:{
+
+type:"skip",
+
+name:"LEWATI",
+
+icon:"⏭️",
+
+desc:
+"Lewati giliranmu tanpa mengambil kartu.",
+
+cls:"c-lewati"
+
+},
+
+
+/* KARTU ACAK */
+
+shuffle:{
+
+type:"shuffle",
+
+name:"ACAK",
+
+icon:"🔀",
+
+desc:
+"Acak semua kartu yang tersisa di tumpukan.",
+
+cls:"c-acak"
+
+},
+
+
+/* KARTU INTIP */
+
+future:{
+
+type:"future",
+
+name:"INTIP KARTU",
+
+icon:"🔮",
+
+desc:
+"Lihat 3 kartu paling atas dari tumpukan.",
+
+cls:"c-intip"
+
+},
+
+
+/* KARTU MELEDAK */
+
+bomb:{
+
+type:"bomb",
+
+name:"MELEDAK!",
+
+icon:"💣",
+
+desc:
+"Jika tidak memiliki Pelindung, kamu tersingkir.",
+
+cls:"c-meledak"
+
+}
+
+};
+
+
+/* =====================================================
+   PESAN KECIL
+===================================================== */
+
+function toast(text){
+
+const el=$("toast");
+
+el.textContent=text;
+
+el.style.display="block";
+
+clearTimeout(
+window.toastTimer
+);
+
+window.toastTimer=
+setTimeout(()=>{
+
+el.style.display="none";
+
+},2200);
+
+}
+
+
+/* =====================================================
+   STATUS KONEKSI
+===================================================== */
+
+function setStatus(on){
+
+$("status").textContent=
+on
+?
+"TERHUBUNG"
+:
+"TERPUTUS";
+
+$("status").classList.toggle(
+"on",
+on
+);
+
+}
+
+
+/* =====================================================
+   ACAK KARTU
+===================================================== */
+
+function shuffle(deck){
+
+return deck.sort(
+()=>Math.random()-.5
+);
+
+}
+
+
+/* =====================================================
+   MEMBUAT TUMPUKAN
+===================================================== */
+
+function makeDeck(playerCount){
+
+let deck=[];
+
+
+/* 6 Pelindung */
+
+for(
+let i=0;
+i<6;
+i++
+){
+
+deck.push(
+{...CARD.defuse}
+);
+
+}
+
+
+/* 4 Serang */
+
+for(
+let i=0;
+i<4;
+i++
+){
+
+deck.push(
+{...CARD.attack}
+);
+
+}
+
+
+/* 4 Lewati */
+
+for(
+let i=0;
+i<4;
+i++
+){
+
+deck.push(
+{...CARD.skip}
+);
+
+}
+
+
+/* 4 Acak */
+
+for(
+let i=0;
+i<4;
+i++
+){
+
+deck.push(
+{...CARD.shuffle}
+);
+
+}
+
+
+/* 4 Intip */
+
+for(
+let i=0;
+i<4;
+i++
+){
+
+deck.push(
+{...CARD.future}
+);
+
+}
+
+
+/* Kartu Meledak */
+
+for(
+let i=0;
+i<Math.max(1,playerCount-1);
+i++
+){
+
+deck.push(
+{...CARD.bomb}
+);
+
+}
+
+
+return shuffle(deck);
+
+}
+
+
+/* =====================================================
+   KEADAAN AWAL RUANG
+===================================================== */
+
+function freshState(order){
+
+return {
+
+status:"lobby",
+
+order:order,
+
+ready:{},
+
+alive:
+Object.fromEntries(
+order.map(
+id=>[id,true]
+)
+),
+
+hands:{},
+
+deck:[],
+
+turn:0,
+
+turnsLeft:1,
+
+event:
+"Ruang siap. Semua pemain tekan SIAP.",
+
+log:[]
+
+};
+
+}
+
+
+/* =====================================================
+   KIRIM DATA REALTIME
+===================================================== */
+
+function broadcast(type,data){
+
+if(!channel)
+return;
+
+channel.send({
+
+type:"broadcast",
+
+event:"game",
+
+payload:{
+type,
+...data
+}
+
+});
+
+}
+
+
+/* =====================================================
+   TAMBAH RIWAYAT
+===================================================== */
+
+function addLog(text){
+
+state.log=[
+text,
+...(state.log||[])
+].slice(0,40);
+
+}
+
+
+/* =====================================================
+   HTML AMAN
+===================================================== */
+
+function escapeHTML(value){
+
+return String(value)
+.replace(
+/[&<>"']/g,
+function(c){
+
+return {
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+
+}[c];
+
+}
+);
+
+}
+
+
+/* =====================================================
+   TAMPILKAN LOBI
+===================================================== */
+
+function renderLobby(){
+
+const ids=state.order;
+
+$("players").innerHTML=
+
+ids.map(id=>{
+
+const p=players[id];
+
+if(!p)
+return "";
+
+return `
+
+<div class="player">
+
+<span>
+
+👤 ${escapeHTML(p.name)}
+
+${
+id===me.id
+?
+"(kamu)"
+:
+""
+}
+
+</span>
+
+<span
+class="${
+state.ready?.[id]
+?
+"ready"
+:
+"badge"
+}"
+>
+
+${
+state.ready?.[id]
+?
+"✓ SIAP"
+:
+"Belum siap"
+}
+
+</span>
+
+</div>
+
+`;
+
+}).join("");
+
+
+const allReady=
+
+ids.length>=2 &&
+ids.every(
+id=>state.ready?.[id]
+);
+
+
+$("start").classList.toggle(
+
+"hidden",
+
+!(
+isHost &&
+allReady &&
+state.status==="lobby"
+)
+
+);
+
+}
+
+
+/* =====================================================
+   TAMPILKAN PERMAINAN
+===================================================== */
+
+function renderGame(){
+
+if(!state)
+return;
+
+const ids=state.order;
+
+const currentId=
+ids[
+state.turn % ids.length
 ];
 
-const special=new Set([0,4,5,10,15,20,25,30,35]);
+const currentPlayer=
+players[currentId];
 
-function playerKey(){
- let k=localStorage.getItem("hogwarts_mono_key");
- if(!k){
-  k=crypto.randomUUID();
-  localStorage.setItem("hogwarts_mono_key",k);
- }
- return k;
+
+$("turn").textContent=
+currentPlayer?.name || "-";
+
+$("deck").textContent=
+state.deck.length;
+
+$("event").textContent=
+state.event || "";
+
+
+/* PEMENANG */
+
+const finished=
+state.status==="finished";
+
+$("winner").classList.toggle(
+"hidden",
+!finished
+);
+
+if(finished){
+
+const alive=
+ids.find(
+id=>state.alive[id]
+);
+
+$("winner").textContent=
+
+alive
+?
+
+`🏆 ${
+players[alive]?.name || "Pemain"
+} MENANG!`
+
+:
+
+"Semua pemain telah tersingkir.";
+
 }
-function code(){
- return Math.random().toString(36).slice(2,8).toUpperCase();
+
+
+/* PEMAIN LAIN */
+
+$("opponents").innerHTML=
+
+ids
+.filter(
+id=>id!==me.id
+)
+.map(id=>{
+
+return `
+
+<div class="opp">
+
+<div class="oppName">
+
+👤 ${
+escapeHTML(
+players[id]?.name || "?"
+)
 }
-function wait(ms){
- return new Promise(resolve=>setTimeout(resolve,ms));
+
+</div>
+
+<div class="hp">
+
+${
+state.alive[id]===false
+?
+"💀 TERSINGKIR"
+:
+"❤️ MASIH BERMAIN"
 }
-function message(s){
- $("actionMsg").textContent=s;
+
+</div>
+
+<div class="small">
+
+🎴 ${
+(state.hands[id]||[]).length
+} kartu
+
+</div>
+
+</div>
+
+`;
+
+}).join("");
+
+
+/* KARTU SENDIRI */
+
+const hand=
+state.hands[me.id] || [];
+
+
+$("hand").innerHTML=
+
+hand.map(
+(card,index)=>{
+
+return `
+
+<div
+class="card ${card.cls}"
+>
+
+<div>
+
+<div class="icon">
+${card.icon}
+</div>
+
+<div class="name">
+${card.name}
+</div>
+
+</div>
+
+<div>
+
+<div class="desc">
+${card.desc}
+</div>
+
+<button
+onclick="playCard(${index})"
+>
+GUNAKAN
+</button>
+
+</div>
+
+</div>
+
+`;
+
 }
-function log(s){
- const d=document.createElement("div");
- d.textContent=s;
- $("log").prepend(d);
+).join("");
+
+
+/* TOMBOL AMBIL */
+
+const canPlay=
+
+state.status==="playing" &&
+state.alive[me.id]!==false &&
+currentId===me.id;
+
+
+$("draw").disabled=
+!canPlay;
+
+
+$("draw").textContent=
+
+canPlay
+
+?
+
+`🎴 AMBIL KARTU${
+state.turnsLeft>1
+?
+" • "+state.turnsLeft+" GILIRAN"
+:
+""
+}`
+
+:
+
+"🎴 MENUNGGU GILIRAN";
+
+
+/* RIWAYAT */
+
+$("log").innerHTML=
+
+(state.log||[])
+.map(
+x=>`<div>${escapeHTML(x)}</div>`
+)
+.join("");
+
 }
-function coords(index){
- const n=index%10;
- if(index<10)return{x:92-n*9.3,y:92};
- if(index<20)return{x:8,y:92-n*9.3};
- if(index<30)return{x:8+n*9.3,y:8};
- return{x:92,y:8+n*9.3};
-}
-function drawDice(value){
- const places={
-  1:[4],2:[0,8],3:[0,4,8],
-  4:[0,2,6,8],5:[0,2,4,6,8],
-  6:[0,2,3,5,6,8]
- }[value]||[];
- $("dice").innerHTML="";
- for(let i=0;i<9;i++){
-  const el=document.createElement("i");
-  if(places.includes(i))el.className="dot";
-  $("dice").appendChild(el);
- }
-}
+
+
+/* =====================================================
+   TAMPILKAN SEMUA
+===================================================== */
+
 function render(){
- if(!room)return;
- const current=players.find(p=>p.player_index===room.current_player);
- $("turnLabel").textContent=room.status==="waiting"?"Menunggu":
- room.status==="finished"?"Selesai":"Giliran: "+(current?.player_name||"-");
 
- $("players").innerHTML=players.map((p,i)=>`
- <div class="player ${p.player_index===room.current_player?"active":""}">
-  <div class="avatar" style="background:${p.color}"></div>
-  <div>
-   <b>${escapeHtml(p.player_name)}</b>
-   <div class="money">$${p.money}</div>
-   <div class="muted">Petak ${p.position+1}</div>
-  </div>
- </div>`).join("");
+if(!state)
+return;
 
- const allowed=room.status==="playing"&&me&&
- room.current_player===me.player_index&&!moving;
 
- $("roll").disabled=!allowed||rolled;
- $("buy").disabled=!allowed||!rolled;
- $("upgrade").disabled=!allowed||!rolled;
- $("end").disabled=!allowed||!rolled;
- $("start").disabled=!me||me.player_index!==0||
- room.status!=="waiting";
-}
-function escapeHtml(s){
- return String(s).replace(/[&<>"']/g,c=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",
-  '"':"&quot;","'":"&#39;"
- }[c]));
-}
-function draw(){
- document.querySelectorAll(".piece,.building").forEach(x=>x.remove());
+if(
+state.status==="playing" ||
+state.status==="finished"
+){
 
- players.forEach((p,i)=>{
-  const c=coords(p.position);
-  const el=document.createElement("div");
-  el.className="piece p"+i;
-  el.style.left=c.x+"%";
-  el.style.top=c.y+"%";
-  el.textContent=i+1;
-  el.title=p.player_name;
-  $("board").appendChild(el);
- });
+$("lobby")
+.classList.add("hidden");
 
- properties.forEach(p=>{
-  if(p.owner_index==null)return;
-  const c=coords(p.cell_index);
-  const el=document.createElement("div");
-  el.className="building";
-  el.style.left=(c.x+3)+"%";
-  el.style.top=(c.y-3)+"%";
-  el.textContent=p.level>=4?"🏰":p.level>=2?"🏠":"🏡";
-  $("board").appendChild(el);
- });
-}
-async function refresh(){
- const [r,p,pr]=await Promise.all([
-  db.from("monopoly_rooms").select("*").eq("id",room.id).single(),
-  db.from("monopoly_players").select("*")
-   .eq("room_id",room.id).order("player_index"),
-  db.from("monopoly_properties").select("*")
-   .eq("room_id",room.id).order("cell_index")
- ]);
- if(r.error)throw r.error;
- room=r.data;players=p.data||[];properties=pr.data||[];
- me=players.find(x=>x.player_key===playerKey())||me;
- render();draw();
-}
-function subscribe(){
- if(channel)db.removeChannel(channel);
- channel=db.channel("monopoly-"+room.id)
- .on("postgres_changes",{
-  event:"*",schema:"public",table:"monopoly_rooms",
-  filter:"id=eq."+room.id
- },refresh)
- .on("postgres_changes",{
-  event:"*",schema:"public",table:"monopoly_players",
-  filter:"room_id=eq."+room.id
- },refresh)
- .on("postgres_changes",{
-  event:"*",schema:"public",table:"monopoly_properties",
-  filter:"room_id=eq."+room.id
- },refresh)
- .subscribe();
-}
-async function createRoom(c){
- const {data,error}=await db.from("monopoly_rooms")
- .insert({code:c,status:"waiting"}).select().single();
- if(error)throw error;
- room=data;
+$("game")
+.classList.remove("hidden");
 
- const rows=Array.from({length:TOTAL},(_,i)=>({
-  room_id:room.id,cell_index:i,
-  price:100+Math.floor(i/4)*20,
-  rent:10+Math.floor(i/4)*5
- }));
- const result=await db.from("monopoly_properties").insert(rows);
- if(result.error)throw result.error;
-}
-async function join(){
- const name=$("name").value.trim();
- let c=$("room").value.trim().toUpperCase();
- if(!name)return $("setupMsg").textContent="Masukkan nama.";
+renderGame();
 
- try{
-  $("join").disabled=true;
-  $("setupMsg").textContent="Menghubungkan...";
+}else{
 
-  if(!c){
-   c=code();await createRoom(c);
-  }else{
-   const {data,error}=await db.from("monopoly_rooms")
-    .select("*").eq("code",c).maybeSingle();
-   if(error)throw error;
-   if(!data)throw new Error("Room tidak ditemukan.");
-   room=data;
-  }
+$("game")
+.classList.add("hidden");
 
-  const {count}=await db.from("monopoly_players")
-   .select("*",{count:"exact",head:true}).eq("room_id",room.id);
-  if(count>=4)throw new Error("Room penuh.");
+$("lobby")
+.classList.remove("hidden");
 
-  const {data:existing}=await db.from("monopoly_players")
-   .select("*").eq("room_id",room.id)
-   .eq("player_key",playerKey()).maybeSingle();
+renderLobby();
 
-  if(existing)me=existing;
-  else{
-   const {data:p,error}=await db.from("monopoly_players").insert({
-    room_id:room.id,player_key:playerKey(),
-    player_name:name,color:COLORS[count||0],
-    player_index:count||0
-   }).select().single();
-   if(error)throw error;
-   me=p;
-  }
-
-  $("setup").classList.add("hidden");
-  $("game").classList.remove("hidden");
-  $("roomLabel").textContent=room.code;
-  $("status").textContent="ONLINE";
-  await refresh();
-  subscribe();
-  log("Berhasil masuk room "+room.code);
- }catch(e){
-  $("setupMsg").textContent=e.message||"Gagal masuk.";
- }finally{
-  $("join").disabled=false;
- }
-}
-async function start(){
- if(!me||me.player_index!==0)return;
- if(players.length<2)return message("Minimal 2 pemain.");
- await db.from("monopoly_rooms")
-  .update({status:"playing"}).eq("id",room.id);
- await refresh();
- log("Permainan dimulai.");
-}
-function canAct(){
- return !!me&&!!room&&room.status==="playing"&&
- room.current_player===me.player_index&&!moving;
-}
-async function roll(){
- if(!canAct()||rolled)return;
- moving=true;render();
-
- const value=Math.floor(Math.random()*6)+1;
- drawDice(value);
- $("diceText").textContent="Hasil: "+value;
- $("dice").classList.add("rolling");
- await wait(450);
- $("dice").classList.remove("rolling");
-
- const p=players.find(x=>x.id===me.id);
- if(!p){moving=false;return;}
-
- const start=p.position;
- for(let i=1;i<=value;i++){
-  const position=(start+i)%TOTAL;
-  p.position=position;
-  draw();
-  await wait(160);
- }
- rolled=true;
- moving=false;
-
- const passed=start+value>=TOTAL;
- let money=p.money+(passed?200:0);
- if(passed)log(p.player_name+" melewati Start +$200.");
-
- await db.from("monopoly_players")
-  .update({position:p.position,money}).eq("id",p.id);
- await refresh();
-
- const prop=properties.find(x=>x.cell_index===p.position);
- if(prop&&prop.owner_index!=null&&prop.owner_index!==p.player_index){
-  await payRent(p,prop);
- }
- message("Mendarat di "+propertyNames[p.position]);
- log(p.player_name+" melempar "+value+".");
-}
-async function payRent(p,prop){
- const owner=players.find(x=>x.player_index===prop.owner_index);
- if(!owner)return;
- const rent=Math.min(prop.rent,p.money);
- await db.from("monopoly_players").update({
-  money:p.money-rent
- }).eq("id",p.id);
- await db.from("monopoly_players").update({
-  money:owner.money+rent
- }).eq("id",owner.id);
- log(p.player_name+" membayar sewa $"+rent+
- " kepada "+owner.player_name+".");
- await refresh();
-}
-async function buy(){
- if(!canAct()||!rolled)return;
- const p=players.find(x=>x.id===me.id);
- const prop=properties.find(x=>x.cell_index===p.position);
- if(!prop||prop.owner_index!=null||special.has(p.position))
-  return message("Petak ini tidak dapat dibeli.");
- if(p.money<prop.price)return message("Uang tidak cukup.");
-
- await db.from("monopoly_players").update({
-  money:p.money-prop.price
- }).eq("id",p.id);
- await db.from("monopoly_properties").update({
-  owner_index:p.player_index,level:0
- }).eq("id",prop.id);
- log(p.player_name+" membeli "+propertyNames[p.position]+".");
- await refresh();
-}
-async function upgrade(){
- if(!canAct()||!rolled)return;
- const p=players.find(x=>x.id===me.id);
- const prop=properties.find(x=>x.cell_index===p.position);
- if(!prop||prop.owner_index!==p.player_index)
-  return message("Kamu bukan pemilik properti.");
- if(prop.level>=4)return message("Bangunan maksimal.");
- if(p.money<prop.price)return message("Uang tidak cukup.");
-
- await db.from("monopoly_players").update({
-  money:p.money-prop.price
- }).eq("id",p.id);
- await db.from("monopoly_properties").update({
-  level:prop.level+1,rent:prop.rent*2
- }).eq("id",prop.id);
- log(p.player_name+" meng-upgrade "+propertyNames[p.position]+".");
- await refresh();
-}
-async function endTurn(){
- if(!canAct()||!rolled)return;
- const next=(room.current_player+1)%players.length;
- await db.from("monopoly_rooms").update({
-  current_player:next,turn_number:room.turn_number+1,dice_value:0
- }).eq("id",room.id);
- rolled=false;drawDice(0);
- $("diceText").textContent="Belum dilempar";
- await refresh();
 }
 
-$("join").onclick=join;
-$("start").onclick=start;
-$("roll").onclick=roll;
-$("buy").onclick=buy;
-$("upgrade").onclick=upgrade;
-$("end").onclick=endTurn;
-drawDice(0);
+}
+
+
+/* =====================================================
+   CARI PEMAIN BERIKUTNYA
+===================================================== */
+
+function nextAlive(from){
+
+const ids=state.order;
+
+for(
+let k=1;
+k<=ids.length;
+k++
+){
+
+const i=
+(from+k)%ids.length;
+
+if(
+state.alive[ids[i]]
+){
+
+return i;
+
+}
+
+}
+
+return from;
+
+}
+
+
+/* =====================================================
+   CEK PEMENANG
+===================================================== */
+
+function finishIfNeeded(){
+
+const alive=
+state.order.filter(
+id=>state.alive[id]
+);
+
+if(
+alive.length<=1
+){
+
+state.status="finished";
+
+state.event=
+`🏆 ${
+players[alive[0]]?.name || "Pemain"
+} memenangkan permainan!`;
+
+return true;
+
+}
+
+return false;
+
+}
+
+
+/* =====================================================
+   GANTI GILIRAN
+===================================================== */
+
+function advance(extra=1){
+
+if(
+finishIfNeeded()
+)
+return;
+
+state.turn=
+nextAlive(state.turn);
+
+state.turnsLeft=
+extra;
+
+}
+
+
+/* =====================================================
+   MULAI PERMAINAN
+===================================================== */
+
+function startGame(){
+
+if(!isHost)
+return;
+
+const ids=
+state.order;
+
+
+state.status=
+"playing";
+
+
+state.deck=
+makeDeck(ids.length);
+
+
+state.hands={};
+
+
+state.alive=
+Object.fromEntries(
+ids.map(
+id=>[id,true]
+)
+);
+
+
+state.turn=0;
+
+state.turnsLeft=1;
+
+
+/* Semua pemain mulai dengan 5 kartu */
+
+ids.forEach(
+id=>{
+state.hands[id]=[];
+}
+);
+
+
+for(
+let round=0;
+round<5;
+round++
+){
+
+ids.forEach(
+id=>{
+
+state.hands[id].push(
+state.deck.pop()
+);
+
+}
+);
+
+}
+
+
+state.event=
+"🎮 Permainan dimulai! Giliran "+
+players[ids[0]].name;
+
+
+addLog(
+"🎮 Permainan dimulai."
+);
+
+
+broadcast(
+"state",
+{
+state,
+players
+}
+);
+
+
+render();
+
+}
+
+
+/* =====================================================
+   AMBIL KARTU
+===================================================== */
+
+function drawCard(){
+
+if(
+state.status!=="playing"
+)
+return;
+
+
+const currentId=
+state.order[
+state.turn %
+state.order.length
+];
+
+
+if(
+currentId!==me.id
+){
+
+toast(
+"Bukan giliran kamu."
+);
+
+return;
+
+}
+
+
+if(
+!state.deck.length
+){
+
+state.event=
+"Tumpukan kartu sudah habis.";
+
+advance();
+
+broadcast(
+"state",
+{
+state,
+players
+}
+);
+
+render();
+
+return;
+
+}
+
+
+const card=
+state.deck.pop();
+
+let hand=
+state.hands[me.id] || [];
+
+const name=
+players[me.id].name;
+
+
+/* =====================================================
+   KARTU MELEDAK
+===================================================== */
+
+if(
+card.type==="bomb"
+){
+
+const defuseIndex=
+hand.findIndex(
+c=>c.type==="defuse"
+);
+
+
+/* Punya Pelindung */
+
+if(
+defuseIndex>=0
+){
+
+hand.splice(
+defuseIndex,
+1
+);
+
+
+const position=
+Math.floor(
+Math.random() *
+(state.deck.length+1)
+);
+
+
+state.deck.splice(
+position,
+0,
+card
+);
+
+
+state.event=
+`💥 ${name} mendapat Kartu Meledak, tetapi menggunakan Pelindung! 🛡️`;
+
+
+addLog(
+state.event
+);
+
+
+advance();
+
+
+broadcast(
+"state",
+{
+state,
+players
+}
+);
+
+
+render();
+
+return;
+
+}
+
+
+/* Tidak punya Pelindung */
+
+state.hands[me.id]=
+hand;
+
+state.alive[me.id]=
+false;
+
+state.event=
+`💣 ${name} MELEDAK dan tersingkir!`;
+
+
+addLog(
+state.event
+);
+
+
+advance();
+
+
+broadcast(
+"state",
+{
+state,
+players
+}
+);
+
+
+render();
+
+return;
+
+}
+
+
+/* =====================================================
+   KARTU BIASA
+===================================================== */
+
+hand.push(card);
+
+state.hands[me.id]=
+hand;
+
+
+state.event=
+`${name} mengambil sebuah kartu.`;
+
+addLog(
+`🎴 ${name} mengambil kartu.`
+);
+
+
+/* Giliran tambahan */
+
+if(
+state.turnsLeft>1
+){
+
+state.turnsLeft--;
+
+}else{
+
+advance();
+
+}
+
+
+broadcast(
+"state",
+{
+state,
+players
+}
+);
+
+
+render();
+
+}
+
+
+/* =====================================================
+   GUNAKAN KARTU
+===================================================== */
+
+window.playCard=
+function(index){
+
+if(
+state.status!=="playing"
+)
+return;
+
+
+const currentId=
+state.order[
+state.turn %
+state.order.length
+];
+
+
+if(
+currentId!==me.id
+){
+
+toast(
+"Bukan giliran kamu."
+);
+
+return;
+
+}
+
+
+let hand=
+state.hands[me.id] || [];
+
+const card=
+hand[index];
+
+
+if(!card)
+return;
+
+
+hand.splice(
+index,
+1
+);
+
+
+const name=
+players[me.id].name;
+
+
+/* =====================================================
+   PELINDUNG
+===================================================== */
+
+if(
+card.type==="defuse"
+){
+
+hand.push(card);
+
+toast(
+"🛡️ Pelindung digunakan ketika kamu mendapat Kartu Meledak."
+);
+
+return;
+
+}
+
+
+/* =====================================================
+   SERANG
+===================================================== */
+
+if(
+card.type==="attack"
+){
+
+state.hands[me.id]=
+hand;
+
+
+const next=
+nextAlive(state.turn);
+
+
+state.turn=
+next;
+
+
+state.turnsLeft=2;
+
+
+state.event=
+`⚔️ ${name} menggunakan KARTU SERANG!`;
+
+
+addLog(
+state.event
+);
+
+}
+
+
+/* =====================================================
+   LEWATI
+===================================================== */
+
+else if(
+card.type==="skip"
+){
+
+state.hands[me.id]=
+hand;
+
+
+state.event=
+`⏭️ ${name} menggunakan KARTU LEWATI.`;
+
+addLog(
+state.event
+);
+
+
+if(
+state.turnsLeft>1
+){
+
+state.turnsLeft--;
+
+}else{
+
+advance();
+
+}
+
+}
+
+
+/* =====================================================
+   ACAK
+===================================================== */
+
+else if(
+card.type==="shuffle"
+){
+
+state.hands[me.id]=
+hand;
+
+
+state.deck=
+shuffle(state.deck);
+
+
+state.event=
+`🔀 ${name} mengacak tumpukan kartu.`;
+
+addLog(
+state.event
+);
+
+}
+
+
+/* =====================================================
+   INTIP KARTU
+===================================================== */
+
+else if(
+card.type==="future"
+){
+
+state.hands[me.id]=
+hand;
+
+
+const preview=
+state.deck
+.slice(-3)
+.reverse()
+.map(
+c=>c.name
+)
+.join(" • ");
+
+
+state.event=
+`🔮 ${name} melihat: ${
+preview || "Tumpukan kosong"
+}`;
+
+
+addLog(
+`${name} menggunakan KARTU INTIP.`
+);
+
+}
+
+
+/* =====================================================
+   KIRIM PERUBAHAN
+===================================================== */
+
+broadcast(
+"state",
+{
+state,
+players
+}
+);
+
+
+render();
+
+};
+
+
+/* =====================================================
+   TOMBOL
+===================================================== */
+
+$("draw").onclick=
+drawCard;
+
+
+$("create").onclick=
+createRoom;
+
+
+$("join").onclick=
+()=>joinRoom(
+$("room").value
+);
+
+
+$("ready").onclick=
+toggleReady;
+
+
+$("start").onclick=
+()=>{
+
+if(isHost){
+
+startGame();
+
+}
+
+};
+
+
+$("copy").onclick=
+()=>{
+
+if(
+navigator.clipboard
+){
+
+navigator.clipboard.writeText(
+roomCode
+);
+
+toast(
+"📋 Kode ruang disalin."
+);
+
+}
+
+};
+
+
+$("exit").onclick=
+()=>{
+
+location.reload();
+
+};
+
+
+/* =====================================================
+   BUAT RUANG
+===================================================== */
+
+function createRoom(){
+
+me.name=
+$("name").value.trim() ||
+"Pemain";
+
+
+roomCode=
+Math.random()
+.toString(36)
+.slice(2,8)
+.toUpperCase();
+
+
+isHost=true;
+
+
+state=
+freshState(
+[me.id]
+);
+
+
+players={
+
+[me.id]:{
+
+id:me.id,
+
+name:me.name
+
+}
+
+};
+
+
+state.ready[me.id]=
+false;
+
+
+$("home")
+.classList.add("hidden");
+
+$("lobby")
+.classList.remove("hidden");
+
+
+$("code").textContent=
+roomCode;
+
+
+connectRealtime();
+
+
+render();
+
+
+broadcast(
+"state",
+{
+state,
+players
+}
+);
+
+}
+
+
+/* =====================================================
+   GABUNG RUANG
+===================================================== */
+
+function joinRoom(code){
+
+me.name=
+$("name").value.trim() ||
+"Pemain";
+
+
+roomCode=
+(code||"")
+.trim()
+.toUpperCase();
+
+
+if(
+roomCode.length<4
+){
+
+toast(
+"Masukkan kode ruang."
+);
+
+return;
+
+}
+
+
+isHost=false;
+
+
+$("home")
+.classList.add("hidden");
+
+$("lobby")
+.classList.remove("hidden");
+
+
+$("code").textContent=
+roomCode;
+
+
+connectRealtime();
+
+}
+
+
+/* =====================================================
+   HUBUNGKAN REALTIME
+===================================================== */
+
+function connectRealtime(){
+
+channel=
+sb.channel(
+"permainan-kartu-"+roomCode,
+{
+
+config:{
+broadcast:{
+self:false
+}
+}
+
+}
+);
+
+
+channel
+.on(
+"broadcast",
+{
+event:"game"
+},
+({payload})=>{
+
+handleMessage(payload);
+
+}
+)
+.subscribe(
+status=>{
+
+setStatus(
+status==="SUBSCRIBED"
+);
+
+
+/* Pemain baru meminta bergabung */
+
+if(
+status==="SUBSCRIBED" &&
+!isHost
+){
+
+broadcast(
+"join",
+{
+id:me.id,
+name:me.name
+}
+);
+
+}
+
+}
+);
+
+}
+
+
+/* =====================================================
+   TERIMA PESAN
+===================================================== */
+
+function handleMessage(message){
+
+
+/* =====================================================
+   PEMAIN MASUK
+===================================================== */
+
+if(
+message.type==="join"
+){
+
+if(!isHost)
+return;
+
+
+if(
+state.status!=="lobby"
+){
+
+broadcast(
+"state",
+{
+state,
+players
+}
+);
+
+return;
+
+}
+
+
+if(
+state.order.length>=5
+){
+
+return;
+
+}
+
+
+if(
+!players[message.id]
+){
+
+players[message.id]={
+
+id:message.id,
+
+name:message.name
+
+};
+
+
+state.order.push(
+message.id
+);
+
+
+state.ready[message.id]=
+false;
+
+}
+
+
+broadcast(
+"state",
+{
+state,
+players
+}
+);
+
+
+render();
+
+return;
+
+}
+
+
+/* =====================================================
+   STATUS SIAP
+===================================================== */
+
+if(
+message.type==="ready"
+){
+
+if(!isHost)
+return;
+
+
+state.ready[
+message.id
+]=
+message.value;
+
+
+broadcast(
+"state",
+{
+state,
+players
+}
+);
+
+
+render();
+
+return;
+
+}
+
+
+/* =====================================================
+   STATE
+===================================================== */
+
+if(
+message.type==="state" ||
+message.type==="snapshot"
+){
+
+state=
+message.state;
+
+
+players=
+message.players ||
+players;
+
+
+render();
+
+return;
+
+}
+
+
+/* =====================================================
+   KELUAR
+===================================================== */
+
+if(
+message.type==="leave"
+){
+
+if(!isHost)
+return;
+
+
+if(
+state.status==="lobby"
+){
+
+state.order=
+state.order.filter(
+id=>id!==message.id
+);
+
+
+delete players[
+message.id
+];
+
+
+delete state.ready[
+message.id
+];
+
+
+broadcast(
+"state",
+{
+state,
+players
+}
+);
+
+
+render();
+
+}
+
+}
+
+}
+
+
+/* =====================================================
+   TOMBOL SIAP
+===================================================== */
+
+function toggleReady(){
+
+if(
+!state ||
+state.status!=="lobby"
+)
+return;
+
+
+state.ready[me.id]=
+!state.ready[me.id];
+
+
+if(isHost){
+
+broadcast(
+"state",
+{
+state,
+players
+}
+);
+
+render();
+
+}else{
+
+broadcast(
+"ready",
+{
+id:me.id,
+value:state.ready[me.id]
+}
+);
+
+}
+
+}
+
+
+/* =====================================================
+   BERITAHU SAAT KELUAR
+===================================================== */
+
+window.addEventListener(
+"beforeunload",
+()=>{
+
+if(channel){
+
+broadcast(
+"leave",
+{
+id:me.id
+}
+);
+
+}
+
+}
+);
+
+
+/* =====================================================
+   MULAI
+===================================================== */
+
+setStatus(false);
+
 </script>
+
 </body>
 </html>
